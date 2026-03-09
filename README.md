@@ -12,7 +12,7 @@ If you are contributing to this project:
 1. **Clone the repository**
 2. **Initialize your project locally** inside the repository folder  
    (for example: React, Next.js, Vite, etc.)
-3. Create a **new branch** for your work
+3. Create a **new branch** for your work (based off our Git workflow guide)
 4. Push your changes and open a **Pull Request (PR)**
 
 Example:
