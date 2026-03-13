@@ -28,7 +28,7 @@ export type SectionProps = React.PropsWithChildren<{
    *
    * Example: navHeight="72px"
    */
-  navHeight?: string;
+  navHeight?: React.CSSProperties["scrollMarginTop"];
 
   /**
    * Adds a responsive section-to-section gap (margin-bottom).
@@ -39,7 +39,7 @@ export type SectionProps = React.PropsWithChildren<{
    * CSS length for the section-to-section gap when enabled.
    * Defaults to a chaos-friendly responsive clamp().
    */
-  sectionGap?: string;
+  sectionGap?: React.CSSProperties["marginBottom"];
 }>;
 
 function cx(...parts: Array<string | undefined | false>) {
