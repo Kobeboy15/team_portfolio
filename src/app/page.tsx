@@ -13,7 +13,7 @@ export default function Home() {
         withSectionGap
         className="flex min-h-screen items-center justify-center"
       >
-        <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between bg-white py-32 px-16 dark:bg-black sm:items-start">
+        <main className="flex min-h-screen w-full max-w-7xl flex-col items-center justify-between bg-white py-32 px-8 dark:bg-black sm:items-start">
         <Image
           className="dark:invert"
           src="/next.svg"
