@@ -17,6 +17,7 @@
   --token-accent: #6A8B92;
   --token-accent-foreground: #FFFFFF; /* text on accent (e.g. buttons) */
   --token-foreground: #0F0F0F;       /* main text */
+  --token-foreground-secondary: #E0E0E0; /* special display heading in light mode */
   /* Derived (optional): border/input/ring for form controls, focus rings */
   --token-border: #E8E4D9;
   --token-input: #E8E4D9;
@@ -60,6 +61,7 @@
     --token-accent: #B2D4D8;
     --token-accent-foreground: #0F0F0F; /* text on accent */
     --token-foreground: #E0E0E0;
+    --token-foreground-secondary: #E0E0E0; /* matches foreground in dark mode */
     --token-border: #2A2A2A;
     --token-input: #2A2A2A;
     --token-ring: #B2D4D8;
@@ -73,6 +75,7 @@
   --color-background: var(--token-background);
   --color-background-2: var(--token-background-2);
   --color-foreground: var(--token-foreground);
+  --color-foreground-secondary: var(--token-foreground-secondary);
   --color-accent: var(--token-accent);
   --color-accent-foreground: var(--token-accent-foreground);
   --color-border: var(--token-border);
