@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 
 const baseClassName =
   "inline-flex h-9 min-h-9 items-center gap-2 font-sans font-light text-sora-18 text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
@@ -26,6 +27,10 @@ function cn(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
+function isInternalHref(href: string): boolean {
+  return href.startsWith("/") && !href.startsWith("//");
+}
+
 export function Button({
   children,
   icon,
@@ -41,12 +46,17 @@ export function Button({
   );
 
   if (href !== undefined && href !== null) {
+    const linkClassName = cn(baseClassName, className);
+    const anchorRest = rest as React.AnchorHTMLAttributes<HTMLAnchorElement>;
+    if (isInternalHref(href)) {
+      return (
+        <Link href={href} className={linkClassName} {...anchorRest}>
+          {content}
+        </Link>
+      );
+    }
     return (
-      <a
-        href={href}
-        className={cn(baseClassName, className)}
-        {...(rest as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-      >
+      <a href={href} className={linkClassName} {...anchorRest}>
         {content}
       </a>
     );
