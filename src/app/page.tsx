@@ -5,6 +5,8 @@ import { Heading } from "../components/ui/Heading";
 import { Card } from "../components/ui/Card";
 import { ImageFrame } from "../components/ui/ImageFrame";
 
+import { AboutSection } from "../components/sections/AboutSection";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-black">
@@ -201,6 +203,7 @@ export default function Home() {
         </section>
       </main>
       </Section>
+      <AboutSection />
     </div>
   );
 }
