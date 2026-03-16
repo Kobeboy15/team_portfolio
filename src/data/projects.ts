@@ -1,16 +1,18 @@
-export const projects = [
+import type { Project } from "../types/projects";
+
+export const projects: Project[] = [           // PLACEHOLDER DATA
   {
-    id: "01",
+    id: "project-1",
     year: "2024",
     title: "Project 1",
     role: "Full Stack Developer",
     slug: "project-1",
     techStack: ["React", "Node.js", "MongoDB"],
-    outcomes: [
+    outcomes: [                   // PLACEHOLDER OUTCOMES
       "8 billion users",
-      "World saved"
+      "World saved",
     ],
     image: "/images/projects/project-1.webp",
-    link: "https://github.com/yourname/project-1",
+    imageAlt: "Project 1 Logo",
   },
 ];
