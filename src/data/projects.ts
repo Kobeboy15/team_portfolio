@@ -6,7 +6,7 @@ export const projects = [           // PLACEHOLDER DATA
     role: "Full Stack Developer",
     slug: "project-1",
     techStack: ["React", "Node.js", "MongoDB"],
-    outcomes: [
+    outcomes: [                   // PLACEHOLDER OUTCOMES
       "8 billion users",
       "World saved",
     ],
