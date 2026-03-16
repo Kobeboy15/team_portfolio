@@ -1,4 +1,6 @@
-export const projects = [           // PLACEHOLDER DATA
+import type { Project } from "../types/projects";
+
+export const projects: Project[] = [           // PLACEHOLDER DATA
   {
     id: "project-1",
     year: "2024",
