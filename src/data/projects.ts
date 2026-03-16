@@ -1,4 +1,4 @@
-export const projects = [
+export const projects = [           // PLACEHOLDER DATA
   {
     id: "project-1",
     year: "2024",
