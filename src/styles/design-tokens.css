@@ -54,9 +54,8 @@
   --token-tracking-years: -0.05em;    /* -5% for Years */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --token-background: #121212;
+.dark {
+  --token-background: #121212;
     --token-background-2: #3F3F3F;
     --token-accent: #B2D4D8;
     --token-accent-foreground: #0F0F0F; /* text on accent */
@@ -65,7 +64,6 @@
     --token-border: #2A2A2A;
     --token-input: #2A2A2A;
     --token-ring: #B2D4D8;
-  }
 }
 
 /* ============== TAILWIND THEME (maps tokens → Tailwind utilities) ============== */
