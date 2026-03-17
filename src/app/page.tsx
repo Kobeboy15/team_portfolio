@@ -5,6 +5,7 @@ import { Button } from "../components/ui/Button";
 import { Heading } from "../components/ui/Heading";
 import { Card } from "../components/ui/Card";
 import { ImageFrame } from "../components/ui/ImageFrame";
+import { NavigationHeader } from "../components/ui/NavigationHeader";
 
 import { AboutSection } from "../components/sections/AboutSection";
 
@@ -12,6 +13,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background-2 font-sans">
       <Section spacing="lg" withSectionGap className="flex min-h-screen items-center justify-center">
+        <NavigationHeader />
         <main className="flex min-h-screen w-full max-w-7xl flex-col items-center justify-between bg-background py-32 px-8 sm:items-start">
           <div className="mb-6 self-end">
             <ThemeToggle />
