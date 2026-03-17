@@ -1,9 +1,41 @@
 export type Skill = {
-  id: string;              // ie. "01", "02" — display number
+  order: number;
   name: string;            // ie. "Design"
   bento: BentoContent[];
 }
 
 export type BentoContent =
-  | { type: "text"; value: string }
-  | { type: "image"; src: string; alt: string; caption?: string }
+  | {
+      type: "heading";
+      value: string;
+      colSpan?: number;
+      rowSpan?: number;
+    }
+  | {
+      type: "paragraph";
+      value: string;
+      heading?: string,
+      colSpan?: number;
+      rowSpan?: number;
+    }
+  | {
+      type: "image";
+      src: string;
+      alt: string;
+      heading?: string,
+      caption?: string;
+      colSpan?: number;
+      rowSpan?: number;
+    }
+  | {
+      type: "icon";
+      name: string;
+      colSpan?: number;
+      rowSpan?: number;
+    }
+  | {
+      type: "decoration";
+      variant: string;
+      colSpan?: number;
+      rowSpan?: number;
+    };
