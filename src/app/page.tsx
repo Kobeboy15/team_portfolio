@@ -6,6 +6,8 @@ import { Heading } from "../components/ui/Heading";
 import { Card } from "../components/ui/Card";
 import { ImageFrame } from "../components/ui/ImageFrame";
 
+import { AboutSection } from "../components/sections/AboutSection";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background-2 font-sans">
@@ -119,6 +121,7 @@ export default function Home() {
           </section>
         </main>
       </Section>
+      <AboutSection />
     </div>
   );
 }
