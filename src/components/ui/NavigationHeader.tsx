@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { Button } from "./Button";
 import { ThemeToggle } from "./ThemeToggle";
@@ -9,11 +9,40 @@ import { ThemeToggle } from "./ThemeToggle";
 export function NavigationHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen((prev) => !prev);
+  const [visible, setVisible] = useState(true);
+ 
+  const lastScrollY = useRef(0);
+ 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+ 
+      if (currentScrollY < 10) {
+        // Always show at the very top
+        setVisible(true);
+      } else if (currentScrollY > lastScrollY.current) {
+        // Scrolling down → hide
+        setVisible(false);
+        setIsOpen(false); // also close menu if open
+      } else {
+        // Scrolling up → show
+        setVisible(true);
+      }
+ 
+      lastScrollY.current = currentScrollY;
+    };
+ 
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = ["About", "Expertise", "Projects", "Contact"];
 
   return (
-    <header className="fixed top-0 left-0 z-50 h-[72px] w-full">
+    <header className={`bg-background fixed top-0 left-0 z-50 h-18 w-full
+        transition-transform duration-300 ease-in-out
+        ${visible ? "translate-y-0" : "-translate-y-full"}
+    `}>
       <div className="flex items-center justify-between h-full px-16 py-4">
         {/* Home button / brand */}
         <Link href="/" className="text-sora-24 font-extrabold tracking-tight text-foreground">
