@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "./Button";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function NavigationHeader() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +37,8 @@ export function NavigationHeader() {
                   {item}
                 </Button>
               ))}
+
+              <ThemeToggle />
             </nav>
           </div>
 
