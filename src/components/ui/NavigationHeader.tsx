@@ -34,19 +34,19 @@ export function NavigationHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-    // Lock body scroll when mobile menu is open (mobile only)
-    useEffect(() => {
-        const mq = window.matchMedia("(max-width: 767px)");
-        const updateOverflow = () => {
-          document.body.style.overflow = isOpen && mq.matches ? "hidden" : "";
-        };
-        updateOverflow();
-        mq.addEventListener("change", updateOverflow);
-        return () => {
-          mq.removeEventListener("change", updateOverflow);
-          document.body.style.overflow = "";
-        };
-      }, [isOpen]);
+  // Lock body scroll when mobile menu is open (mobile only)
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const updateOverflow = () => {
+      document.body.style.overflow = isOpen && mq.matches ? "hidden" : "";
+    };
+    updateOverflow();
+    mq.addEventListener("change", updateOverflow);
+    return () => {
+      mq.removeEventListener("change", updateOverflow);
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   const navItems = ["About", "Expertise", "Projects", "Contact"];
 
@@ -66,7 +66,9 @@ export function NavigationHeader() {
           {/* ── Desktop nav ── */}
           <div className="hidden md:flex items-center">
             <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-w-[700px]" : "max-w-0"}`}>
-              <nav className={`flex items-center gap-4 pr-2 whitespace-nowrap transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
+              <nav
+                className={`flex items-center gap-4 pr-2 whitespace-nowrap transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+              >
                 {navItems.map((item) => (
                   <Button key={item} href={`#${item.toLowerCase()}`}>
                     {item}
@@ -87,17 +89,17 @@ export function NavigationHeader() {
 
       {/* ── Mobile full-screen slide-down menu ── */}
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!isOpen || !visible}
+        inert={!isOpen || !visible}
         className={`md:hidden fixed inset-0 z-40 bg-background flex flex-col
           transition-transform duration-500 ease-in-out
-          ${isOpen && visible ? "translate-y-0" : "-translate-y-full"}`}
+          ${isOpen && visible ? "translate-y-0 pointer-events-auto" : "-translate-y-full pointer-events-none"}`}
       >
         {/* Top row — mirrors the header so brand + X stay in place */}
         <div className="flex items-center justify-between h-18 px-6 py-4 shrink-0">
-          <Link
-            href="/"
-            onClick={() => setIsOpen(false)}
-            className="text-sora-24 font-extrabold tracking-tight text-foreground"
-          >
+          <Link href="/" onClick={() => setIsOpen(false)} className="text-sora-24 font-extrabold tracking-tight text-foreground">
             Kobe
           </Link>
           <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
@@ -111,10 +113,7 @@ export function NavigationHeader() {
               className={`transition-all duration-500 ease-in-out ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: isOpen ? `${150 + i * 60}ms` : "0ms" }}
             >
-              <Button
-                href={`#${item.toLowerCase()}`}
-                onClick={() => setIsOpen(false)}
-              >
+              <Button href={`#${item.toLowerCase()}`} onClick={() => setIsOpen(false)}>
                 {item}
               </Button>
             </div>
