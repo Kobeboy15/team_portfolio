@@ -55,7 +55,7 @@ export function ThemeToggle() {
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label="Toggle theme"
       aria-pressed={isDark}
-      className="rounded-full p-2 transition-colors hover:bg-foreground/10"
+      className="rounded-full p-2 transition-colors cursor-pointer"
     >
       {isDark ? <MoonIcon /> : <SunIcon />}
     </button>
