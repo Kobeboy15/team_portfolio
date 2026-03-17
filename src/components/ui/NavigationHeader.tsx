@@ -34,12 +34,19 @@ export function NavigationHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open (mobile only)
-  useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    document.body.style.overflow = isOpen && isMobile ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [isOpen]);
+    // Lock body scroll when mobile menu is open (mobile only)
+    useEffect(() => {
+        const mq = window.matchMedia("(max-width: 767px)");
+        const updateOverflow = () => {
+          document.body.style.overflow = isOpen && mq.matches ? "hidden" : "";
+        };
+        updateOverflow();
+        mq.addEventListener("change", updateOverflow);
+        return () => {
+          mq.removeEventListener("change", updateOverflow);
+          document.body.style.overflow = "";
+        };
+      }, [isOpen]);
 
   const navItems = ["About", "Expertise", "Projects", "Contact"];
 

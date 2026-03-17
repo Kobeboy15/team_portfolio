@@ -6,6 +6,7 @@ type HamburgerIconProps = {
 export function HamburgerIcon({ isOpen, onToggle }: HamburgerIconProps) {
   return (
     <button
+      type="button"
       onClick={onToggle}
       aria-label={isOpen ? "Close menu" : "Open menu"}
       aria-expanded={isOpen}
