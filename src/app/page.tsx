@@ -8,6 +8,9 @@ import { ImageFrame } from "../components/ui/ImageFrame";
 import { NavigationHeader } from "../components/ui/NavigationHeader";
 
 import { AboutSection } from "../components/sections/AboutSection";
+import { BentoGrid } from "../components/ui/BentoGrid";
+
+import { skills } from "../data/skills";
 
 export default function Home() {
   return (
@@ -124,6 +127,11 @@ export default function Home() {
         </main>
       </Section>
       <AboutSection />
+      <Section>
+        <div className="w-[70vw] h-[80vh]">
+          <BentoGrid content={skills[0].bento}/>
+        </div>
+      </Section>
     </div>
   );
 }
