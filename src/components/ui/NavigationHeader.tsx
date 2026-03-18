@@ -65,7 +65,11 @@ export function NavigationHeader() {
 
           {/* ── Desktop nav ── */}
           <div className="hidden md:flex items-center">
-            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-w-[700px]" : "max-w-0"}`}>
+            <div
+              aria-hidden={!isOpen}
+              inert={!isOpen}
+              className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-w-[700px]" : "max-w-0"}`}
+            >
               <nav
                 className={`flex items-center gap-4 pr-2 whitespace-nowrap transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
               >
@@ -89,8 +93,6 @@ export function NavigationHeader() {
 
       {/* ── Mobile full-screen slide-down menu ── */}
       <div
-        role="dialog"
-        aria-modal="true"
         aria-hidden={!isOpen || !visible}
         inert={!isOpen || !visible}
         className={`md:hidden fixed inset-0 z-40 bg-background flex flex-col
