@@ -9,7 +9,6 @@ const cardVariants: Record<string, { colSpan: number; rowSpan: number }> = { // 
   heading:      { colSpan: 2, rowSpan: 4 },
   paragraph:    { colSpan: 1, rowSpan: 5 },
   image:        { colSpan: 1, rowSpan: 3 },
-  imageCaption: { colSpan: 1, rowSpan: 7 },
   icon:         { colSpan: 1, rowSpan: 3 },
 };
 // #endregion
@@ -65,7 +64,7 @@ function fillGrid(content: BentoContent[]): React.ReactElement[] {
             }
         }
 
-        // TODO: card content
+        // TODO: placeholder, replace with actual content instead of metadata during a later ticket
         cards.push(<div key={`${key}`} style={{ gridColumn: `${col} / span ${colSpan}`, gridRow: `${row} / span ${rowSpan}` }} className="bg-indigo-200 text-black rounded-3xl flex justify-center items-center">{`${item.type} dimensions: ${colSpan}x${rowSpan}`}</div>);
         key++;
     }
@@ -75,6 +74,7 @@ function fillGrid(content: BentoContent[]): React.ReactElement[] {
     return cards;
 }
 
+// TODO: rework all sizing&positioning logic at a later ticket, ignore for now
 // #region Fill Content
 function isSpaceAvailable(occupied: boolean[][], startCol: number, startRow: number, colSpan: number, rowSpan: number): boolean 
 {
@@ -234,6 +234,7 @@ function fillRemainingGaps(occupied: boolean[][], cards: React.ReactElement[], s
                         }
                     }
                     
+                    // TODO: placeholder, replace with actual content instead of metadata during a later ticket
                     cards.push(
                         <div key={`${key}`} style={{ gridColumn: `${col} / span ${colSpan}`, gridRow: `${row} / span ${rowSpan}` }} className="bg-gray-200 text-black rounded-3xl flex justify-center items-center"
                         >

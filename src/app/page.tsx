@@ -128,6 +128,7 @@ export default function Home() {
       </Section>
       <AboutSection />
       <Section>
+        {/* TODO: temporary render to see BentoGrid; replace with proper container without any hardcoding*/}
         <div className="w-[70vw] h-[80vh]">
           <BentoGrid content={skills[0].bento}/>
         </div>
