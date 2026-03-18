@@ -12,58 +12,109 @@
 
 :root {
   /* --- Color palette (from Figma) --- */
-  --token-background: #F3EFE2;
-  --token-background-2: #FFFFFF;
-  --token-accent: #6A8B92;
-  --token-accent-foreground: #FFFFFF; /* text on accent (e.g. buttons) */
-  --token-foreground: #0F0F0F;       /* main text */
-  --token-foreground-secondary: #E0E0E0; /* special display heading in light mode */
+  --token-background: #f3efe2;
+  --token-background-2: #ffffff;
+  --token-accent: #6a8b92;
+  --token-accent-foreground: #ffffff; /* text on accent (e.g. buttons) */
+  --token-foreground: #0f0f0f; /* main text */
+  --token-foreground-secondary: #e0e0e0; /* special display heading in light mode */
   /* Derived (optional): border/input/ring for form controls, focus rings */
-  --token-border: #E8E4D9;
-  --token-input: #E8E4D9;
-  --token-ring: #6A8B92;
+  --token-border: #e8e4d9;
+  --token-input: #e8e4d9;
+  --token-ring: #6a8b92;
 
   /* Spacing: using Tailwind's default scale (p-1..p-96, gap-*, etc.) for flexible neo-brutalist layouts. */
 
   /* --- Typography (from Figma) --- */
 
+  /* Mobile (<640px) */
   /* Bebas Neue: display / headers */
-  --token-text-header-1: 8.375rem;   /* 134px, lh 118px, ls 2% */
-  --token-text-header-1--line-height: 7.375rem;  /* 118px */
-  --token-text-header-2: 10.75rem;   /* 172px, lh 118px, ls 2% */
-  --token-text-header-2--line-height: 7.375rem;
-  --token-text-years: 13.625rem;    /* 218px, lh 118px, ls -5% */
+  --token-text-header-1: 22vw; /* 92px, lh 76px, ls 2% */
+  --token-text-header-1--line-height: 16vw; /* 76px */
+  --token-text-header-2: 12vw; /* 124px, lh 76px, ls 2% */
+  --token-text-header-2--line-height: 8vw;
+  --token-text-years: 13.625rem; /* 218px, lh 118px, ls -5% */
   --token-text-years--line-height: 7.375rem;
-  --token-text-display-128: 8rem;    /* 128px */
-  --token-text-display-96: 6rem;     /* 96px */
-  --token-text-display-48: 3rem;     /* 48px */
-  --token-text-display-36: 2.25rem;  /* 36px */
+  --token-text-display-128: 8rem; /* 128px */
+  --token-text-display-96: 6rem; /* 96px */
+  --token-text-display-48: 3rem; /* 48px */
+  --token-text-display-36: 2.25rem; /* 36px */
 
   /* Sora */
-  --token-text-sora-32: 2rem;        /* 32px Bold */
-  --token-text-sora-24: 1.5rem;      /* 24px Extrabold */
-  --token-text-sora-18: 1.125rem;    /* 18px Light / Regular */
-  --token-text-sora-14: 0.875rem;    /* 14px Light / Regular */
-  --token-text-sora-13: 0.8125rem;   /* 13px Regular */
+  --token-text-sora-32: 2rem; /* 32px Bold */
+  --token-text-sora-24: 1.5rem; /* 24px Extrabold */
+  --token-text-sora-18: 1.125rem; /* 18px Light / Regular */
+  --token-text-sora-14: 0.875rem; /* 14px Light / Regular */
+  --token-text-sora-13: 0.8125rem; /* 13px Regular */
 
   /* Inter */
-  --token-text-inter-40: 2.5rem;     /* 40px Regular */
+  --token-text-inter-40: 2.5rem; /* 40px Regular */
 
   /* Letter spacing */
-  --token-tracking-display: 0.02em;   /* 2% for Header 1 & 2 */
-  --token-tracking-years: -0.05em;    /* -5% for Years */
+  --token-tracking-display: 0.02em; /* 2% for Header 1 & 2 */
+  --token-tracking-years: -0.05em; /* -5% for Years */
+}
+
+@media (min-width: 640px) {
+  /* sm */
+  :root {
+    --token-text-header-1: 5.75rem; /* 92px, lh 76px, ls 2% */
+    --token-text-header-1--line-height: 4.75rem; /* 76px */
+    --token-text-header-2: 7.75rem; /* 124px, lh 76px, ls 2% */
+    --token-text-header-2--line-height: 4.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  /* md */
+  :root {
+    --token-text-header-1: 6.25rem; /* 100px, lh 84px, ls 2% */
+    --token-text-header-1--line-height: 5.25rem; /* 84px */
+    --token-text-header-2: 8.25rem; /* 132px, lh 84px, ls 2% */
+    --token-text-header-2--line-height: 5.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* lg */
+  :root {
+    --token-text-header-1: 6.5rem; /* 108px, lh 92px, ls 2% */
+    --token-text-header-1--line-height: 5.5rem; /* 92px */
+    --token-text-header-2: 8.5rem; /* 140px, lh 92px, ls 2% */
+    --token-text-header-2--line-height: 5.5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  /* xl */
+  :root {
+    --token-text-header-1: 7.5rem; /* 120px, lh 104px, ls 2% */
+    --token-text-header-1--line-height: 6.5rem; /* 104px */
+    --token-text-header-2: 9.75rem; /* 156px, lh 104px, ls 2% */
+    --token-text-header-2--line-height: 6.5rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  /* 2xl */
+  :root {
+    --token-text-header-1: 8.375rem; /* 134px, lh 118px, ls 2% */
+    --token-text-header-1--line-height: 7.375rem; /* 118px */
+    --token-text-header-2: 10.75rem; /* 172px, lh 118px, ls 2% */
+    --token-text-header-2--line-height: 7.375rem;
+  }
 }
 
 .dark {
   --token-background: #121212;
-    --token-background-2: #3F3F3F;
-    --token-accent: #B2D4D8;
-    --token-accent-foreground: #0F0F0F; /* text on accent */
-    --token-foreground: #E0E0E0;
-    --token-foreground-secondary: #E0E0E0; /* matches foreground in dark mode */
-    --token-border: #2A2A2A;
-    --token-input: #2A2A2A;
-    --token-ring: #B2D4D8;
+  --token-background-2: #3f3f3f;
+  --token-accent: #b2d4d8;
+  --token-accent-foreground: #0f0f0f; /* text on accent */
+  --token-foreground: #e0e0e0;
+  --token-foreground-secondary: #e0e0e0; /* matches foreground in dark mode */
+  --token-border: #2a2a2a;
+  --token-input: #2a2a2a;
+  --token-ring: #b2d4d8;
 }
 
 /* ============== TAILWIND THEME (maps tokens → Tailwind utilities) ============== */

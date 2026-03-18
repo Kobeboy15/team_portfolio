@@ -6,12 +6,14 @@ import { ImageFrame } from "../ui/ImageFrame";
 export function HeroSection() {
   return (
     <Section id="hero" navHeight="72px">
-      <div className="flex flex-col items-start justify-start">
-        <h1 className="md:text-header-1 font-bebas">Kobe Michael</h1>
-        <h2 className="md:text-header-2 font-bebas text-accent">Front-End Developer</h2>
+      <div className="flex flex-col items-center sm:items-start justify-start pt-2 lg:pt-0">
+        <h1 className="text-header-1 tracking-display font-bebas whitespace-nowrap">Kobe Michael</h1>
+        <h2 className="text-header-2  tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap">Front-End Developer</h2>
       </div>
-      <div className="flex flex-col items-start justify-start relative top-20 left-9 w-[520px] gap-y-4">
-        <p>
+
+    <div className="flex flex-col sm:flex-row">
+      <div className="flex flex-col items-end sm:items-start justify-start  px-3 pt-20 sm:pl-9 sm:pr-5 gap-y-2 sm:gap-y-4">
+        <p className="text-sora-18 " >
           I&apos;m a software engineer with a passion for building web applications that are not only functional but also beautiful and easy to use.
         </p>
         <Button
@@ -21,9 +23,9 @@ export function HeroSection() {
               <path
                 d="M1.25 11.25L11.25 1.25M11.25 1.25H1.25M11.25 1.25V11.25"
                 stroke="currentColor"
-                stroke-width="2.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           }
@@ -32,14 +34,15 @@ export function HeroSection() {
         </Button>
       </div>
 
-      <div className="absolute top-[270px] right-[86PX] h-[580px] w-[773px]">
+      <div className="relative w-full xl:w-[773px] xl:h-[580px] xl:shrink-0 aspect-[773/580] xl:aspect-auto px-3 sm:pr-0 sm:pr-22">
         <ImageFrame 
             placement="hero"
             src="/images/hero/hero-image.webp"
             alt="Hero image"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover sm:relative sm:bottom-10"
         />
       </div>
+    </div>
     </Section>
   );
 }
