@@ -40,10 +40,14 @@ export function NavigationHeader() {
     const updateOverflow = () => {
       document.body.style.overflow = isOpen && mq.matches ? "hidden" : "";
     };
+    const handleViewportChange = () => {
+      setIsOpen(false);
+      updateOverflow();
+    }
     updateOverflow();
-    mq.addEventListener("change", updateOverflow);
+    mq.addEventListener("change", handleViewportChange);
     return () => {
-      mq.removeEventListener("change", updateOverflow);
+      mq.removeEventListener("change", handleViewportChange);
       document.body.style.overflow = "";
     };
   }, [isOpen]);
