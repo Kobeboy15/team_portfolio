@@ -58,10 +58,10 @@
 @media (min-width: 640px) {
   /* sm */
   :root {
-    --token-text-header-1: 5.75rem; /* 92px, lh 76px, ls 2% */
-    --token-text-header-1--line-height: 4.75rem; /* 76px */
-    --token-text-header-2: 7.75rem; /* 124px, lh 76px, ls 2% */
-    --token-text-header-2--line-height: 4.75rem;
+    --token-text-header-1: 5rem; /* 92px, lh 76px, ls 2% */
+    --token-text-header-1--line-height: 3.75rem; /* 76px */
+    --token-text-header-2: 5rem; /* 124px, lh 76px, ls 2% */
+    --token-text-header-2--line-height: 3.75rem;
   }
 }
 
