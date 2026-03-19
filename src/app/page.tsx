@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background font-sans">
       <NavigationHeader />
-      <main className="flex min-h-screen w-full max-w-7xl flex-col items-center justify-between bg-background py-32 px-8 sm:items-start">
+      <main className="flex min-h-screen w-full flex-col items-center justify-between sm:items-start">
         <HeroSection />
         <div className="mb-6 self-end">
           <ThemeToggle />
