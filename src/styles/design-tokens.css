@@ -58,29 +58,29 @@
 @media (min-width: 640px) {
   /* sm */
   :root {
-    --token-text-header-1: 5rem; /* 92px, lh 76px, ls 2% */
-    --token-text-header-1--line-height: 3.75rem; /* 76px */
+    --token-text-header-1: 3.75rem; /* 92px, lh 76px, ls 2% */
+    --token-text-header-1--line-height: 3rem; /* 76px */
     --token-text-header-2: 5rem; /* 124px, lh 76px, ls 2% */
-    --token-text-header-2--line-height: 3.75rem;
+    --token-text-header-2--line-height: 3.5rem;
   }
 }
 
 @media (min-width: 768px) {
   /* md */
   :root {
-    --token-text-header-1: 6.25rem; /* 100px, lh 84px, ls 2% */
-    --token-text-header-1--line-height: 5.25rem; /* 84px */
-    --token-text-header-2: 8.25rem; /* 132px, lh 84px, ls 2% */
-    --token-text-header-2--line-height: 5.25rem;
+    --token-text-header-1: 4.75rem; /* 100px, lh 84px, ls 2% */
+    --token-text-header-1--line-height: 3.75rem; /* 84px */
+    --token-text-header-2: 6rem; /* 132px, lh 84px, ls 2% */
+    --token-text-header-2--line-height: 4.25rem;
   }
 }
 
 @media (min-width: 1024px) {
   /* lg */
   :root {
-    --token-text-header-1: 6.5rem; /* 108px, lh 92px, ls 2% */
+    --token-text-header-1: 6.25rem; /* 108px, lh 92px, ls 2% */
     --token-text-header-1--line-height: 5.5rem; /* 92px */
-    --token-text-header-2: 8.5rem; /* 140px, lh 92px, ls 2% */
+    --token-text-header-2: 8.25rem; /* 140px, lh 92px, ls 2% */
     --token-text-header-2--line-height: 5.5rem;
   }
 }
