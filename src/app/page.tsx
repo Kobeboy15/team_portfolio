@@ -8,6 +8,7 @@ import { ImageFrame } from "../components/ui/ImageFrame";
 import { NavigationHeader } from "../components/ui/NavigationHeader";
 
 import { AboutSection } from "../components/sections/AboutSection";
+import { SkillsSection } from "../components/sections/SkillsSection";
 
 export default function Home() {
   return (
@@ -124,6 +125,7 @@ export default function Home() {
         </main>
       </Section>
       <AboutSection />
+      <SkillsSection />
     </div>
   );
 }
