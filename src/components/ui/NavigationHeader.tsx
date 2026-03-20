@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
@@ -107,9 +106,9 @@ export function NavigationHeader() {
               Kobe
             </span>
           ) : (
-            <Link href="/" className="text-sora-24 font-extrabold tracking-tight text-foreground">
+            <a href="#hero" className="text-sora-24 font-extrabold tracking-tight text-foreground">
               Kobe
-            </Link>
+            </a>
           )}
 
           {/* ── Desktop nav ── */}
@@ -159,13 +158,13 @@ export function NavigationHeader() {
               Kobe
             </span>
           ) : (
-            <Link
-              href="/"
+            <a
+              href="#hero"
               onClick={() => setIsOpen(false)}
               className="text-sora-24 font-extrabold tracking-tight text-foreground"
             >
               Kobe
-            </Link>
+            </a>
           )}
           <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
         </div>
