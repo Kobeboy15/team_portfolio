@@ -29,10 +29,10 @@
 
   /* Mobile (<640px) */
   /* Bebas Neue: display / headers */
-  --token-text-header-1: 22vw; /* 92px, lh 76px, ls 2% */
-  --token-text-header-1--line-height: 16vw; /* 76px */
-  --token-text-header-2: 12vw; /* 124px, lh 76px, ls 2% */
-  --token-text-header-2--line-height: 8vw;
+  --token-text-header-1: 21vw;
+  --token-text-header-1--line-height: 16vw;
+  --token-text-header-2: 11.45vw;
+  --token-text-header-2--line-height: 7.64vw;
   --token-text-years: 13.625rem; /* 218px, lh 118px, ls -5% */
   --token-text-years--line-height: 7.375rem;
   --token-text-display-128: 8rem; /* 128px */

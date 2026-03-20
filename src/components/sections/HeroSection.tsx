@@ -10,7 +10,7 @@ export function HeroSection() {
     <Section id="hero" navHeight="72px">
       <div className="flex flex-col h-full">
         {/* Hero Name and Role Phrases */}
-        <div className="flex flex-col items-center sm:items-start justify-start pt-2 lg:pt-0">
+        <div className="flex flex-col items-center sm:items-start justify-start pt-2 lg:pt-0 sm:pl-1">
           <h1 className="text-header-1 tracking-display font-bebas whitespace-nowrap">{heroData.name}</h1>
           <h2 className="text-header-2  tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap">
             {heroData.rolePhrases[0]}

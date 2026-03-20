@@ -5,7 +5,7 @@ export const heroData: HeroData = {
   rolePhrases: ["Front-End Developer", "Software Engineer"],
   bio: "I'm a software engineer with a passion for building web applications that are not only functional but also beautiful and easy to use.",
   ctaLabel: "Contact me",
-  heroImageSrc: "/images/hero/hero-image.webp",
+  heroImageSrc: "/images/hero/hero-image-kobe.webp",
   heroImageAlt: "Hero image",
 };
 
