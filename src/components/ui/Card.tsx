@@ -27,7 +27,7 @@ export type CardProps = React.PropsWithChildren<{
   /**
    * Preset size from Figma (card 1–7).
    */
-  size: CardSize;
+  size?: CardSize;
 
   /**
    * Background: solid background2, solid accent, or linear gradient (background2 → background).
@@ -47,12 +47,11 @@ export function Card({
   className,
   children,
 }: CardProps) {
-  const { width, height } = sizeDimensions[size];
+  const dimensions = size ? sizeDimensions[size] : undefined;
   const isGradient = variant === "gradient";
 
   const style: React.CSSProperties = {
-    width,
-    height,
+    ...(dimensions ? { width: dimensions.width, height: dimensions.height } : {}),
     ...(isGradient
       ? {
           background: `linear-gradient(to bottom, var(--token-background-2) 50%, var(--token-background) 100%)`,
@@ -64,6 +63,7 @@ export function Card({
     <div
       className={cn(
         "overflow-hidden rounded-[20px]",
+        !dimensions ? "w-full h-full" : undefined,
         !isGradient ? variantClassName[variant] : undefined,
         className
       )}

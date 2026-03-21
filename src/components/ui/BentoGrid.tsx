@@ -1,5 +1,7 @@
 import { BentoContent } from "@/src/types/skills";
 
+import { Card } from "./Card";
+
 const COLS = 3;
 const ROWS = 11;
 
@@ -37,14 +39,13 @@ function fillGrid(content: BentoContent[]): React.ReactElement[] {
     const cards: React.ReactElement[] = [];
 
     // TODO: placeholders, will replace with content in a later ticket
-    // TODO: switch to Card component once sizing is finalized
-    cards.push(<div key={1} style={VARIANTS.card1} className="bg-(--token-background-2) rounded-3xl flex justify-center items-center">Card 1</div>);
-    cards.push(<div key={2} style={VARIANTS.card2} className="bg-(--token-accent) rounded-3xl flex justify-center items-center">Card 2</div>);
-    cards.push(<div key={3} style={VARIANTS.card3} className="bg-(--token-background-2) rounded-3xl flex justify-center items-center">Card 3</div>);
-    cards.push(<div key={4} style={VARIANTS.card4} className="bg-(--token-background-2) rounded-3xl flex justify-center items-center">Card 4</div>);
-    cards.push(<div key={5} style={VARIANTS.card5} className="bg-(--token-background-2) rounded-3xl flex justify-center items-center">Card 5</div>);
-    cards.push(<div key={6} style={VARIANTS.card6} className="bg-(--token-background-2) rounded-3xl flex justify-center items-center">Card 6</div>);
-    cards.push(<div key={7} style={VARIANTS.card7} className="bg-(--token-accent) rounded-3xl flex justify-center items-center">Card 7</div>);
+    cards.push(<div key={1} style={VARIANTS.card1}><Card className="flex justify-center items-center">Card 1</Card></div>);
+    cards.push(<div key={2} style={VARIANTS.card2}><Card variant="accent" className="flex justify-center items-center">Card 2</Card></div>);
+    cards.push(<div key={3} style={VARIANTS.card3}><Card variant="gradient" className="flex justify-center items-center">Card 3</Card></div>);
+    cards.push(<div key={4} style={VARIANTS.card4}><Card className="flex justify-center items-center">Card 4</Card></div>);
+    cards.push(<div key={5} style={VARIANTS.card5}><Card className="flex justify-center items-center">Card 5</Card></div>);
+    cards.push(<div key={6} style={VARIANTS.card6}><Card className="flex justify-center items-center">Card 6</Card></div>);
+    cards.push(<div key={7} style={VARIANTS.card7}><Card variant="accent" className="flex justify-center items-center">Card 7</Card></div>);
 
     return cards;
 }
