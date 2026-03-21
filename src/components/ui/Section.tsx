@@ -49,7 +49,7 @@ function cx(...parts: Array<string | undefined | false>) {
 export function Section({
   id,
   children,
-  className = "pt-18 h-screen",
+  className,
   spacing = "none",
   navHeight,
   withSectionGap = false,
@@ -64,7 +64,7 @@ export function Section({
     <section
       id={id}
       style={style}
-      className={cx(spacingClassName[spacing], "pt-18 h-screen", className)}
+      className={cx(spacingClassName[spacing], "pt-18 min-h-screen", className)}
     >
       {children}
     </section>

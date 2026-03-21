@@ -10,7 +10,7 @@ export function HeroSection() {
     <Section
       id="hero"
       navHeight="72px"
-      className="pt-18 2xl:pt-(--token-hero-section-padding-top) w-full h-screen flex items-center justify-center"
+      className="pt-18 2xl:pt-(--token-hero-section-padding-top) w-full min-h-screen flex items-center justify-center"
     >
       <div className="flex flex-col w-full h-full ">
         {/* Hero Name and Role Phrases */}

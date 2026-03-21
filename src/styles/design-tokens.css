@@ -125,7 +125,7 @@
     --token-hero-image-fluid-slope: 0.5;
     --token-hero-image-max: min(92vw, 2400px);
     --token-hero-image-width: clamp(
-      773px,
+      861px, /* 773px + 88px (image right padding) */
       calc(773px + (100vw - 1536px) * var(--token-hero-image-fluid-slope)),
       var(--token-hero-image-max)
     );
