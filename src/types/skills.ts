@@ -6,17 +6,13 @@ export type Skill = {
 
 export type BentoContent =
   | {
-      type: "heading";
+      type: "heading";  // TODO: types enum?
       value: string;
-      colSpan?: number;
-      rowSpan?: number;
     }
   | {
       type: "paragraph";
       value: string;
       heading?: string,
-      colSpan?: number;
-      rowSpan?: number;
     }
   | {
       type: "image";
@@ -24,18 +20,8 @@ export type BentoContent =
       alt: string;
       heading?: string,
       caption?: string;
-      colSpan?: number;
-      rowSpan?: number;
     }
   | {
       type: "icon";
       name: string;
-      colSpan?: number;
-      rowSpan?: number;
-    }
-  | {
-      type: "decoration";
-      variant: string;
-      colSpan?: number;
-      rowSpan?: number;
     };
