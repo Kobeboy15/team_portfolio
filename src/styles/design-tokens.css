@@ -96,12 +96,73 @@
 }
 
 @media (min-width: 1536px) {
-  /* 2xl */
+  /* 2xl — fluid type above this width only; below is unchanged (sm…xl). */
+  /* Anchor: at 1536px the calc term is 0, so sizes match former fixed 8.375rem / 10.75rem. */
+  /* Knobs: --token-header-*-fluid-slope (px font per px viewport past 1536), --token-header-*-max. */
   :root {
-    --token-text-header-1: 8.375rem; /* 134px, lh 118px, ls 2% */
-    --token-text-header-1--line-height: 7.375rem; /* 118px */
-    --token-text-header-2: 10.75rem; /* 172px, lh 118px, ls 2% */
-    --token-text-header-2--line-height: 7.375rem;
+    --token-header-1-fluid-slope: 0.085;
+    --token-header-1-max: 1000rem;
+    --token-header-2-fluid-slope: 0.1107;
+    --token-header-2-max: 1000rem;
+
+    --token-text-header-1: clamp(
+      8.375rem,
+      calc(8.375rem + (100vw - 1536px) * var(--token-header-1-fluid-slope)),
+      var(--token-header-1-max)
+    ); /* 134px @ 1536px; grows then caps */
+    /* Unitless lh = 118/134 so line-height tracks font-size inside clamp */
+    --token-text-header-1--line-height: 0.880597;
+
+    --token-text-header-2: clamp(
+      10.75rem,
+      calc(10.75rem + (100vw - 1536px) * var(--token-header-2-fluid-slope)),
+      var(--token-header-2-max)
+    ); /* 172px @ 1536px */
+    /* Unitless lh = 118/172 */
+    --token-text-header-2--line-height: 0.686047;
+
+    /* Hero image — own slope knob (independent of --token-header-*-fluid-slope); anchor 773px @ 1536px. */
+    --token-hero-image-fluid-slope: 0.5;
+    --token-hero-image-max: min(92vw, 2400px);
+    --token-hero-image-width: clamp(
+      773px,
+      calc(773px + (100vw - 1536px) * var(--token-hero-image-fluid-slope)),
+      var(--token-hero-image-max)
+    );
+
+    /* Hero spacing — fluid padding 2xl+; anchors match pt-18, sm:pl-1, xl:pr-22 @ 1536px. */
+    /* Slopes: section pt, headings pl, image pr, image frame bottom — each *-fluid-slope below. */
+    --token-hero-section-padding-top-fluid-slope: 0.045;
+    --token-hero-headings-padding-left-fluid-slope: 0.0025;
+    --token-hero-image-padding-right-fluid-slope: 0.05;
+    --token-hero-section-padding-top-max: min(20rem, 12vw);
+    --token-hero-headings-padding-left-max: 2rem;
+    --token-hero-image-padding-right-max: min(20rem, 14vw);
+
+    --token-hero-section-padding-top: clamp(
+      4.5rem,
+      calc(4.5rem + (100vw - 1536px) * var(--token-hero-section-padding-top-fluid-slope)),
+      var(--token-hero-section-padding-top-max)
+    );
+    --token-hero-headings-padding-left: clamp(
+      0.25rem,
+      calc(0.25rem + (100vw - 1536px) * var(--token-hero-headings-padding-left-fluid-slope)),
+      var(--token-hero-headings-padding-left-max)
+    );
+    --token-hero-image-padding-right: clamp(
+      5.5rem,
+      calc(5.5rem + (100vw - 1536px) * var(--token-hero-image-padding-right-fluid-slope)),
+      var(--token-hero-image-padding-right-max)
+    );
+
+    /* Hero ImageFrame bottom offset — anchor matches xl:bottom-8 (2rem) @ 1536px. */
+    --token-hero-image-frame-bottom-fluid-slope: 0.02;
+    --token-hero-image-frame-bottom-max: min(20rem, 8vw);
+    --token-hero-image-frame-bottom: clamp(
+      2rem,
+      calc(2rem + (100vw - 1536px) * var(--token-hero-image-frame-bottom-fluid-slope)),
+      var(--token-hero-image-frame-bottom-max)
+    );
   }
 }
 
