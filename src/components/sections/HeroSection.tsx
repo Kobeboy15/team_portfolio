@@ -40,7 +40,7 @@ export function HeroSection() {
           </div>
 
           {/* Hero Image */}
-          <div className="relative w-full sm:w-[380px] sm:h-[450px] md:w-[420px] md:h-[500px] lg:w-[620px] lg:h-[465px] xl:w-[773px] xl:h-[580px] xl:shrink-0 aspect-773/580 xl:aspect-auto px-3 sm:px-0 lg:pr-15 xl:pr-22 2xl:w-fit 2xl:h-auto">
+          <div className="relative w-full sm:w-[380px] sm:h-[450px] md:w-[420px] md:h-[500px] lg:w-[620px] lg:h-[465px] xl:w-[773px] xl:h-[580px] xl:shrink-0 aspect-773/580 xl:aspect-auto px-3 sm:px-0 lg:pr-15 xl:pr-22 2xl:w-fit 2xl:h-auto 2xl:max-w-2/3">
             <ImageFrame
               placement="hero"
               src={heroData.heroImageSrc}
