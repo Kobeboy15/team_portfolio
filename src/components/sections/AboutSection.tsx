@@ -4,6 +4,7 @@ import { ImageFrame } from "../ui/ImageFrame";
 import { Section } from "../ui/Section";
 
 import { AboutBio } from "./AboutBio";
+import { AboutGallery } from "./AboutGallery";
 import { AboutPoints } from "./AboutPoints";
 
 export function AboutSection() {
@@ -22,15 +23,12 @@ export function AboutSection() {
             />
             <AboutPoints />
 
-            <ImageFrame
+            {/* <ImageFrame
                 placement="about-separator"
                 src={aboutData.separatorImage}
                 alt={aboutData.separatorImageAlt}
-            />
-            {/* Gallery placeholder */}
-            <div>
-                {/* TODO: Horizontal storytelling gallery goes here */}
-            </div>
+            /> */}
+            <AboutGallery />
         </div>
     </Section>
   );
