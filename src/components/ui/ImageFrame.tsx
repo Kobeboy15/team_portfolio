@@ -20,7 +20,7 @@ const placementConfig: Record<
   hero: {
     width: 773,
     height: 580,
-    sizes: "(min-width: 768px) 773px, 100vw",
+    sizes: "(min-width: 1536px) min(100vw, 2400px), (min-width: 768px) 773px, 100vw",
   },
   about: {
     width: 594,

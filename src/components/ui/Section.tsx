@@ -5,7 +5,7 @@ type SectionSpacing = "none" | "sm" | "md" | "lg";
 const spacingClassName: Record<SectionSpacing, string> = {
   none: "",
   sm: "py-10 sm:py-14",
-  md: "py-14 sm:py-20",
+  md: "py-18 sm:py-18",
   lg: "py-20 sm:py-28",
 };
 
@@ -50,7 +50,7 @@ export function Section({
   id,
   children,
   className,
-  spacing = "md",
+  spacing = "none",
   navHeight,
   withSectionGap = false,
   sectionGap = "clamp(48px, 6vw, 140px)",
@@ -64,7 +64,7 @@ export function Section({
     <section
       id={id}
       style={style}
-      className={cx(spacingClassName[spacing], className)}
+      className={cx(spacingClassName[spacing], "pt-18 min-h-screen", className)}
     >
       {children}
     </section>
