@@ -64,7 +64,7 @@ export function Section({
     <section
       id={id}
       style={style}
-      className={cx(spacingClassName[spacing], className)}
+      className={cx(spacingClassName[spacing], "pt-18 h-screen", className)}
     >
       {children}
     </section>
