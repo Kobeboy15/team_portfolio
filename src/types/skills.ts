@@ -20,10 +20,6 @@ export type BentoContent =
       value: string;
     }
   | {
-      type: "sub-heading";
-      value: string;
-    }
-  | {
       type: "paragraph";
       value: string;
       heading?: string;
