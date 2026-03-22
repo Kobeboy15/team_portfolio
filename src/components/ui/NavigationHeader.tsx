@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 import { Button } from "./Button";
 import { ThemeToggle } from "./ThemeToggle";
@@ -11,8 +11,10 @@ export function NavigationHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen((prev) => !prev);
   const [visible, setVisible] = useState(true);
+  const [isInHero, setIsInHero] = useState(false);
 
   const lastScrollY = useRef(0);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,6 +54,38 @@ export function NavigationHeader() {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const el = document.getElementById("hero");
+    if (!el) {
+      // Update state async to avoid synchronous setState warnings.
+      Promise.resolve().then(() => {
+        if (!cancelled) setIsInHero(false);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    // Hide the header "home/brand" while the hero section is visible.
+    // rootMargin accounts for the fixed header height (h-18 ~= 72px).
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInHero(entry.isIntersecting),
+      {
+        root: null,
+        threshold: 0,
+        rootMargin: "-72px 0px 0px 0px",
+      }
+    );
+
+    observer.observe(el);
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+    };
+  }, [pathname]);
+
   const navItems = ["About", "Expertise", "Projects", "Contact"];
 
   return (
@@ -63,9 +97,19 @@ export function NavigationHeader() {
       >
         <div className="flex items-center justify-between h-full px-6 md:px-16 py-4">
           {/* Home button / brand */}
-          <Link href="/" className="text-sora-24 font-extrabold tracking-tight text-foreground">
-            Kobe
-          </Link>
+          {isInHero ? (
+            <span
+              aria-hidden="true"
+              tabIndex={-1}
+              className="text-sora-24 font-extrabold tracking-tight text-foreground opacity-0"
+            >
+              Kobe
+            </span>
+          ) : (
+            <a href="#hero" className="text-sora-24 font-extrabold tracking-tight text-foreground">
+              Kobe
+            </a>
+          )}
 
           {/* ── Desktop nav ── */}
           <div className="hidden md:flex items-center">
@@ -105,9 +149,23 @@ export function NavigationHeader() {
       >
         {/* Top row — mirrors the header so brand + X stay in place */}
         <div className="flex items-center justify-between h-18 px-6 py-4 shrink-0">
-          <Link href="/" onClick={() => setIsOpen(false)} className="text-sora-24 font-extrabold tracking-tight text-foreground">
-            Kobe
-          </Link>
+          {isInHero ? (
+            <span
+              aria-hidden="true"
+              tabIndex={-1}
+              className="text-sora-24 font-extrabold tracking-tight text-foreground opacity-0"
+            >
+              Kobe
+            </span>
+          ) : (
+            <a
+              href="#hero"
+              onClick={() => setIsOpen(false)}
+              className="text-sora-24 font-extrabold tracking-tight text-foreground"
+            >
+              Kobe
+            </a>
+          )}
           <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
         </div>
 

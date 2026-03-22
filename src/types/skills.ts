@@ -12,7 +12,11 @@ export type BentoItem = {
 
 export type BentoContent =
   | {
-      type: "heading";  // TODO: types enum?
+      type: "heading"; // TODO: types enum?
+      value: string;
+    }
+  | {
+      type: "sub-heading";
       value: string;
     }
   | {
@@ -22,7 +26,7 @@ export type BentoContent =
   | {
       type: "paragraph";
       value: string;
-      heading?: string,
+      heading?: string;
     }
   | {
       type: "icon";

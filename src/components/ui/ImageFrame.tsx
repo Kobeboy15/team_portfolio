@@ -1,17 +1,16 @@
-import React from "react";
 import Image, { ImageProps } from "next/image";
 
 /**
  * Placement presets from Figma (display size). Export assets at 2x for retina.
  * Use WebP for photos; SVG for icons/illustrations.
  */
-type ImageFramePlacement =
-  | "hero"           // 773×580
-  | "about"         // 594×640
-  | "about-points"  // 594×700
+export type ImageFramePlacement =
+  | "hero" // 773×580
+  | "about" // 594×640
+  | "about-points" // 594×700
   | "about-separator" // 996×700
-  | "timeline"      // various — override with width/height/sizes
-  | "projects";    // 443×591
+  | "timeline" // various — override with width/height/sizes
+  | "projects"; // 443×591
 
 const placementConfig: Record<
   ImageFramePlacement,
@@ -20,7 +19,8 @@ const placementConfig: Record<
   hero: {
     width: 773,
     height: 580,
-    sizes: "(min-width: 768px) 773px, 100vw",
+    sizes:
+      "(min-width: 1536px) min(100vw, 2400px), (min-width: 768px) 773px, 100vw",
   },
   about: {
     width: 594,
@@ -51,7 +51,7 @@ const placementConfig: Record<
 
 export type ImageFrameProps = Omit<
   ImageProps,
-  "width" | "height" | "sizes" | "priority"
+  "width" | "height" | "sizes" | "priority" | "fill"
 > & {
   /** Preset from Figma; determines display size and responsive sizes. */
   placement: ImageFramePlacement;
@@ -86,7 +86,7 @@ export function ImageFrame({
   const width = widthOverride ?? config.width;
   const height = heightOverride ?? config.height;
   const sizes = sizesOverride ?? config.sizes;
-  const priority = priorityProp ?? (placement === "hero");
+  const priority = priorityProp ?? placement === "hero";
 
   return (
     <Image
