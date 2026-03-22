@@ -21,7 +21,7 @@ export function SkillsSection() {
                             </span>
                         </div>
                         <div className="flex justify-center items-center w-full h-full">
-                            <BentoGrid content={skill.bento}/>
+                            <BentoGrid items={skill.bento}/>
                         </div>
                     </div>
                 </div>
