@@ -5,7 +5,7 @@ type SectionSpacing = "none" | "sm" | "md" | "lg";
 const spacingClassName: Record<SectionSpacing, string> = {
   none: "",
   sm: "py-10 sm:py-14",
-  md: "py-18 sm:py-18",
+  md: "py-18",
   lg: "py-20 sm:py-28",
 };
 
@@ -70,4 +70,3 @@ export function Section({
     </section>
   );
 }
-

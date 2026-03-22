@@ -51,7 +51,7 @@ const placementConfig: Record<
 
 export type ImageFrameProps = Omit<
   ImageProps,
-  "width" | "height" | "sizes" | "priority"
+  "width" | "height" | "sizes" | "priority" | "fill"
 > & {
   /** Preset from Figma; determines display size and responsive sizes. */
   placement: ImageFramePlacement;
