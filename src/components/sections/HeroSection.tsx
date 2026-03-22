@@ -15,10 +15,14 @@ export function HeroSection() {
       <div className="flex flex-col w-full h-full ">
         {/* Hero Name and Role Phrases */}
         <div className="flex flex-col items-center sm:items-start justify-start pt-2 lg:pt-0 sm:pl-1 2xl:pl-(--token-hero-headings-padding-left)">
-          <h1 className="w-full text-header-1 tracking-display font-bebas whitespace-nowrap">{heroData.name}</h1>
-          <h2 className="w-full text-header-2  tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap">
-            {heroData.rolePhrases[0]}
-          </h2>
+          <h1 className="w-full text-header-1 tracking-display font-bebas whitespace-nowrap">
+            {heroData.name}
+          </h1>
+          {heroData.rolePhrases.length > 0 && (
+            <h2 className="w-full text-header-2  tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap">
+              {heroData.rolePhrases[0]}
+            </h2>
+          )}
         </div>
 
         {/* Hero Bio and CTA */}
@@ -28,7 +32,13 @@ export function HeroSection() {
             <Button
               href="#contact"
               icon={
-                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 13 13"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M1.25 11.25L11.25 1.25M11.25 1.25H1.25M11.25 1.25V11.25"
                     stroke="currentColor"
