@@ -7,24 +7,62 @@ export const skills: Skill[] = [
     name: "Design", 
     bento: [
       {
-        type: "heading",
-        value: "Crafting Intuitive and Impactful Digital Experiences",
+        slot: "card1",
+        content: 
+        {
+          type: "heading",
+          value: "Translating Complex Ideas into Intuitive User Experiences",
+        }
       },
       {
-        type: "paragraph",
-        value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum purus turpis, a dignissim tortor blandit sit amet. Aliquam consectetur tempor nisi et commodo. Cras auctor diam purus,",
-        heading: "Lorem Ipsum",
+        slot: "card3",
+        cardVariant: "gradient",
+        content: 
+        {
+          type: "paragraph",
+          value: "Specializing in UI/UX design with a focus on responsive, mobile-first interfaces and reusable design systems. Collaborating closely with product teams to deliver user-friendly solutions.",
+        }
       },
       {
-        type: "icon",
-        name: "Figma",
+        slot: "card4",
+        content: 
+        {
+          type: "icon",
+          icon: {
+            name: "Figma",
+            path: "images/icons/figma.svg",
+          },
+        }
       },
       {
-        type: "image",
-        src: "/images/skills/photoshop-logo.webp",
-        alt: "Image of Photoshop logo amongst other illustrative app logos",
-        heading: "Lorem Ipsum",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        slot: "card5",
+        content: 
+        {
+          type: "icon-carousel",
+          heading: "Framer, Photoshop, Wireframing",
+          icons: [
+            {
+              name: "Framer",
+              path: "images/icons/framer.svg",
+            },
+            {
+              name: "Photoshop",
+              path: "images/icons/photoshop.svg",
+            },
+            {
+              name: "Figma",
+              path: "images/icons/figma.svg",
+            },
+          ]
+        }
+      },
+      {
+        slot: "card6",
+        content: 
+        {
+          type: "sub-heading",
+          value: "Design systems · Reusable UI components · Responsive design",
+        }
       },
     ],
   },
@@ -33,24 +71,58 @@ export const skills: Skill[] = [
     name: "Development", 
     bento: [
       {
-        type: "heading",
-        value: "Crafting Intuitive and Impactful Digital Experiences",
+        slot: "card1",
+        content: 
+        {
+          type: "heading",
+          value: "Building Scalable, High-Performance Web Applications",
+        }
       },
       {
-        type: "paragraph",
-        value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum purus turpis, a dignissim tortor blandit sit amet. Aliquam consectetur tempor nisi et commodo. Cras auctor diam purus,",
-        heading: "Lorem Ipsum",
+        slot: "card7",
+        cardVariant: "gradient",
+        content: 
+        {
+          type: "paragraph",
+          value: "8+ years building modern frontend systems using React, Next.js, and TypeScript. Focused on performance, accessibility, and component-driven architecture.",
+        }
       },
       {
-        type: "icon",
-        name: "Figma",
+        slot: "card4",
+        content: 
+        {
+          type: "sub-heading",
+          value: "Web3 · REST APIs · PostgreSQL · SEO",
+        }
       },
       {
-        type: "image",
-        src: "/images/skills/photoshop-logo.webp",
-        alt: "Image of Photoshop logo amongst other illustrative app logos",
-        heading: "Lorem Ipsum",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        slot: "card6",
+        content: 
+        {
+          type: "sub-heading",
+          value: "React.js, Next.js, TypeScript, GraphQL",
+        }
+      },
+      {
+        slot: "card2",
+        content: 
+        {
+          type: "icon-carousel",
+          icons: [
+            {
+              name: "React",
+              path: "images/icons/react.svg",
+            },
+            {
+              name: "NextJS",
+              path: "images/icons/nextdotjs.svg",
+            },
+            {
+              name: "GraphQL",
+              path: "images/icons/graphql.svg",
+            },
+          ]
+        }
       },
     ],
   },
@@ -59,24 +131,51 @@ export const skills: Skill[] = [
     name: "Operations", 
     bento: [
       {
-        type: "heading",
-        value: "Crafting Intuitive and Impactful Digital Experiences",
+        slot: "card1",
+        content: 
+        {
+          type: "heading",
+          value: "Delivering Reliable Systems Across Teams and Platforms",
+        }
       },
       {
-        type: "paragraph",
-        value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum purus turpis, a dignissim tortor blandit sit amet. Aliquam consectetur tempor nisi et commodo. Cras auctor diam purus,",
-        heading: "Lorem Ipsum",
+        slot: "card3",
+        cardVariant: "gradient",
+        content: 
+        {
+          type: "paragraph",
+          value: "Experienced in cross-functional collaboration with designers, backend engineers, and product teams. Driving performance optimization and maintainable code standards at scale.",
+        }
       },
       {
-        type: "icon",
-        name: "Figma",
+        slot: "card6",
+        content: 
+        {
+          type: "sub-heading",
+          value: "Performance optimization · Accessibility · CMS integration",
+        }
       },
       {
-        type: "image",
-        src: "/images/skills/photoshop-logo.webp",
-        alt: "Image of Photoshop logo amongst other illustrative app logos",
-        heading: "Lorem Ipsum",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        slot: "card5",
+        content: 
+        {
+          type: "icon-carousel",
+          heading: "Vue.js, Tailwind CSS, JavaScript, REST APIs",
+          icons: [
+            {
+              name: "Vue",
+              path: "images/icons/vuedotjs.svg",
+            },
+            {
+              name: "Tailwind",
+              path: "images/icons/tailwindcss.svg",
+            },
+            {
+              name: "Javascript",
+              path: "images/icons/javascript.svg",
+            },
+          ]
+        }
       },
     ],
   },
