@@ -12,10 +12,10 @@ type GallerySeparatorProps = {
 function GallerySeparator({ src, alt }: GallerySeparatorProps) {
   return (
     <section
-      className="w-full"
+      className="relative h-dvh w-[min(70vw,50rem)] shrink-0 overflow-hidden"
       aria-label={alt}
     >
-      <div className="relative min-h-dvh w-full overflow-hidden">
+      <div className="relative h-full w-full overflow-hidden">
         <ImageFrame
           placement="about-gallery-hero"
           src={src}
@@ -48,26 +48,26 @@ function GalleryWall({
   return (
     <section
       className={cn(
-        "flex min-h-dvh w-full flex-col text-foreground",
+        "flex h-dvh w-max min-h-0 shrink-0 flex-col text-foreground",
         "px-6 md:px-12",
         backgroundClassName,
       )}
       aria-labelledby={labelId}
     >
-      <div className="flex flex-1 flex-col gap-10 py-10 md:gap-12 md:py-12 items-center">
+      <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center gap-8 py-10 md:gap-12 md:py-12">
         {items.map((item, index) => (
           <article
             key={`${item.src}-${index}`}
-            className="flex max-w-lg flex-col gap-3"
+            className="flex max-w-lg flex-col gap-3 sm:flex-row sm:items-start sm:gap-4"
           >
             <ImageFrame
               placement="timeline"
               src={item.src}
               alt={item.alt}
-              className="h-auto w-full shadow-md"
+              className="h-auto w-full max-w-[min(100%,28rem)] shrink-0 shadow-md sm:w-auto"
             />
             {item.caption ? (
-              <p className="text-sora-13 font-light leading-relaxed">
+              <p className="max-w-xs text-sora-13 font-light leading-relaxed sm:max-w-[14rem] sm:pt-1">
                 {item.caption}
               </p>
             ) : null}
@@ -127,7 +127,7 @@ const galleryTestData = {
     {
       label: "Second hall",
       labelId: "about-gallery-wall-second-hall",
-      backgroundClassName: "bg-background",
+      backgroundClassName: "bg-background-2",
       items: [
         {
           src: `${TIMELINE_BASE}/timeline-2024-01.webp`,
@@ -157,7 +157,9 @@ export function AboutGallery() {
   const [wallA, wallB] = galleryTestData.walls;
 
   return (
-    <div className="flex w-full flex-col">
+    <div
+      className="flex h-dvh min-h-dvh w-full max-w-none flex-row flex-nowrap overflow-x-auto overflow-y-hidden [scrollbar-gutter:stable]"
+    >
       <GallerySeparator src={sepA.src} alt={sepA.alt} />
       <GalleryWall
         label={wallA.label}

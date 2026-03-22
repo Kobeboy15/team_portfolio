@@ -9,9 +9,8 @@ import { AboutPoints } from "./AboutPoints";
 
 export function AboutSection() {
   return (
-    <Section id="about" spacing="lg">
-        {/* TODO: Implement horizontal scrolling */}
-        <div className="horizontal-scroll">
+    <Section id="about" spacing="lg" className="w-full max-w-none">
+        <div className="w-full self-stretch">
             {/* Heading + Bio */}
             <AboutBio />
 
