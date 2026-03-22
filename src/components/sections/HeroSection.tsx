@@ -19,7 +19,7 @@ export function HeroSection() {
             {heroData.name}
           </h1>
           {heroData.rolePhrases.length > 0 && (
-            <h2 className="w-full text-header-2  tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap">
+            <h2 className="w-full text-header-2 tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap">
               {heroData.rolePhrases[0]}
             </h2>
           )}
