@@ -1,24 +1,24 @@
 export type Skill = {
   order: number;
-  name: string;            // ie. "Design"
+  name: string; // ie. "Design"
   bento: BentoContent[];
-}
+};
 
 export type BentoContent =
   | {
-      type: "heading";  // TODO: types enum?
+      type: "heading"; // TODO: types enum?
       value: string;
     }
   | {
       type: "paragraph";
       value: string;
-      heading?: string,
+      heading?: string;
     }
   | {
       type: "image";
       src: string;
       alt: string;
-      heading?: string,
+      heading?: string;
       caption?: string;
     }
   | {

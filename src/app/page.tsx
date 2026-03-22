@@ -15,9 +15,6 @@ export default function Home() {
       <NavigationHeader />
       <main className="flex min-h-screen w-full flex-col items-center justify-between">
         <HeroSection />
-        <div className="mb-6 self-end">
-          <ThemeToggle />
-        </div>
 
         {/* Temporary section for testing the Button component */}
         <section className="mt-10 flex w-full flex-col gap-4 border-t border-border pt-8">
