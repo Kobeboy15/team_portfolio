@@ -23,9 +23,9 @@ export default function Home() {
         <HeadingTestSection />
         <CardTestSection />
         <ImageFrameTestSection /> */}
+        <AboutSection />
+        <SkillsSection />
       </main>
-      <AboutSection />
-      <SkillsSection />
     </div>
   );
 }
