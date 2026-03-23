@@ -1,4 +1,8 @@
 import { ImageFrame } from "../ui/ImageFrame";
+import {
+  AboutGallerySlide,
+  type AboutSlide,
+} from "./AboutGallerySlide";
 
 function cn(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
@@ -15,7 +19,7 @@ function GallerySeparator({ src, alt }: GallerySeparatorProps) {
       className="relative h-dvh w-[min(70vw,50rem)] shrink-0 overflow-hidden"
       aria-label={alt}
     >
-      <div className="relative h-full w-full overflow-hidden">
+      <div className="relative h-screen w-full overflow-hidden">
         <ImageFrame
           placement="about-gallery-hero"
           src={src}
@@ -26,17 +30,11 @@ function GallerySeparator({ src, alt }: GallerySeparatorProps) {
   );
 }
 
-export type GalleryWallItem = {
-  src: string;
-  alt: string;
-  caption?: string;
-};
-
 type GalleryWallProps = {
   label: string;
   labelId: string;
   backgroundClassName: string;
-  items: GalleryWallItem[];
+  items: AboutSlide[];
 };
 
 function GalleryWall({
@@ -55,23 +53,11 @@ function GalleryWall({
       aria-labelledby={labelId}
     >
       <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center gap-8 py-10 md:gap-12 md:py-12">
-        {items.map((item, index) => (
-          <article
-            key={`${item.src}-${index}`}
-            className="flex max-w-lg flex-col gap-3 sm:flex-row sm:items-start sm:gap-4"
-          >
-            <ImageFrame
-              placement="timeline"
-              src={item.src}
-              alt={item.alt}
-              className="h-auto w-full max-w-[min(100%,28rem)] shrink-0 shadow-md sm:w-auto"
-            />
-            {item.caption ? (
-              <p className="max-w-xs text-sora-13 font-light leading-relaxed sm:max-w-[14rem] sm:pt-1">
-                {item.caption}
-              </p>
-            ) : null}
-          </article>
+        {items.map((slide, index) => (
+          <AboutGallerySlide
+            key={`${slide.image}-${index}`}
+            {...slide}
+          />
         ))}
       </div>
       <h2
@@ -107,22 +93,30 @@ const galleryTestData = {
       backgroundClassName: "bg-background-2",
       items: [
         {
-          src: `${TIMELINE_BASE}/timeline-2023-01.webp`,
-          alt: "Gallery photograph",
-          caption:
+          image: `${TIMELINE_BASE}/timeline-2023-01.webp`,
+          imageAlt: "Gallery photograph",
+          title: "Opening wall",
+          description:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.",
+          year: "2023",
         },
         {
-          src: `${TIMELINE_BASE}/timeline-2023-03.webp`,
-          alt: "Gallery photograph",
+          image: `${TIMELINE_BASE}/timeline-2023-03.webp`,
+          imageAlt: "Gallery photograph",
+          title: "North light",
+          description:
+            "Placeholder copy for a slide without a prior caption; replace when content is ready.",
+          year: "2023",
         },
         {
-          src: `${TIMELINE_BASE}/IMG_0569.webp`,
-          alt: "Gallery photograph",
-          caption:
+          image: `${TIMELINE_BASE}/IMG_0569.webp`,
+          imageAlt: "Gallery photograph",
+          title: "Evening walk",
+          description:
             "Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.",
+          year: "2023",
         },
-      ] satisfies GalleryWallItem[],
+      ] satisfies AboutSlide[],
     },
     {
       label: "Second hall",
@@ -130,27 +124,41 @@ const galleryTestData = {
       backgroundClassName: "bg-background-2",
       items: [
         {
-          src: `${TIMELINE_BASE}/timeline-2024-01.webp`,
-          alt: "Gallery photograph",
+          image: `${TIMELINE_BASE}/timeline-2024-01.webp`,
+          imageAlt: "Gallery photograph",
+          title: "Spring corridor",
+          description:
+            "Placeholder copy for a slide without a prior caption; replace when content is ready.",
+          year: "2024",
         },
         {
-          src: `${TIMELINE_BASE}/timeline-2024-03.webp`,
-          alt: "Gallery photograph",
-          caption:
+          image: `${TIMELINE_BASE}/timeline-2024-03.webp`,
+          imageAlt: "Gallery photograph",
+          title: "Studio notes",
+          description:
             "Auctor augue mauris augue neque gravida in fermentum et sollicitudin.",
+          year: "2024",
         },
         {
-          src: `${TIMELINE_BASE}/IMG_0610.webp`,
-          alt: "Gallery photograph",
+          image: `${TIMELINE_BASE}/IMG_0610.webp`,
+          imageAlt: "Gallery photograph",
+          title: "City rhythm",
+          description:
+            "Placeholder copy for a slide without a prior caption; replace when content is ready.",
+          year: "2024",
         },
         {
-          src: `${TIMELINE_BASE}/IMG_0586.webp`,
-          alt: "Gallery photograph",
+          image: `${TIMELINE_BASE}/IMG_0586.webp`,
+          imageAlt: "Gallery photograph",
+          title: "Late train",
+          description:
+            "Placeholder copy for a slide without a prior caption; replace when content is ready.",
+          year: "2024",
         },
-      ] satisfies GalleryWallItem[],
+      ] satisfies AboutSlide[],
     },
   ],
-} as const;
+};
 
 export function AboutGallery() {
   const [sepA, sepB] = galleryTestData.separators;

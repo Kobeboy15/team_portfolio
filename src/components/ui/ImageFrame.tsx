@@ -95,7 +95,7 @@ export function ImageFrame({
         priority={priority}
         placeholder={placeholder}
         blurDataURL={blurDataURL}
-        className={cn("object-cover", className)}
+        className={cn("object-cover h-full w-full", className)}
         {...rest}
       />
     );
