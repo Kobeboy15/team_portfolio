@@ -60,14 +60,14 @@ function GalleryWall({
           />
         ))}
       </div>
-      <h2
+      {/* <h2
         id={labelId}
         className={cn(
           "shrink-0 pb-8 font-bebas uppercase text-years leading-(--text-years--line-height) tracking-years md:pb-12",
         )}
       >
         {label}
-      </h2>
+      </h2> */}
     </section>
   );
 }
@@ -78,11 +78,11 @@ const TIMELINE_BASE = "/images/about/timeline";
 const galleryTestData = {
   separators: [
     {
-      src: `${TIMELINE_BASE}/timeline-2023-02.webp`,
+      src: `${TIMELINE_BASE}/IMG_0612.webp`,
       alt: "Full-width photograph separating gallery sections",
     },
     {
-      src: `${TIMELINE_BASE}/timeline-2024-02.webp`,
+      src: `${TIMELINE_BASE}/IMG_0610.webp`,
       alt: "Full-width photograph separating gallery sections",
     },
   ],
@@ -93,7 +93,7 @@ const galleryTestData = {
       backgroundClassName: "bg-background-2",
       items: [
         {
-          image: `${TIMELINE_BASE}/timeline-2023-01.webp`,
+          image: `${TIMELINE_BASE}/IMG_0573.webp`,
           imageAlt: "Gallery photograph",
           title: "Opening wall",
           description:
@@ -101,15 +101,7 @@ const galleryTestData = {
           year: "2023",
         },
         {
-          image: `${TIMELINE_BASE}/timeline-2023-03.webp`,
-          imageAlt: "Gallery photograph",
-          title: "North light",
-          description:
-            "Placeholder copy for a slide without a prior caption; replace when content is ready.",
-          year: "2023",
-        },
-        {
-          image: `${TIMELINE_BASE}/IMG_0569.webp`,
+          image: `${TIMELINE_BASE}/IMG_0616.webp`,
           imageAlt: "Gallery photograph",
           title: "Evening walk",
           description:
