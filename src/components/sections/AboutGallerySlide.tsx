@@ -41,7 +41,7 @@ export function AboutGallerySlide({ title, description, image, imageAlt, year, c
         className,
       )}
     >
-      <ImageFrame placement="timeline" src={image} alt={imageAlt} className="h-full max-h-[60vh] w-auto sm:h-auto sm:w-auto sm:max-h-[70vh] shrink-0 shadow-md " />
+      <ImageFrame placement="timeline" src={image} alt={imageAlt} className="h-full max-h-[60vh] w-auto sm:h-auto sm:w-auto sm:max-h-[70vh] sm:max-w-[60vw] shrink-0 shadow-md " />
 
       <div className="flex w-full shrink-0 flex-col gap-2 sm:h-full sm:min-h-0 sm:w-[180px] sm:gap-0">
         <div aria-hidden className="hidden shrink-0 sm:block" style={{ height: topSpacerPx }} />

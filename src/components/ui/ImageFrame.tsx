@@ -41,7 +41,7 @@ const placementConfig: Record<
   timeline: {
     width: 600,
     height: 400,
-    sizes: "(min-width: 768px) 600px, 100vw",
+    sizes: "(min-width: 1536px) min(50vw, 2400px), (min-width: 768px) 600px, 90vw",
   },
   projects: {
     width: 443,
