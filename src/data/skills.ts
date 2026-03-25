@@ -19,6 +19,7 @@ export const skills: Skill[] = [
         content: 
         {
           type: "paragraph",
+          heading: "Responsive UI/UX Design",
           value: "Specializing in UI/UX design with a focus on responsive, mobile-first interfaces and reusable design systems. Collaborating closely with product teams to deliver user-friendly solutions.",
         }
       },
@@ -39,6 +40,7 @@ export const skills: Skill[] = [
         {
           type: "icon-carousel",
           heading: "Framer, Photoshop, Wireframing",
+          caption: "Designing and prototyping interfaces with modern tools to rapidly iterate, refine user flows, and deliver polished visual experiences.",
           icons: [
             {
               name: "Framer",
@@ -143,6 +145,7 @@ export const skills: Skill[] = [
         content: 
         {
           type: "paragraph",
+          heading: "Performance & Collaboration",
           value: "Experienced in cross-functional collaboration with designers, backend engineers, and product teams. Driving performance optimization and maintainable code standards at scale.",
         }
       },
@@ -160,6 +163,7 @@ export const skills: Skill[] = [
         {
           type: "icon-carousel",
           heading: "Vue.js, Tailwind CSS, JavaScript, REST APIs",
+          caption: "Building and integrating scalable frontends with modern frameworks and APIs to ensure performance, consistency, and maintainability.",
           icons: [
             {
               name: "Vue",

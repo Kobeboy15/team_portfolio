@@ -12,7 +12,7 @@ export function SkillsSection() {
             skills.map((skill) => (
                 <div key={skill.order} className="w-full mb-7 md:mb-0 md:h-screen pr-2 flex justify-end md:justify-center items-start md:items-center">
                     <div className="relative w-full md:w-[75vw] md:mx-auto md:h-[90vh]">
-                        { /* TODO: style proplerly*/}
+                        { /* TODO: style proplerly during mobile responsiveness ticket*/}
                         <div className="flex md:hidden flex-row items-baseline gap-1 mb-3 font-bebas text-display-48 leading-none mt-10 mx-5">
                             <span>{String(skill.order).padStart(2, '0')}</span>
                             <span className="text-(--token-accent)">{skill.name.toUpperCase()}</span>

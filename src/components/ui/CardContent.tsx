@@ -19,7 +19,7 @@ export function CardContent({ content }: { content: BentoContent }) {
       return <div className="font-sora font-bold text-(--token-accent) w-full h-full flex justify-center items-center p-2 md:p-5 text-sm md:text-base lg:text-lg">{content.value}</div>;
     case "paragraph":
       return (
-            <div className="font-sora flex flex-col px-2 md:px-[0.75em] py-2 md:py-[1.25em] text-sm md:text-base lg:text-lg">
+            <div className="font-sora flex flex-col px-2 md:px-[0.75em] py-2 md:py-[2.25em] text-sm md:text-base lg:text-lg">
                 {content.heading && <h3 className="text-(--token-accent) mb-2">{content.heading}</h3>}
                 <p className="text-(--token-foreground)">{content.value}</p>
             </div>
@@ -43,8 +43,8 @@ export function CardContent({ content }: { content: BentoContent }) {
                     ))}
                 </div>
                 {(content.heading || content.caption) &&
-                <div className="p-2 md:p-10 font-sora text-sm md:text-base lg:text-lg">
-                    {content.heading && <h3 className="text-(--token-accent)">{content.heading}</h3>}
+                <div className="font-sora flex flex-col px-2 md:px-[0.75em] py-2 md:py-[2.25em] text-sm md:text-base lg:text-lg">
+                    {content.heading && <h3 className="text-(--token-accent) mb-2">{content.heading}</h3>}
                     {content.caption && <p className="text-(--token-foreground)">{content.caption}</p>}
                 </div>
                 }
