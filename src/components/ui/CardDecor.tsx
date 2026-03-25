@@ -8,7 +8,7 @@ export function CardDecor({ slot }: { slot: keyof typeof VARIANTS }) {
     case "card1":
     case "card4":
     case "card6":
-        return <div className="font-bebas text-[0.9rem] md:text-display-36 bg-(--token-background-2) text-(--token-accent) w-full h-full flex justify-center items-center">코비 마이클</div>;
+        return <div className="font-bebas bg-(--token-background-2) text-(--token-accent) w-full h-full flex justify-center items-center text-lg md:text-4xl">코비 마이클</div>;
     case "card7":
     case "card3":
         return (

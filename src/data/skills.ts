@@ -1,6 +1,5 @@
 import type { Skill } from "../types/skills";
 
-// PLACEHOLDER DATA
 export const skills: Skill[] = [
   { 
     order: 1,
