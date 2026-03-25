@@ -4,13 +4,13 @@ import { ImageFrame } from "../ui/ImageFrame";
 import { Section } from "../ui/Section";
 
 import { AboutBio } from "./AboutBio";
+import { AboutGallery } from "./AboutGallery";
 import { AboutPoints } from "./AboutPoints";
 
 export function AboutSection() {
   return (
-    <Section id="about" spacing="lg">
-        {/* TODO: Implement horizontal scrolling */}
-        <div className="horizontal-scroll">
+    <Section id="about" spacing="lg" className="w-full max-w-none">
+        <div className="w-full self-stretch">
             {/* Heading + Bio */}
             <AboutBio />
 
@@ -22,15 +22,12 @@ export function AboutSection() {
             />
             <AboutPoints />
 
-            <ImageFrame
+            {/* <ImageFrame
                 placement="about-separator"
                 src={aboutData.separatorImage}
                 alt={aboutData.separatorImageAlt}
-            />
-            {/* Gallery placeholder */}
-            <div>
-                {/* TODO: Horizontal storytelling gallery goes here */}
-            </div>
+            /> */}
+            <AboutGallery />
         </div>
     </Section>
   );
