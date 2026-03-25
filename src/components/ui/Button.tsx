@@ -41,11 +41,15 @@ export function Button({
   const content = (
     <>
       {children}
-      {icon ? <span className="inline-flex shrink-0" aria-hidden>{icon}</span> : null}
+      {icon ? (
+        <span className="inline-flex shrink-0" aria-hidden>
+          {icon}
+        </span>
+      ) : null}
     </>
   );
 
-  if (href !== undefined && href !== null) {
+  if (href !== undefined) {
     const linkClassName = cn(baseClassName, className);
     const anchorRest = rest as React.AnchorHTMLAttributes<HTMLAnchorElement>;
     if (isInternalHref(href)) {

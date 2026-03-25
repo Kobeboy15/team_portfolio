@@ -1,6 +1,4 @@
-import React from "react";
-
-type HeadingSize =
+export type HeadingSize =
   | "hero-1" // 134px, tracking +2%
   | "hero-2" // 172px, tracking +2%
   | "display-128" // 128px
@@ -8,9 +6,9 @@ type HeadingSize =
   | "display-48" // 48px
   | "years"; // 218px, tracking -5%
 
-type HeadingTone = "foreground" | "accent" | "foreground-secondary";
+export type HeadingTone = "foreground" | "accent" | "foreground-secondary";
 
-type HeadingAs = "h1" | "h2" | "h3" | "h4" | "p" | "span";
+export type HeadingAs = "h1" | "h2" | "h3" | "h4" | "p" | "span";
 
 export type HeadingProps = {
   /**
@@ -40,8 +38,10 @@ function cx(...parts: Array<string | undefined | false>) {
 }
 
 const sizeClassName: Record<HeadingSize, string> = {
-  "hero-1": "text-header-1 leading-[var(--text-header-1--line-height)] tracking-display",
-  "hero-2": "text-header-2 leading-[var(--text-header-2--line-height)] tracking-display",
+  "hero-1":
+    "text-header-1 leading-[var(--text-header-1--line-height)] tracking-display",
+  "hero-2":
+    "text-header-2 leading-[var(--text-header-2--line-height)] tracking-display",
   years: "text-years leading-[var(--text-years--line-height)] tracking-years",
   "display-128": "text-display-128",
   "display-96": "text-display-96",
@@ -67,11 +67,10 @@ export function Heading({
         "font-bebas uppercase",
         sizeClassName[size],
         toneClassName[tone],
-        className
+        className,
       )}
     >
       {children}
     </Component>
   );
 }
-
