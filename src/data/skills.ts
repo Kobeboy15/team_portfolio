@@ -30,7 +30,7 @@ export const skills: Skill[] = [
           type: "icon",
           icon: {
             name: "Figma",
-            path: "images/icons/figma.svg",
+            path: "/images/icons/figma.svg",
           },
         }
       },
@@ -44,15 +44,15 @@ export const skills: Skill[] = [
           icons: [
             {
               name: "Framer",
-              path: "images/icons/framer.svg",
+              path: "/images/icons/framer.svg",
             },
             {
               name: "Photoshop",
-              path: "images/icons/photoshop.svg",
+              path: "/images/icons/photoshop.svg",
             },
             {
               name: "Figma",
-              path: "images/icons/figma.svg",
+              path: "/images/icons/figma.svg",
             },
           ]
         }
@@ -112,15 +112,15 @@ export const skills: Skill[] = [
           icons: [
             {
               name: "React",
-              path: "images/icons/react.svg",
+              path: "/images/icons/react.svg",
             },
             {
               name: "NextJS",
-              path: "images/icons/nextdotjs.svg",
+              path: "/images/icons/nextdotjs.svg",
             },
             {
               name: "GraphQL",
-              path: "images/icons/graphql.svg",
+              path: "/images/icons/graphql.svg",
             },
           ]
         }
@@ -167,15 +167,15 @@ export const skills: Skill[] = [
           icons: [
             {
               name: "Vue",
-              path: "images/icons/vuedotjs.svg",
+              path: "/images/icons/vuedotjs.svg",
             },
             {
               name: "Tailwind",
-              path: "images/icons/tailwindcss.svg",
+              path: "/images/icons/tailwindcss.svg",
             },
             {
               name: "Javascript",
-              path: "images/icons/javascript.svg",
+              path: "/images/icons/javascript.svg",
             },
           ]
         }
