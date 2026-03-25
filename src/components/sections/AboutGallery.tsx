@@ -31,28 +31,40 @@ function GallerySeparator({ src, alt }: GallerySeparatorProps) {
 }
 
 type GalleryWallProps = {
-  label: string;
-  labelId: string;
+  year: string;
+  yearId: string;
   backgroundClassName: string;
   items: AboutSlide[];
 };
 
 function GalleryWall({
-  label,
-  labelId,
+  year,
+  yearId,
   backgroundClassName,
   items,
 }: GalleryWallProps) {
   return (
     <section
       className={cn(
-        "flex h-dvh w-max min-h-0 shrink-0 flex-col text-foreground",
-        "px-6 md:px-12",
+        "flex relative h-dvh w-max min-h-0 shrink-0 flex-row items-center text-foreground",
+        "pl-6 pr-16 gap-16",
         backgroundClassName,
       )}
-      aria-labelledby={labelId}
+      aria-labelledby={yearId}
     >
-      <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center gap-8 py-10 md:gap-12 md:py-12">
+
+      {/* Space for the year (absolute position) */}
+      <div className="block w-[305px]"></div>
+      <h2
+        id={yearId}
+        className={cn(
+          "absolute bottom-0 pb-6 shrink-0 font-bebas uppercase text-years leading-(--text-years--line-height) tracking-years",
+        )}
+      >
+        {year}
+      </h2>
+      
+      <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center gap-24 py-10 md:gap-12 md:py-12">
         {items.map((slide, index) => (
           <AboutGallerySlide
             key={`${slide.image}-${index}`}
@@ -60,14 +72,6 @@ function GalleryWall({
           />
         ))}
       </div>
-      {/* <h2
-        id={labelId}
-        className={cn(
-          "shrink-0 pb-8 font-bebas uppercase text-years leading-(--text-years--line-height) tracking-years md:pb-12",
-        )}
-      >
-        {label}
-      </h2> */}
     </section>
   );
 }
@@ -78,22 +82,22 @@ const TIMELINE_BASE = "/images/about/timeline";
 const galleryTestData = {
   separators: [
     {
-      src: `${TIMELINE_BASE}/IMG_0612.webp`,
+      src: `${TIMELINE_BASE}/IMG_0629.webp`,
       alt: "Full-width photograph separating gallery sections",
     },
     {
-      src: `${TIMELINE_BASE}/IMG_0610.webp`,
+      src: `${TIMELINE_BASE}/IMG_0637.webp`,
       alt: "Full-width photograph separating gallery sections",
     },
   ],
   walls: [
     {
-      label: "First hall",
-      labelId: "about-gallery-wall-first-hall",
+      year: "2023",
+      yearId: "about-gallery-wall-first-hall",
       backgroundClassName: "bg-background-2",
       items: [
         {
-          image: `${TIMELINE_BASE}/IMG_0573.webp`,
+          image: `${TIMELINE_BASE}/IMG_0610.webp`,
           imageAlt: "Gallery photograph",
           title: "Opening wall",
           description:
@@ -111,12 +115,12 @@ const galleryTestData = {
       ] satisfies AboutSlide[],
     },
     {
-      label: "Second hall",
-      labelId: "about-gallery-wall-second-hall",
+      year: "2024",
+      yearId: "about-gallery-wall-second-hall",
       backgroundClassName: "bg-background-2",
       items: [
         {
-          image: `${TIMELINE_BASE}/timeline-2024-01.webp`,
+          image: `${TIMELINE_BASE}/IMG_0620.webp`,
           imageAlt: "Gallery photograph",
           title: "Spring corridor",
           description:
@@ -124,7 +128,7 @@ const galleryTestData = {
           year: "2024",
         },
         {
-          image: `${TIMELINE_BASE}/timeline-2024-03.webp`,
+          image: `${TIMELINE_BASE}/IMG_0608.webp`,
           imageAlt: "Gallery photograph",
           title: "Studio notes",
           description:
@@ -132,7 +136,7 @@ const galleryTestData = {
           year: "2024",
         },
         {
-          image: `${TIMELINE_BASE}/IMG_0610.webp`,
+          image: `${TIMELINE_BASE}/IMG_0625.webp`,
           imageAlt: "Gallery photograph",
           title: "City rhythm",
           description:
@@ -162,15 +166,15 @@ export function AboutGallery() {
     >
       <GallerySeparator src={sepA.src} alt={sepA.alt} />
       <GalleryWall
-        label={wallA.label}
-        labelId={wallA.labelId}
+        year={wallA.year}
+        yearId={wallA.yearId}
         backgroundClassName={wallA.backgroundClassName}
         items={[...wallA.items]}
       />
       <GallerySeparator src={sepB.src} alt={sepB.alt} />
       <GalleryWall
-        label={wallB.label}
-        labelId={wallB.labelId}
+        year={wallB.year}
+        yearId={wallB.yearId}
         backgroundClassName={wallB.backgroundClassName}
         items={[...wallB.items]}
       />

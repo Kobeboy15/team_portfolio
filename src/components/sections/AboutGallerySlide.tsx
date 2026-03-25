@@ -60,20 +60,12 @@ export function AboutGallerySlide({ title, description, image, imageAlt, classNa
     <div className="flex shrink-0 flex-col gap-2">
       <h3 className="font-bebas text-xl uppercase tracking-wide text-foreground">{title}</h3>
 
-      <p className="text-sora-13 font-light leading-relaxed">{description}</p>
+      <p className="text-sora-14 font-light leading-relaxed">{description}</p>
     </div>
   );
 
   return (
-    <article
-      className={cn(
-        "flex flex-col gap-3 sm:flex-row items-center sm:gap-4 max-w-[90vw]",
-
-        ARTICLE_ALIGN_CLASS[articleAlign],
-
-        className,
-      )}
-    >
+    <article className={cn("flex flex-col gap-3 sm:flex-row items-center sm:gap-4 max-w-[90vw]", ARTICLE_ALIGN_CLASS[articleAlign], className)}>
       <ImageFrame
         placement="timeline"
         src={image}
@@ -85,17 +77,13 @@ export function AboutGallerySlide({ title, description, image, imageAlt, classNa
         {spacerOnBottom ? (
           <>
             <div aria-hidden className="hidden min-h-0 shrink-0 sm:block sm:flex-1" />
-
             {copyBlock}
-
             <div aria-hidden className="hidden shrink-0 sm:block" style={{ height: topSpacerPx }} />
           </>
         ) : (
           <>
             <div aria-hidden className="hidden shrink-0 sm:block" style={{ height: topSpacerPx }} />
-
             {copyBlock}
-
             <div aria-hidden className="hidden min-h-4 shrink-0 sm:block sm:flex-1" />
           </>
         )}
