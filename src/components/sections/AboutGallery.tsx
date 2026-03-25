@@ -19,7 +19,7 @@ function GallerySeparator({ src, alt }: GallerySeparatorProps) {
       className="relative h-dvh w-[min(70vw,50rem)] shrink-0 overflow-hidden"
       aria-label={alt}
     >
-      <div className="relative h-screen w-full overflow-hidden">
+      <div className="relative h-full w-full overflow-hidden">
         <ImageFrame
           placement="about-gallery-hero"
           src={src}

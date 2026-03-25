@@ -70,7 +70,7 @@ export function AboutGallerySlide({ title, description, image, imageAlt, classNa
         placement="timeline"
         src={image}
         alt={imageAlt}
-        className="h-full max-h-[60vh] w-auto sm:h-auto sm:w-auto sm:max-h-[70vh] sm:max-w-[60vw] sm:self-start shrink-0 shadow-xl "
+        className="h-full max-h-[60vh] w-auto sm:h-auto sm:w-auto sm:max-h-[70vh] sm:max-w-[60vw] sm:self-start shrink-0 shadow-xl"
       />
 
       <div className="flex w-full shrink-0 flex-col gap-2 sm:h-full sm:min-h-0 sm:w-[180px] sm:gap-0">
