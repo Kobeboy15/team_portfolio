@@ -1,8 +1,5 @@
 import { ImageFrame } from "../ui/ImageFrame";
-import {
-  AboutGallerySlide,
-  type AboutSlide,
-} from "./AboutGallerySlide";
+import { AboutGallerySlide, type AboutSlide } from "./AboutGallerySlide";
 
 function cn(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
@@ -11,9 +8,10 @@ function cn(...classes: (string | undefined)[]): string {
 type GallerySeparatorProps = {
   src: string;
   alt: string;
+  priority: boolean;
 };
 
-function GallerySeparator({ src, alt }: GallerySeparatorProps) {
+function GallerySeparator({ src, alt, priority }: GallerySeparatorProps) {
   return (
     <section
       className="relative h-dvh w-[min(70vw,50rem)] shrink-0 overflow-hidden"
@@ -24,6 +22,8 @@ function GallerySeparator({ src, alt }: GallerySeparatorProps) {
           placement="about-gallery-hero"
           src={src}
           alt={alt}
+          sizes="min(70vw, 50rem)"
+          priority={priority}
         />
       </div>
     </section>
@@ -52,7 +52,6 @@ function GalleryWall({
       )}
       aria-labelledby={yearId}
     >
-
       {/* Space for the year (absolute position) */}
       <div className="block w-[305px]"></div>
       <h2
@@ -63,13 +62,10 @@ function GalleryWall({
       >
         {year}
       </h2>
-      
+
       <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center gap-24 py-10 md:gap-12 md:py-12">
         {items.map((slide, index) => (
-          <AboutGallerySlide
-            key={`${slide.image}-${index}`}
-            {...slide}
-          />
+          <AboutGallerySlide key={`${slide.image}-${index}`} {...slide} />
         ))}
       </div>
     </section>
@@ -161,10 +157,8 @@ export function AboutGallery() {
   const [wallA, wallB] = galleryTestData.walls;
 
   return (
-    <div
-      className="flex h-dvh min-h-dvh w-full max-w-none flex-row flex-nowrap overflow-x-auto overflow-y-hidden [scrollbar-gutter:stable]"
-    >
-      <GallerySeparator src={sepA.src} alt={sepA.alt} />
+    <div className="flex h-dvh min-h-dvh w-full max-w-none flex-row flex-nowrap overflow-x-auto overflow-y-hidden [scrollbar-gutter:stable]">
+      <GallerySeparator src={sepA.src} alt={sepA.alt} priority={true} />
       <GalleryWall
         year={wallA.year}
         yearId={wallA.yearId}
