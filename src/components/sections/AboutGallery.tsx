@@ -162,7 +162,7 @@ export function AboutGallery() {
 
   return (
     <div
-      className="flex h-dvh min-h-dvh w-full max-w-none flex-row flex-nowrap overflow-x-auto overflow-y-hidden [scrollbar-gutter:stable]"
+      className="flex h-dvh min-h-dvh w-full max-w-none flex-row flex-nowrap overflow-y-hidden [scrollbar-gutter:stable]"
     >
       <GallerySeparator src={sepA.src} alt={sepA.alt} />
       <GalleryWall
