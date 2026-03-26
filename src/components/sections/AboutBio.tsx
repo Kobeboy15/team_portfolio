@@ -5,7 +5,7 @@ import { ImageFrame } from "../ui/ImageFrame";
 
 export function AboutBio() {
   return (
-        <div className="w-screen flex items-center justify-center md:justify-between">
+        <div className="w-screen max-h-dvh shrink-0 flex items-center justify-center md:justify-between">
             <div className="mx-5 hidden md:block">
                 <ImageFrame
                     placement="about"
