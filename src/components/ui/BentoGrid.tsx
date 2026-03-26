@@ -1,11 +1,13 @@
-import { BentoContent } from "@/src/types/skills";
+import { BentoItem } from "@/src/types/skills";
 
 import { Card } from "./Card";
+import { CardContent } from "./CardContent";
+import { CardDecor } from "./CardDecor";
 
 const COLS = 3;
 const ROWS = 11;
 
-const VARIANTS = {
+export const VARIANTS = {
     card1: { gridColumn: "1 / span 2", gridRow: "1 / span 4" },
     card2: { gridColumn: "3 / span 1", gridRow: "1 / span 4" },
     card3: { gridColumn: "1 / span 1", gridRow: "5 / span 5" },
@@ -16,8 +18,10 @@ const VARIANTS = {
 
 };
 
-export function BentoGrid({ content }: { content: BentoContent[] }) {
-    const cards = fillGrid(content);
+const ALL_SLOTS = Object.keys(VARIANTS) as Array<keyof typeof VARIANTS>;
+
+export function BentoGrid({ items }: { items: BentoItem[] }) {
+    const cards = fillGrid(items);
 
   return (
     <div className="w-full h-full flex justify-center items-center">
@@ -35,17 +39,20 @@ export function BentoGrid({ content }: { content: BentoContent[] }) {
   );
 }
 
-function fillGrid(content: BentoContent[]): React.ReactElement[] {
+function fillGrid(items: BentoItem[]): React.ReactElement[] {
     const cards: React.ReactElement[] = [];
+    const usedSlots = new Set(items.map(item => item.slot));
 
-    // TODO: placeholders, will replace with content in a later ticket
-    cards.push(<div key={1} style={VARIANTS.card1}><Card className="flex justify-center items-center">Card 1</Card></div>);
-    cards.push(<div key={2} style={VARIANTS.card2}><Card variant="accent" className="flex justify-center items-center">Card 2</Card></div>);
-    cards.push(<div key={3} style={VARIANTS.card3}><Card variant="gradient" className="flex justify-center items-center">Card 3</Card></div>);
-    cards.push(<div key={4} style={VARIANTS.card4}><Card className="flex justify-center items-center">Card 4</Card></div>);
-    cards.push(<div key={5} style={VARIANTS.card5}><Card className="flex justify-center items-center">Card 5</Card></div>);
-    cards.push(<div key={6} style={VARIANTS.card6}><Card className="flex justify-center items-center">Card 6</Card></div>);
-    cards.push(<div key={7} style={VARIANTS.card7}><Card variant="accent" className="flex justify-center items-center">Card 7</Card></div>);
+    for (const item of items)
+    {
+        cards.push(<div key={item.slot} style={VARIANTS[item.slot]}><Card variant={item.cardVariant ?? "background2"}><CardContent content={item.content}></CardContent></Card></div>);
+    }
+
+    for (const slot of ALL_SLOTS) {
+        if (!usedSlots.has(slot)) {
+            cards.push(<div key={slot} style={VARIANTS[slot]}><Card variant="accent"><CardDecor slot={slot}></CardDecor></Card></div>);
+        }
+    }
 
     return cards;
 }
