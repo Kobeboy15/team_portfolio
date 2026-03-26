@@ -59,7 +59,8 @@ export function HeroSection() {
               placement="hero"
               src={heroData.heroImageSrc}
               alt={heroData.heroImageAlt}
-              className="h-full w-full object-cover sm:relative sm:bottom-5 lg:bottom-6 xl:bottom-8 2xl:bottom-(--token-hero-image-frame-bottom)"
+              className="h-full w-auto object-cover sm:relative sm:bottom-5 lg:bottom-6 xl:bottom-8 2xl:bottom-(--token-hero-image-frame-bottom)"
+              priority={true}
             />
           </div>
         </div>
