@@ -12,7 +12,7 @@ export function AboutPoints() {
                 <div key={index}>
                     <div className="flex flex-col max-w-screen md:flex-row px-12 py-6 mx-5 md:mx-0">
                         <h3 className="min-w-48 md:mb-5">{point.title}</h3>
-                        <hr className="md:hidden border-none h-px bg-(--token-border) mx-12 mb:5"/>
+                        <hr className="md:hidden border-none h-px bg-(--token-border) mr-12 mt-1 mb-2"/>
                         <p>{point.description}</p>
                     </div>
                     {index < aboutData.points.length - 1 && <hr className="hidden md:block border-none h-px bg-(--token-border) mx-12"/>}
