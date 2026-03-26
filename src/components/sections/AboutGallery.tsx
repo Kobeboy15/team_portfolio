@@ -165,7 +165,7 @@ export function AboutGallery() {
         backgroundClassName={wallA.backgroundClassName}
         items={[...wallA.items]}
       />
-      <GallerySeparator src={sepB.src} alt={sepB.alt} />
+      <GallerySeparator src={sepB.src} alt={sepB.alt} priority={false} />
       <GalleryWall
         year={wallB.year}
         yearId={wallB.yearId}
