@@ -46,7 +46,7 @@ function GalleryWall({
   return (
     <section
       className={cn(
-        "flex relative h-dvh w-max min-h-0 shrink-0 flex-row items-center text-foreground",
+        "flex relative h-full w-max min-h-0 shrink-0 flex-row items-center text-foreground",
         "pl-6 pr-16 gap-16",
         backgroundClassName,
       )}
@@ -162,7 +162,7 @@ export function AboutGallery() {
 
   return (
     <div
-      className="flex h-dvh min-h-dvh w-max max-w-none flex-row flex-nowrap overflow-y-hidden [scrollbar-gutter:stable]"
+      className="flex h-dvh pb-17 min-h-full w-max max-w-none flex-row flex-nowrap overflow-y-hidden [scrollbar-gutter:stable]"
     >
       <GallerySeparator src={sepA.src} alt={sepA.alt} />
       <GalleryWall

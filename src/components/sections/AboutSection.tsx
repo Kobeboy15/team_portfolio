@@ -45,8 +45,8 @@ export function AboutSection() {
 
   return (
     <div ref={sectionRef} className="relative w-full" style={{ height: "300vh" }}>
-        <Section id="about" className="sticky top-0 w-full max-w-none pt-0! overflow-hidden">
-            <motion.div ref={contentRef} style={{ x }} className="flex flex-nowrap w-max max-h-dvh">
+        <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden">
+            <motion.div ref={contentRef} style={{ x }} className="flex flex-nowrap w-max max-h-full">
                 {/* Heading + Bio */}
                 <AboutBio />
 
