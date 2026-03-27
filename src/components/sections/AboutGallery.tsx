@@ -78,11 +78,11 @@ const TIMELINE_BASE = "/images/about/timeline";
 const galleryTestData = {
   separators: [
     {
-      src: `${TIMELINE_BASE}/IMG_0629.webp`,
+      src: `${TIMELINE_BASE}/timeline-2023-01.webp`,
       alt: "Full-width photograph separating gallery sections",
     },
     {
-      src: `${TIMELINE_BASE}/IMG_0637.webp`,
+      src: `${TIMELINE_BASE}/timeline-2026-02.webp`,
       alt: "Full-width photograph separating gallery sections",
     },
   ],
@@ -93,7 +93,7 @@ const galleryTestData = {
       backgroundClassName: "bg-background-2",
       items: [
         {
-          image: `${TIMELINE_BASE}/IMG_0610.webp`,
+          image: `${TIMELINE_BASE}/timeline-2023-03.webp`,
           imageAlt: "Gallery photograph",
           title: "Opening wall",
           description:
@@ -101,7 +101,7 @@ const galleryTestData = {
           year: "2023",
         },
         {
-          image: `${TIMELINE_BASE}/IMG_0616.webp`,
+          image: `${TIMELINE_BASE}/timeline-2023-02.webp`,
           imageAlt: "Gallery photograph",
           title: "Evening walk",
           description:
@@ -116,7 +116,7 @@ const galleryTestData = {
       backgroundClassName: "bg-background-2",
       items: [
         {
-          image: `${TIMELINE_BASE}/IMG_0620.webp`,
+          image: `${TIMELINE_BASE}/timeline-2024-01.webp`,
           imageAlt: "Gallery photograph",
           title: "Spring corridor",
           description:
@@ -124,7 +124,7 @@ const galleryTestData = {
           year: "2024",
         },
         {
-          image: `${TIMELINE_BASE}/IMG_0608.webp`,
+          image: `${TIMELINE_BASE}/timeline-2024-02.webp`,
           imageAlt: "Gallery photograph",
           title: "Studio notes",
           description:
@@ -132,7 +132,7 @@ const galleryTestData = {
           year: "2024",
         },
         {
-          image: `${TIMELINE_BASE}/IMG_0625.webp`,
+          image: `${TIMELINE_BASE}/timeline-2024-03.webp`,
           imageAlt: "Gallery photograph",
           title: "City rhythm",
           description:
@@ -140,7 +140,7 @@ const galleryTestData = {
           year: "2024",
         },
         {
-          image: `${TIMELINE_BASE}/IMG_0586.webp`,
+          image: `${TIMELINE_BASE}/timeline-2024-04.webp`,
           imageAlt: "Gallery photograph",
           title: "Late train",
           description:
@@ -165,7 +165,7 @@ export function AboutGallery() {
         backgroundClassName={wallA.backgroundClassName}
         items={[...wallA.items]}
       />
-      <GallerySeparator src={sepB.src} alt={sepB.alt} />
+      <GallerySeparator src={sepB.src} alt={sepB.alt} priority={false} />
       <GalleryWall
         year={wallB.year}
         yearId={wallB.yearId}
