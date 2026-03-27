@@ -16,7 +16,7 @@ type GallerySeparatorProps = {
 function GallerySeparator({ src, alt }: GallerySeparatorProps) {
   return (
     <section
-      className="relative h-dvh w-[min(70vw,50rem)] shrink-0 overflow-hidden"
+      className="relative h-dvh w-[70vw] shrink-0 overflow-hidden"
       aria-label={alt}
     >
       <div className="relative h-full w-full overflow-hidden">

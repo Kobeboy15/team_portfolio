@@ -13,55 +13,55 @@ import { AboutGallery } from "./AboutGallery";
 import { AboutPoints } from "./AboutPoints";
 
 export function AboutSection() {
-    const sectionRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
-    const [translateX, setTranslateX] = useState("0%");
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [translateX, setTranslateX] = useState("0%");
 
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ["start start", "end end"],
-    });
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
 
-    useEffect(() => {
-        const calculateTranslate = () => {
-            if (!contentRef.current) return;
+  useEffect(() => {
+    const calculateTranslate = () => {
+      if (!contentRef.current) return;
 
-            const totalWidth = contentRef.current.scrollWidth;
-            const viewportWidth = window.innerWidth;
-            const scrollDistance = totalWidth - viewportWidth;
-            const percentage = (scrollDistance / totalWidth) * 100;
-            setTranslateX(`-${percentage}%`);
-        };
+      const totalWidth = contentRef.current.scrollWidth;
+      const viewportWidth = window.innerWidth;
+      const scrollDistance = totalWidth - viewportWidth;
+      const percentage = (scrollDistance / totalWidth) * 100;
+      setTranslateX(`-${percentage}%`);
+    };
 
-        calculateTranslate();
+    calculateTranslate();
 
-        const resizeObserver = new ResizeObserver(calculateTranslate);
-        if (contentRef.current) resizeObserver.observe(contentRef.current);
+    const resizeObserver = new ResizeObserver(calculateTranslate);
+    if (contentRef.current) resizeObserver.observe(contentRef.current);
 
-        return () => resizeObserver.disconnect();
-    }, []);
+    return () => resizeObserver.disconnect();
+  }, []);
 
-    const x = useTransform(scrollYProgress, [0, 1], ["0%", translateX]);
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", translateX]);
 
   return (
     <div ref={sectionRef} className="relative w-full" style={{ height: "300vh" }}>
-        <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden">
-            <motion.div ref={contentRef} style={{ x }} className="flex flex-nowrap w-max max-h-full">
-                {/* Heading + Bio */}
-                <AboutBio />
+      <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden">
+        <motion.div ref={contentRef} style={{ x }} className="flex flex-nowrap w-max max-h-full">
+          {/* Heading + Bio */}
+          <AboutBio />
 
-                {/* Points */}
-                <ImageFrame
-                    placement="about-points"
-                    src={aboutData.pointsImage}
-                    alt={aboutData.pointsImageAlt}
-                    className="w-screen max-w-[594px] h-auto"
-                />
-                <AboutPoints />
+          {/* Points */}
+          <section className="relative h-dvh w-[70vw] shrink-0 overflow-hidden" aria-label={aboutData.pointsImageAlt}>
+            <div className="relative h-full w-full overflow-hidden">
+              <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
+            </div>
+          </section>
 
-                <AboutGallery />
-            </motion.div>
-        </Section>
+          <AboutPoints />
+
+          <AboutGallery />
+        </motion.div>
+      </Section>
     </div>
   );
 }
