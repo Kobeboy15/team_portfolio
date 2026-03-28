@@ -47,14 +47,14 @@ function GalleryWall({
     <section
       className={cn(
         "flex relative h-full w-max min-h-0 shrink-0 flex-row items-center text-foreground",
-        "pl-6 pr-16 gap-16",
+        "pl-6 md:pl-12 2xl:pl-20 pr-16 md:pr-28 lg:pr-44 2xl:pr-72 gap-16",
         backgroundClassName,
       )}
       aria-labelledby={yearId}
     >
 
       {/* Space for the year (absolute position) */}
-      <div className="block w-[305px]"></div>
+      <div className="block w-[305px] lg:w-[330px]"></div>
       <h2
         id={yearId}
         className={cn(
@@ -64,7 +64,7 @@ function GalleryWall({
         {year}
       </h2>
       
-      <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center gap-24 py-10 md:gap-12 md:py-12">
+      <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center py-10 min-[768px]:py-12 gap-24 min-[768px]:gap-36 min-[1024px]:gap-48 min-[1280px]:gap-60 min-[1536px]:gap-72 min-[1920px]:gap-[360px] min-[2160px]:gap-[405px] min-[2500px]:gap-[469px] min-[3000px]:gap-[563px] min-[3400px]:gap-[638px] min-[3800px]:gap-[713px] min-[4200px]:gap-[788px] min-[4600px]:gap-[863px] min-[5060px]:gap-[949px]">
         {items.map((slide, index) => (
           <AboutGallerySlide
             key={`${slide.image}-${index}`}
