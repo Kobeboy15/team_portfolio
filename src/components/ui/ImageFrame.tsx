@@ -13,15 +13,11 @@ export type ImageFramePlacement =
   | "timeline" // various — override with width/height/sizes
   | "projects"; // 443×591
 
-const placementConfig: Record<
-  Exclude<ImageFramePlacement, "about-gallery-hero">,
-  { width: number; height: number; sizes: string }
-> = {
+const placementConfig: Record<Exclude<ImageFramePlacement, "about-gallery-hero">, { width: number; height: number; sizes: string }> = {
   hero: {
     width: 773,
     height: 580,
-    sizes:
-      "(min-width: 1536px) min(100vw, 2400px), (min-width: 768px) 773px, 100vw",
+    sizes: "(min-width: 1536px) min(100vw, 2400px), (min-width: 768px) 773px, 100vw",
   },
   about: {
     width: 594,
@@ -50,10 +46,7 @@ const placementConfig: Record<
   },
 };
 
-export type ImageFrameProps = Omit<
-  ImageProps,
-  "width" | "height" | "sizes" | "priority" | "fill"
-> & {
+export type ImageFrameProps = Omit<ImageProps, "width" | "height" | "sizes" | "priority" | "fill"> & {
   /** Preset from Figma; determines display size and responsive sizes. */
   placement: ImageFramePlacement;
   /** Override placement width (e.g. for timeline "various"). Ignored for about-gallery-hero. */
@@ -114,10 +107,11 @@ export function ImageFrame({
       width={width}
       height={height}
       sizes={sizes}
-      priority={priority}
+      priority={true}
       placeholder={placeholder}
       blurDataURL={blurDataURL}
       className={cn(className)}
+      quality={70}
       {...rest}
     />
   );
