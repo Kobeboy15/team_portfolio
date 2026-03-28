@@ -78,7 +78,8 @@ export function ImageFrame({
 }: ImageFrameProps) {
   if (placement === "about-gallery-hero") {
     const sizes = sizesOverride ?? "100vw";
-    const priority = priorityProp ?? false;
+    // const priority = priorityProp ?? false; * This is in case we want to go back to lazy loading
+    const priority = priorityProp;
     return (
       <Image
         src={src}
@@ -98,7 +99,8 @@ export function ImageFrame({
   const width = widthOverride ?? config.width;
   const height = heightOverride ?? config.height;
   const sizes = sizesOverride ?? config.sizes;
-  const priority = priorityProp ?? placement === "hero";
+  // const priority = priorityProp ?? placement === "hero"; * This is in case we want to go back to lazy loading
+  const priority = true;
 
   return (
     <Image
@@ -107,7 +109,7 @@ export function ImageFrame({
       width={width}
       height={height}
       sizes={sizes}
-      priority={true}
+      priority={priority}
       placeholder={placeholder}
       blurDataURL={blurDataURL}
       className={cn(className)}
