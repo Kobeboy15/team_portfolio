@@ -3,10 +3,10 @@
 import { useRef, useEffect, useState } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 
-import { aboutData } from "../../data/about";
+import { aboutData } from "../../../data/about";
 
-import { ImageFrame } from "../ui/ImageFrame";
-import { Section } from "../ui/Section";
+import { ImageFrame } from "../../ui/ImageFrame";
+import { Section } from "../../ui/Section";
 
 import { AboutBio } from "./AboutBio";
 import { AboutGallery } from "./AboutGallery";
@@ -56,9 +56,9 @@ export function AboutSection() {
               <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
             </div>
           </section>
-
           <AboutPoints />
 
+          {/* Gallery */}
           <AboutGallery />
         </motion.div>
       </Section>
