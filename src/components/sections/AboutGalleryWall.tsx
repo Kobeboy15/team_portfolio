@@ -27,7 +27,7 @@ export function AboutGalleryWall({ year, yearId, backgroundClassName, items }: A
       <div className="block w-[305px] lg:w-[330px]"></div>
       <h2
         id={yearId}
-        className={cn("absolute bottom-0 pb-6 shrink-0 font-bebas uppercase text-years leading-(--text-years--line-height) tracking-years")}
+        className={cn("absolute left-20 bottom-6 shrink-0 font-bebas uppercase text-years leading-(--text-years--line-height) tracking-years")}
       >
         {year}
       </h2>

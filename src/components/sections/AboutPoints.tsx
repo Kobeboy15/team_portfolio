@@ -2,7 +2,8 @@ import { aboutData } from "../../data/about";
 
 export function AboutPoints() {
   return (
-        <div className="min-h-[calc(100dvh-72px)] w-max lg:w-[min(100vw,2500px)] lg:h-[calc(100dvh-72px)] flex lg:flex-col items-center justify-center bg-background">
+        <div className="min-h-[calc(100dvh-72px)] w-max lg:w-[min(100vw,2500px)]  lg:h-[calc(100dvh-72px)] flex lg:flex-col items-center justify-center bg-background">
+            <div className="flex flex-col items-start justify-center">
             {
                 /**
              * Renders a list of about points with a title and description,
@@ -19,6 +20,7 @@ export function AboutPoints() {
                 </div>
             ))
             }
+            </div>
         </div>
   );
 }

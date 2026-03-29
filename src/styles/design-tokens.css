@@ -25,7 +25,7 @@
 
   /* AboutBio text and background */
   --token-bio-text: #e0e0e0;
-  --token-bio-background: #121212;
+  --token-bio-background: #000000;
 
   /* About gallery wall backgrounds (cycle light / dark via .dark) */
   --token-wall-background-1: #ffffff;

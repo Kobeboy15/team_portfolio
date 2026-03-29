@@ -40,19 +40,32 @@ const aboutImageSizes = [
 
 export function AboutBio() {
   return (
-        <div className="w-screen max-h-dvh shrink-0 flex items-center justify-center md:justify-between bg-bio-background text-bio-text">
-            {/* Wrapper mx: round(vp × 20/1280) per side — same scale as image (mx-5 ≈ 20px at 1280px). */}
-            <div className="hidden lg:block min-[1024px]:mx-[16px] min-[1280px]:mx-[20px] min-[1600px]:mx-[25px] min-[1920px]:mx-[30px] min-[2160px]:mx-[34px] min-[2500px]:mx-[39px] min-[3000px]:mx-[47px] min-[3400px]:mx-[53px] min-[3800px]:mx-[59px] min-[4200px]:mx-[66px] min-[4600px]:mx-[72px] min-[5060px]:mx-[79px]">
-                <ImageFrame
-                    placement="about"
-                    src={aboutData.profileImage}
-                    alt={aboutData.profileImageAlt}
-                    sizes={aboutImageSizes}
-                    className="h-auto min-[1024px]:w-[475px] min-[1280px]:w-[594px] min-[1600px]:w-[743px] min-[1920px]:w-[891px] min-[2160px]:w-[1001px] min-[2500px]:w-[1160px] min-[3000px]:w-[1392px] min-[3400px]:w-[1578px] min-[3800px]:w-[1763px] min-[4200px]:w-[1949px] min-[4600px]:w-[2135px] min-[5060px]:w-[2348px]"
-                />
-            </div>
-            <div
-                className={`
+    <div className="w-screen max-h-dvh shrink-0 flex items-center justify-center md:justify-between bg-bio-background text-bio-text">
+      {/* Wrapper mx: round(vp × 20/1280) per side — same scale as image (mx-5 ≈ 20px at 1280px). */}
+      <div className="hidden lg:block min-[1024px]:mx-[16px] min-[1280px]:mx-[20px] min-[1600px]:mx-[25px] min-[1920px]:mx-[30px] min-[2160px]:mx-[34px] min-[2500px]:mx-[39px] min-[3000px]:mx-[47px] min-[3400px]:mx-[53px] min-[3800px]:mx-[59px] min-[4200px]:mx-[66px] min-[4600px]:mx-[72px] min-[5060px]:mx-[79px]">
+        <ImageFrame
+          placement="about"
+          src={aboutData.profileImage}
+          alt={aboutData.profileImageAlt}
+          sizes={aboutImageSizes}
+          className="min-[1024px]:w-[475px] min-[1280px]:w-[594px] min-[1600px]:w-[743px] min-[1920px]:w-[891px] min-[2160px]:w-[1001px] min-[2500px]:w-[1160px] min-[3000px]:w-[1392px] min-[3400px]:w-[1578px] min-[3800px]:w-[1763px] min-[4200px]:w-[1949px] min-[4600px]:w-[2135px] min-[5060px]:w-[2348px]
+          h-[528px]
+          min-[1024px]:h-[511px]
+          min-[1280px]:h-[640px]
+          min-[1600px]:h-[801px]
+          min-[1920px]:h-[960px]
+          min-[2160px]:h-[1079px]
+          min-[2500px]:h-[1249px]
+          min-[3000px]:h-[1500px]
+          min-[3400px]:h-[1700px]
+          min-[3800px]:h-[1900px]
+          min-[4200px]:h-[2100px]
+          min-[4600px]:h-[2300px]
+          min-[5060px]:h-[2530px] object-cover"
+        />
+      </div>
+      <div
+        className={`
                 flex-1 p-5 md:mx-5 lg:px-3 lg:py-0 flex flex-col md:gap-4 min-w-0
                 h-[528px]
                 min-[1024px]:h-[511px]
@@ -68,11 +81,13 @@ export function AboutBio() {
                 min-[4600px]:h-[2300px]
                 min-[5060px]:h-[2530px]
             `}
-            >
-                <Heading size="display-96" as="h1" className="text-display-48! md:text-display-96! lg:text-display-48! xl:text-display-128! text-bio-text!">About Me</Heading>
-                <hr className="border-none h-1 md:h-2 w-40 md:w-80 bg-accent" aria-hidden="true"/>
-                <p className="mt-12 lg:mt-4 xl:mt-12 max-w-[1000px]">{aboutData.bio}</p>
-            </div>
-        </div>
+      >
+        <Heading size="display-96" as="h1" className="text-display-48! md:text-display-96! lg:text-display-48! xl:text-display-128! text-bio-text!">
+          About Me
+        </Heading>
+        <hr className="border-none h-1 md:h-2 w-40 md:w-80 bg-accent" aria-hidden="true" />
+        <p className="mt-12 lg:mt-4 xl:mt-12 max-w-[1000px]">{aboutData.bio}</p>
+      </div>
+    </div>
   );
 }
