@@ -1,6 +1,6 @@
-import type { AboutSlide } from "../../types/about";
+import type { AboutSlide } from "../../../types/about";
 
-import { ImageFrame } from "../ui/ImageFrame";
+import { ImageFrame } from "../../ui/ImageFrame";
 
 const TOP_SPACER_MIN_PX = 12;
 const TOP_SPACER_MAX_PX = 110;

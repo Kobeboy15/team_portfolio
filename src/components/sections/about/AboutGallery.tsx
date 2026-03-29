@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 
-import { aboutData } from "../../data/about";
-import { buildAboutGalleryHalls } from "../../lib/buildAboutGalleryHalls";
+import { aboutData } from "../../../data/about";
+import { buildAboutGalleryHalls } from "../../../lib/buildAboutGalleryHalls";
 
 import { AboutGallerySeparator } from "./AboutGallerySeparator";
 import { AboutGalleryWall } from "./AboutGalleryWall";

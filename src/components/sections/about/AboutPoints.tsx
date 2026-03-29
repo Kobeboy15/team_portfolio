@@ -1,4 +1,4 @@
-import { aboutData } from "../../data/about";
+import { aboutData } from "../../../data/about";
 
 export function AboutPoints() {
   return (

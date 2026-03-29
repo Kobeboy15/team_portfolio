@@ -1,4 +1,4 @@
-import { ImageFrame } from "../ui/ImageFrame";
+import { ImageFrame } from "../../ui/ImageFrame";
 
 type AboutGallerySeparatorProps = {
   src: string;

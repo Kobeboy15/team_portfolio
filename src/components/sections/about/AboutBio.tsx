@@ -1,7 +1,7 @@
-import { aboutData } from "../../data/about";
+import { aboutData } from "../../../data/about";
 
-import { Heading } from "../ui/Heading";
-import { ImageFrame } from "../ui/ImageFrame";
+import { Heading } from "../../ui/Heading";
+import { ImageFrame } from "../../ui/ImageFrame";
 
 /**
  * Image display width per min-width tier: round(viewport × 594/1280), so 1280px → 594px.

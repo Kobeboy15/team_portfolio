@@ -1,4 +1,4 @@
-import type { AboutSlide } from "../../types/about";
+import type { AboutSlide } from "../../../types/about";
 
 import { AboutGallerySlide } from "./AboutGallerySlide";
 
