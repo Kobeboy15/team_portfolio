@@ -56,9 +56,9 @@ export function AboutSection() {
               <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
             </div>
           </section>
-
           <AboutPoints />
 
+          {/* Gallery */}
           <AboutGallery />
         </motion.div>
       </Section>

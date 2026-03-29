@@ -23,6 +23,11 @@
   --token-input: #e8e4d9;
   --token-ring: #6a8b92;
 
+  /* About gallery wall backgrounds (cycle light / dark via .dark) */
+  --token-wall-background-1: #ffffff;
+  --token-wall-background-2: #b2d4d8;
+  --token-wall-background-3: #F3EFE2;
+
   /* Spacing: using Tailwind's default scale (p-1..p-96, gap-*, etc.) for flexible neo-brutalist layouts. */
 
   /* --- Typography (from Figma) --- */
@@ -176,6 +181,9 @@
   --token-border: #2a2a2a;
   --token-input: #2a2a2a;
   --token-ring: #b2d4d8;
+  --token-wall-background-1: #3f3f3f;
+  --token-wall-background-2: #6a8b92;
+  --token-wall-background-3: #121212;
 }
 
 /* ============== TAILWIND THEME (maps tokens → Tailwind utilities) ============== */
@@ -191,6 +199,9 @@
   --color-border: var(--token-border);
   --color-input: var(--token-input);
   --color-ring: var(--token-ring);
+  --color-wall-background-1: var(--token-wall-background-1);
+  --color-wall-background-2: var(--token-wall-background-2);
+  --color-wall-background-3: var(--token-wall-background-3);
 
   /* Spacing: Tailwind default scale (not overridden). */
 

@@ -1,4 +1,6 @@
-import { AboutGallerySlide, type AboutSlide } from "./AboutGallerySlide";
+import type { AboutSlide } from "../../types/about";
+
+import { AboutGallerySlide } from "./AboutGallerySlide";
 
 function cn(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");

@@ -1,3 +1,5 @@
+import type { AboutSlide } from "../../types/about";
+
 import { ImageFrame } from "../ui/ImageFrame";
 
 const TOP_SPACER_MIN_PX = 12;
@@ -38,14 +40,6 @@ const ARTICLE_ALIGN_CLASS: Record<ArticleAlign, string> = {
 function cn(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
-
-export type AboutSlide = {
-  title: string;
-  description: string;
-  image: string;
-  imageAlt: string;
-  year?: string;
-};
 
 export type AboutGallerySlideProps = AboutSlide & {
   className?: string;
