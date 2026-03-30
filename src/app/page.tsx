@@ -1,7 +1,7 @@
 import { NavigationHeader } from "../components/ui/NavigationHeader";
 
 import { HeroSection } from "../components/sections/HeroSection";
-import { AboutSection } from "../components/sections/AboutSection";
+import { AboutSection } from "../components/sections/about/AboutSection";
 import { SkillsSection } from "../components/sections/SkillsSection";
 
 import {
