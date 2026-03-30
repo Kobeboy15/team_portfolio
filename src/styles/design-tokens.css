@@ -23,6 +23,15 @@
   --token-input: #e8e4d9;
   --token-ring: #6a8b92;
 
+  /* AboutBio text and background */
+  --token-bio-text: #e0e0e0;
+  --token-bio-background: #000000;
+
+  /* About gallery wall backgrounds (cycle light / dark via .dark) */
+  --token-wall-background-1: #ffffff;
+  --token-wall-background-2: #b2d4d8;
+  --token-wall-background-3: #f3efe2;
+
   /* Spacing: using Tailwind's default scale (p-1..p-96, gap-*, etc.) for flexible neo-brutalist layouts. */
 
   /* --- Typography (from Figma) --- */
@@ -125,8 +134,8 @@
     --token-hero-image-fluid-slope: 0.5;
     --token-hero-image-max: min(92vw, 2400px);
     --token-hero-image-width: clamp(
-      861px, /* 773px + 88px (image right padding) */
-      calc(773px + (100vw - 1536px) * var(--token-hero-image-fluid-slope)),
+      861px,
+      /* 773px + 88px (image right padding) */ calc(773px + (100vw - 1536px) * var(--token-hero-image-fluid-slope)),
       var(--token-hero-image-max)
     );
 
@@ -176,6 +185,11 @@
   --token-border: #2a2a2a;
   --token-input: #2a2a2a;
   --token-ring: #b2d4d8;
+  --token-bio-text: #e0e0e0;
+  --token-bio-background: #3f3f3f;
+  --token-wall-background-1: #3f3f3f;
+  --token-wall-background-2: #6a8b92;
+  --token-wall-background-3: #121212;
 }
 
 /* ============== TAILWIND THEME (maps tokens → Tailwind utilities) ============== */
@@ -191,6 +205,11 @@
   --color-border: var(--token-border);
   --color-input: var(--token-input);
   --color-ring: var(--token-ring);
+  --color-bio-text: var(--token-bio-text);
+  --color-bio-background: var(--token-bio-background);
+  --color-wall-background-1: var(--token-wall-background-1);
+  --color-wall-background-2: var(--token-wall-background-2);
+  --color-wall-background-3: var(--token-wall-background-3);
 
   /* Spacing: Tailwind default scale (not overridden). */
 
