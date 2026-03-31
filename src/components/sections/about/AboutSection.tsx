@@ -6,6 +6,7 @@ import { useScroll, useTransform, motion } from "framer-motion";
 import { aboutData } from "../../../data/about";
 
 import { ImageFrame } from "../../ui/ImageFrame";
+import { ScrollProgressBar } from "../../ui/ScrollProgressBar";
 import { Section } from "../../ui/Section";
 
 import { AboutBio } from "./AboutBio";
@@ -62,6 +63,7 @@ export function AboutSection() {
           <AboutGallery />
         </motion.div>
       </Section>
+      <ScrollProgressBar sectionRef={sectionRef} scrollYProgress={scrollYProgress} />
     </div>
   );
 }
