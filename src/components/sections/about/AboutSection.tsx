@@ -63,7 +63,7 @@ export function AboutSection() {
           <AboutGallery />
         </motion.div>
       </Section>
-      <ScrollProgressBar scrollYProgress={scrollYProgress} />
+      <ScrollProgressBar scrollYProgress={scrollYProgress} targetId="about" />
     </div>
   );
 }
