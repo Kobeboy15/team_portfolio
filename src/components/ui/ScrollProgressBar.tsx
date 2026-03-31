@@ -35,17 +35,17 @@ export function ScrollProgressBar({
   const trackHeight = useMemo(() => "clamp(4px, 0.3vw, 12px)", []);
 
   useEffect(() => {
-    const el = document.getElementById(targetId);
-    if (!el) {
-      // Defer to avoid sync setState inside effect body (eslint rule).
-      queueMicrotask(() => setIsExclusiveFullscreen(false));
-      return;
-    }
-
     let rafId: number | null = null;
+    let observer: MutationObserver | null = null;
 
     const measure = () => {
       rafId = null;
+      const el = document.getElementById(targetId);
+      if (!el) {
+        setIsExclusiveFullscreen(false);
+        return;
+      }
+
       const rect = el.getBoundingClientRect();
       const vh = window.innerHeight;
 
@@ -59,14 +59,25 @@ export function ScrollProgressBar({
       rafId = window.requestAnimationFrame(measure);
     };
 
-    measure();
+    const initialEl = document.getElementById(targetId);
+    if (!initialEl) {
+      // Defer to avoid sync setState inside effect body (eslint rule).
+      queueMicrotask(() => setIsExclusiveFullscreen(false));
+    }
+
+    onChange();
     window.addEventListener("scroll", onChange, { passive: true });
     window.addEventListener("resize", onChange);
+
+    // If the target mounts later (or remounts), re-measure without relying on scroll/resize.
+    observer = new MutationObserver(onChange);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
 
     return () => {
       if (rafId != null) window.cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", onChange);
       window.removeEventListener("resize", onChange);
+      observer?.disconnect();
     };
   }, [targetId, tolerancePx]);
 
