@@ -6,6 +6,7 @@ import { useScroll, useTransform, motion } from "framer-motion";
 import { aboutData } from "../../../data/about";
 
 import { ImageFrame } from "../../ui/ImageFrame";
+import { ScrollProgressBar } from "../../ui/ScrollProgressBar";
 import { Section } from "../../ui/Section";
 
 import { AboutBio } from "./AboutBio";
@@ -45,7 +46,7 @@ export function AboutSection() {
 
   return (
     <div ref={sectionRef} className="relative w-full" style={{ height: "300vh" }}>
-      <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden">
+      <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
         <motion.div ref={contentRef} style={{ x }} className="flex flex-nowrap w-max max-h-full">
           {/* Heading + Bio */}
           <AboutBio />
@@ -62,6 +63,7 @@ export function AboutSection() {
           <AboutGallery />
         </motion.div>
       </Section>
+      <ScrollProgressBar scrollYProgress={scrollYProgress} targetId="about" />
     </div>
   );
 }
