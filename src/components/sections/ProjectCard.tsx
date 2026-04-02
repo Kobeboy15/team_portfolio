@@ -59,9 +59,9 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
 
   return (
     <article aria-labelledby={titleId} className={cn("w-full lg:h-[calc(100dvh-72px)] flex items-center justify-center", className)}>
-      <div className="grid gap-8 lg:grid-cols-[minmax(240px,350px)_minmax(320px,443px)_minmax(240px,350px)] lg:items-start lg:gap-y-10 lg:gap-x-[clamp(32px,6vw,123px)]">
+      <div className="grid gap-8 lg:grid-cols-[minmax(270px,1fr)_minmax(280px,360px)_minmax(0,220px)] lg:items-center lg:gap-y-10 lg:gap-x-6 xl:grid-cols-[minmax(240px,350px)_minmax(320px,443px)_minmax(180px,280px)] xl:gap-x-10 2xl:grid-cols-[minmax(260px,350px)_minmax(443px,var(--token-project-image-width))_minmax(260px,350px)] 2xl:gap-x-[clamp(32px,6vw,123px)]">
         {/* Project Title, Year, Description */}
-        <div className="flex flex-col gap-8 lg:gap-10 lg:pt-1">
+        <div className="min-w-0 flex flex-col gap-8 lg:gap-10">
           <header className="-space-y-2">
             <Heading
               size="display-96"
@@ -93,17 +93,17 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
         </div>
 
         {/* Project Image */}
-        <div className="flex justify-start lg:justify-center">
+        <div className="min-w-0 flex justify-start lg:justify-center">
           <ImageFrame
             placement="projects"
             src={project.image}
             alt={project.imageAlt}
-            className="h-auto w-full max-w-[443px] object-cover"
+            className="h-auto w-full max-w-[443px] object-cover lg:max-w-[360px] xl:max-w-[443px] 2xl:max-w-(--token-project-image-width)"
           />
         </div>
 
         {/* Project Role, Tech Stack, Outcomes */}
-        <div className="flex flex-col gap-8 lg:gap-12 lg:pt-5">
+        <div className="min-w-0 flex flex-col gap-8 lg:gap-10 xl:gap-12">
           <div className="flex flex-col gap-3">
             <p className="font-sans text-sora-14 font-light text-accent">
               Role/Project Type
