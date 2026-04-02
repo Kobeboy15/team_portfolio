@@ -3,13 +3,7 @@ import { NavigationHeader } from "../components/ui/NavigationHeader";
 import { HeroSection } from "../components/sections/HeroSection";
 import { AboutSection } from "../components/sections/about/AboutSection";
 import { SkillsSection } from "../components/sections/SkillsSection";
-
-import {
-  ButtonTestSection,
-  CardTestSection,
-  HeadingTestSection,
-  ImageFrameTestSection,
-} from "../components/test-components";
+import { ProjectsSection } from "../components/sections/ProjectsSection";
 
 export default function Home() {
   return (
@@ -17,14 +11,9 @@ export default function Home() {
       <NavigationHeader />
       <main className="flex min-h-screen w-full flex-col items-center justify-between">
         <HeroSection />
-
-        {/* Test sections for development purposes */}
-        {/* <ButtonTestSection />
-        <HeadingTestSection />
-        <CardTestSection />
-        <ImageFrameTestSection /> */}
         <AboutSection />
         <SkillsSection />
+        <ProjectsSection />
       </main>
     </div>
   );
