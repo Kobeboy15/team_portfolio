@@ -48,7 +48,7 @@ jobs:
           require_pattern "^## .*Decisions & Scope Changes" "Missing Decisions section"
           require_pattern "^## .*Self-Check" "Missing Self-Check section"
           require_pattern "^## .*Architecture Check" "Missing Architecture Check section"
-          require_pattern "^## .*Preview" "Missing Preview section"
+          require_pattern "^## .*Vercel Preview Link" "Missing Vercel Preview section"
 
           # Ticket block extraction (multiline-safe)
           TICKET_BLOCK=$(echo "$PR_BODY" | awk '/^## Ticket/{flag=1;next}/^## /{flag=0}flag')
@@ -57,10 +57,10 @@ jobs:
             FAILS=1
           fi
 
-          # Preview check (heading may be e.g. "## Vercel Preview Link")
-          PREVIEW_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Preview/{flag=1;next}/^## /{flag=0}flag')
-          if ! echo "$PREVIEW_BLOCK" | grep -Eiq 'https?://|localhost'; then
-            echo "❌ Preview URL missing"
+          # Vercel Preview Link check (heading may be e.g. "## Vercel Preview Link")
+          VERCEL_PREVIEW_LINK_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Vercel Preview Link/{flag=1;next}/^## /{flag=0}flag')
+          if ! echo "$VERCEL_PREVIEW_LINK_BLOCK" | grep -Eiq 'https?://|localhost'; then
+            echo "❌ Vercel Preview Link missing"
             FAILS=1
           fi
 
@@ -122,8 +122,8 @@ jobs:
           require_not_placeholder "Ticket" "[Basecamp ticket link]"
           require_not_placeholder "Design Reference" "[Figma link or N/A]"
           require_not_placeholder "Content Source" "[Basecamp doc / content reference link or N/A]"
-          if echo "$PREVIEW_BLOCK" | grep -Fqi '[url]'; then
-            echo "❌ Preview still contains placeholder text"
+          if echo "$VERCEL_PREVIEW_LINK_BLOCK" | grep -Fqi '[url]'; then
+            echo "❌ Vercel Preview Link still contains placeholder text"
             FAILS=1
           fi
 
