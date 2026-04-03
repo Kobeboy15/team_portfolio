@@ -19,8 +19,8 @@ export function ContactSection() {
 
   return (
     <Section id="contact" className="bg-background-2 w-full flex flex-col">
-        <div className="flex w-full flex-1 border-t border-current/20">
-            <div className="flex flex-col w-2/5 border-r border-current/20 p-7 items-end">
+        <div className="flex flex-col md:flex-row w-full flex-1 border-t border-current/20">
+            <div className="flex flex-col w-full md:w-2/5 border-b md:border-b-0 md:border-r border-current/20 p-7 items-end">
                 <h1 className="w-full text-header-1 tracking-display font-bebas whitespace-nowrap">{contactData.slogan}</h1>
                 <Button
                     href="#hero"
@@ -46,7 +46,7 @@ export function ContactSection() {
                 </Button>
             </div>
 
-            <div className="w-3/5 flex flex-col py-3 px-15 gap-3">
+            <div className="w-full md:w-3/5 flex flex-col py-3 px-7 md:px-15 gap-3 2xl:gap-5">
                 {/* Socials */}
                 <div className="py-5 flex flex-col gap-5">
                     <h2 className="font-sora text-sora-18 opacity-70">Socials</h2>
@@ -68,8 +68,8 @@ export function ContactSection() {
         </div>
 
         {/* Footer Section */}
-        <div className="border-t border-current/20 pr-8 w-full px-5 py-8">
-            <div className="font-sora text-sora-18 opacity-50">{contactData.copyright}</div>
+        <div className="border-t border-current/20 pr-8 w-full px-5 py-3 md:py-8">
+            <div className="font-sora text-sora-13 md:text-sora-18 opacity-50">{contactData.copyright}</div>
         </div>
     </Section>
   );

@@ -119,7 +119,8 @@ export function NavigationHeader() {
       <header
         className={`${isInContact? "bg-transparent" : "bg-background"} fixed top-0 left-0 z-50 h-18 w-screen
           transition-transform duration-300 ease-in-out
-          ${visible ? "translate-y-0" : "-translate-y-full"}`}
+          ${visible ? "translate-y-0" : "-translate-y-full"}
+          ${isInContact ? "max-md:opacity-0 max-md:pointer-events-none" : ""}`}
       >
         <div className="flex items-center justify-between h-full px-6 md:px-16 py-4">
           {/* Home button / brand */}
