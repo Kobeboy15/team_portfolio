@@ -12,6 +12,11 @@ jobs:
         env:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
+          # Rely on FAILS + explicit exit 1; GHA bash uses -e/-o pipefail which can abort mid-script
+          # before any ❌ lines run (e.g. command-substitution / pipeline edge cases).
+          set +o errexit
+          set +o pipefail
+
           FAILS=0
 
           echo "Running PR completeness check..."
@@ -19,20 +24,20 @@ jobs:
           require_pattern() {
             PATTERN="$1"
             MESSAGE="$2"
-            echo "$PR_BODY" | grep -Eiq "$PATTERN" || {
+            if ! echo "$PR_BODY" | grep -Eiq "$PATTERN"; then
               echo "❌ $MESSAGE"
               FAILS=1
-            }
+            fi
           }
 
           require_not_placeholder() {
             LABEL="$1"
             PLACEHOLDER="$2"
             VALUE=$(echo "$PR_BODY" | awk "/^## $LABEL/{flag=1;next}/^## /{flag=0}flag" | tr -d '\r')
-            echo "$VALUE" | grep -Fqi "$PLACEHOLDER" && {
+            if echo "$VALUE" | grep -Fqi "$PLACEHOLDER"; then
               echo "❌ $LABEL still contains placeholder text"
               FAILS=1
-            }
+            fi
           }
 
           # Section presence (headings may include emoji/suffix after ## )
@@ -47,32 +52,32 @@ jobs:
 
           # Ticket block extraction (multiline-safe)
           TICKET_BLOCK=$(echo "$PR_BODY" | awk '/^## Ticket/{flag=1;next}/^## /{flag=0}flag')
-          echo "$TICKET_BLOCK" | grep -Eiq 'https?://' || {
+          if ! echo "$TICKET_BLOCK" | grep -Eiq 'https?://'; then
             echo "❌ Ticket link missing or still placeholder"
             FAILS=1
-          }
+          fi
 
           # Preview check (heading may be e.g. "## Vercel Preview Link")
           PREVIEW_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Preview/{flag=1;next}/^## /{flag=0}flag')
-          echo "$PREVIEW_BLOCK" | grep -Eiq 'https?://|localhost' || {
+          if ! echo "$PREVIEW_BLOCK" | grep -Eiq 'https?://|localhost'; then
             echo "❌ Preview URL missing"
             FAILS=1
-          }
+          fi
 
           # Design reference check
           DESIGN_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Design Reference/{flag=1;next}/^## /{flag=0}flag')
-          echo "$DESIGN_BLOCK" | grep -Eiq 'https?://|N/A' || {
+          if ! echo "$DESIGN_BLOCK" | grep -Eiq 'https?://|N/A'; then
             echo "❌ Design Reference must contain link or N/A"
             FAILS=1
-          }
+          fi
 
           # Content source: real link → must say if it was used; N/A-only → no second line required
           CONTENT_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Content Source/{flag=1;next}/^## /{flag=0}flag')
           if echo "$CONTENT_BLOCK" | grep -Eiq 'https?://'; then
-            echo "$CONTENT_BLOCK" | grep -Eiq 'Content source linked and used:[[:space:]]*(Yes|No|N/A)' || {
+            if ! echo "$CONTENT_BLOCK" | grep -Eiq 'Content source linked and used:[[:space:]]*(Yes|No|N/A)'; then
               echo "❌ Content source: add \"Content source linked and used:\" with Yes, No, or N/A"
               FAILS=1
-            }
+            fi
           elif echo "$CONTENT_BLOCK" | grep -Eiq 'N/A|Not applicable|None'; then
             :
           else
@@ -82,22 +87,22 @@ jobs:
 
           # Summary check (basic)
           SUMMARY_BLOCK=$(echo "$PR_BODY" | awk '/^## Summary/{flag=1;next}/^## /{flag=0}flag')
-          echo "$SUMMARY_BLOCK" | grep -Eiq '[A-Za-z]{10,}' || {
+          if ! echo "$SUMMARY_BLOCK" | grep -Eiq '[A-Za-z]{10,}'; then
             echo "❌ Summary too short or empty"
             FAILS=1
-          }
+          fi
 
           # Decisions check
           DECISIONS_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Decisions & Scope Changes/{flag=1;next}/^## /{flag=0}flag')
-          echo "$DECISIONS_BLOCK" | grep -Eiq 'No changes from original spec|[A-Za-z]{8,}' || {
+          if ! echo "$DECISIONS_BLOCK" | grep -Eiq 'No changes from original spec|[A-Za-z]{8,}'; then
             echo "❌ Decisions section empty"
             FAILS=1
-          }
+          fi
 
           # Self-check boxes
           SELF_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Self-Check/{flag=1;next}/^## /{flag=0}flag')
           UNCHECKED_SELF=$(echo "$SELF_BLOCK" | grep -c '^- \[ \]' || true)
-          if [ "$UNCHECKED_SELF" -gt 0 ]; then
+          if [ "${UNCHECKED_SELF:-0}" -gt 0 ]; then
             echo "❌ $UNCHECKED_SELF unchecked Self-Check items"
             FAILS=1
           fi
@@ -106,19 +111,21 @@ jobs:
           ARCH_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Architecture Check/{flag=1;next}/^## /{flag=0}flag')
           UNCHECKED_ARCH=$(echo "$ARCH_BLOCK" | grep -c '^- \[ \]' || true)
 
-          if [ "$UNCHECKED_ARCH" -gt 0 ] && ! echo "$ARCH_BLOCK" | grep -Eiq 'because|reason|no component or data changes|N/A'; then
-            echo "❌ Architecture check incomplete without justification"
-            FAILS=1
+          if [ "${UNCHECKED_ARCH:-0}" -gt 0 ]; then
+            if ! echo "$ARCH_BLOCK" | grep -Eiq 'because|reason|no component or data changes|N/A'; then
+              echo "❌ Architecture check incomplete without justification"
+              FAILS=1
+            fi
           fi
 
           # Placeholder checks
           require_not_placeholder "Ticket" "[Basecamp ticket link]"
           require_not_placeholder "Design Reference" "[Figma link or N/A]"
           require_not_placeholder "Content Source" "[Basecamp doc / content reference link or N/A]"
-          echo "$PREVIEW_BLOCK" | grep -Fqi '[url]' && {
+          if echo "$PREVIEW_BLOCK" | grep -Fqi '[url]'; then
             echo "❌ Preview still contains placeholder text"
             FAILS=1
-          }
+          fi
 
           # Handoff (optional section): if author marks next dev = Yes, require a video URL in that block
           HANDOFF_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Handoff/{flag=1;next}/^## /{flag=0}flag')
@@ -126,10 +133,10 @@ jobs:
             if echo "$HANDOFF_BLOCK" | grep -Eiq '^- Next dev picking up:[[:space:]]*Yes[[:space:]]*/[[:space:]]*No'; then
               :
             elif echo "$HANDOFF_BLOCK" | grep -Eiq '^- Next dev picking up:[[:space:]]*Yes\b'; then
-              echo "$HANDOFF_BLOCK" | grep -Eiq 'https?://' || {
+              if ! echo "$HANDOFF_BLOCK" | grep -Eiq 'https?://'; then
                 echo "❌ Handoff: Next dev picking up is Yes — add a handoff video URL (https://...) in this section"
                 FAILS=1
-              }
+              fi
             fi
           fi
 
