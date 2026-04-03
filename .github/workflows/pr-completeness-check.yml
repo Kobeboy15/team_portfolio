@@ -43,7 +43,7 @@ jobs:
           require_pattern "^## .*Decisions & Scope Changes" "Missing Decisions section"
           require_pattern "^## .*Self-Check" "Missing Self-Check section"
           require_pattern "^## .*Architecture Check" "Missing Architecture Check section"
-          require_pattern "^## Preview" "Missing Preview section"
+          require_pattern "^## .*Preview" "Missing Preview section"
 
           # Ticket block extraction (multiline-safe)
           TICKET_BLOCK=$(echo "$PR_BODY" | awk '/^## Ticket/{flag=1;next}/^## /{flag=0}flag')
@@ -52,8 +52,8 @@ jobs:
             FAILS=1
           }
 
-          # Preview check
-          PREVIEW_BLOCK=$(echo "$PR_BODY" | awk '/^## Preview/{flag=1;next}/^## /{flag=0}flag')
+          # Preview check (heading may be e.g. "## Vercel Preview Link")
+          PREVIEW_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Preview/{flag=1;next}/^## /{flag=0}flag')
           echo "$PREVIEW_BLOCK" | grep -Eiq 'https?://|localhost' || {
             echo "❌ Preview URL missing"
             FAILS=1
@@ -66,17 +66,19 @@ jobs:
             FAILS=1
           }
 
-          # Content source check
+          # Content source: real link → must say if it was used; N/A-only → no second line required
           CONTENT_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Content Source/{flag=1;next}/^## /{flag=0}flag')
-          echo "$CONTENT_BLOCK" | grep -Eiq 'https?://|N/A' || {
-            echo "❌ Content Source must contain link or N/A"
+          if echo "$CONTENT_BLOCK" | grep -Eiq 'https?://'; then
+            echo "$CONTENT_BLOCK" | grep -Eiq 'Content source linked and used:[[:space:]]*(Yes|No|N/A)' || {
+              echo "❌ Content source: add \"Content source linked and used:\" with Yes, No, or N/A"
+              FAILS=1
+            }
+          elif echo "$CONTENT_BLOCK" | grep -Eiq 'N/A|Not applicable|None'; then
+            :
+          else
+            echo "❌ Content Source must contain a link or N/A (Not applicable / None also accepted)"
             FAILS=1
-          }
-
-          echo "$CONTENT_BLOCK" | grep -Eiq 'Content source linked and used:[[:space:]]*(Yes|No|N/A)' || {
-            echo "❌ Content source usage not specified"
-            FAILS=1
-          }
+          fi
 
           # Summary check (basic)
           SUMMARY_BLOCK=$(echo "$PR_BODY" | awk '/^## Summary/{flag=1;next}/^## /{flag=0}flag')
@@ -113,7 +115,10 @@ jobs:
           require_not_placeholder "Ticket" "[Basecamp ticket link]"
           require_not_placeholder "Design Reference" "[Figma link or N/A]"
           require_not_placeholder "Content Source" "[Basecamp doc / content reference link or N/A]"
-          require_not_placeholder "Preview" "[url]"
+          echo "$PREVIEW_BLOCK" | grep -Fqi '[url]' && {
+            echo "❌ Preview still contains placeholder text"
+            FAILS=1
+          }
 
           # Handoff (optional section): if author marks next dev = Yes, require a video URL in that block
           HANDOFF_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Handoff/{flag=1;next}/^## /{flag=0}flag')

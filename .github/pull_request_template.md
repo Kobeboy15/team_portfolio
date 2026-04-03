@@ -12,7 +12,7 @@
 
 [Basecamp doc / content reference link or N/A]
 
-Content source linked and used: Yes / No / N/A
+Content source linked and used: Yes / No / N/A *(only required when a doc link is above; omit if Content Source is N/A)*
 
 ## Summary
 
