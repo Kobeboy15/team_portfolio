@@ -1,31 +1,28 @@
 # 📌 PR — Ready for Review
 
 ## Ticket
+
 [Basecamp ticket link]
 
 ## Design Reference
+
 [Figma link or N/A]
 
----
-
 ## Content Source
+
 [Basecamp doc / content reference link or N/A]
 
 Content source linked and used: Yes / No / N/A
 
----
-
 ## Summary
+
 What was implemented (1–3 sentences).
 
----
-
 ## 🔧 Decisions & Scope Changes (MANDATORY)
+
 List any decisions that differ from the original ticket or were clarified during development.
 
 If none: **No changes from original spec**
-
----
 
 ## 🏗️ Self-Check (ALL REQUIRED)
 
@@ -36,8 +33,6 @@ If none: **No changes from original spec**
 
 **CodeRabbit Notes (if any):**
 
----
-
 ## 🧱 Architecture Check (UI work only)
 
 - [ ] Data from `src/data/*`
@@ -46,14 +41,13 @@ If none: **No changes from original spec**
 
 Skip only if no component or data changes — if skipping, state why.
 
----
+## Vercel Preview Link
 
-## Preview
 [url]
-
----
 
 ## 🔁 Handoff (if applicable)
 
+Short async video (Loom, etc.) for whoever continues this feature. Skip this section if you are shipping it to completion.
+
 - Next dev picking up: Yes / No
-- Handoff video posted: Yes / No / N/A
+- Handoff video: [URL] (required when picking up is **Yes**; use **N/A** when **No**)

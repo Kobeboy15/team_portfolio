@@ -115,6 +115,19 @@ jobs:
           require_not_placeholder "Content Source" "[Basecamp doc / content reference link or N/A]"
           require_not_placeholder "Preview" "[url]"
 
+          # Handoff (optional section): if author marks next dev = Yes, require a video URL in that block
+          HANDOFF_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Handoff/{flag=1;next}/^## /{flag=0}flag')
+          if [ -n "$HANDOFF_BLOCK" ]; then
+            if echo "$HANDOFF_BLOCK" | grep -Eiq '^- Next dev picking up:[[:space:]]*Yes[[:space:]]*/[[:space:]]*No'; then
+              :
+            elif echo "$HANDOFF_BLOCK" | grep -Eiq '^- Next dev picking up:[[:space:]]*Yes\b'; then
+              echo "$HANDOFF_BLOCK" | grep -Eiq 'https?://' || {
+                echo "❌ Handoff: Next dev picking up is Yes — add a handoff video URL (https://...) in this section"
+                FAILS=1
+              }
+            fi
+          fi
+
           if [ "$FAILS" -gt 0 ]; then
             echo ""
             echo "PR is not ready for review. Fix the items above."
