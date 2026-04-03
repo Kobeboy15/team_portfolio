@@ -1,5 +1,7 @@
 import Image, { ImageProps } from "next/image";
 
+import { PROJECT_IMAGE_LAYOUT } from "../../lib/projectImageLayout";
+
 /**
  * Placement presets from Figma (display size). Export assets at 2x for retina.
  * Use WebP for photos; SVG for icons/illustrations.
@@ -40,9 +42,9 @@ const placementConfig: Record<Exclude<ImageFramePlacement, "about-gallery-hero">
     sizes: "(min-width: 1536px) min(50vw, 2400px), (min-width: 768px) 600px, 90vw",
   },
   projects: {
-    width: 443,
-    height: 591,
-    sizes: "(min-width: 768px) 443px, 100vw",
+    width: PROJECT_IMAGE_LAYOUT.intrinsicWidth,
+    height: PROJECT_IMAGE_LAYOUT.intrinsicHeight,
+    sizes: PROJECT_IMAGE_LAYOUT.sizes,
   },
 };
 
@@ -101,6 +103,28 @@ export function ImageFrame({
   const sizes = sizesOverride ?? config.sizes;
   // const priority = priorityProp ?? placement === "hero"; * This is in case we want to go back to lazy loading
   const priority = true;
+
+  if (placement === "projects") {
+    return (
+      <div
+        className={cn(className)}
+        style={{ aspectRatio: `${width} / ${height}` }}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={sizes}
+          priority={priority}
+          placeholder={placeholder}
+          blurDataURL={blurDataURL}
+          className="object-contain h-full w-full"
+          quality={70}
+          {...rest}
+        />
+      </div>
+    );
+  }
 
   return (
     <Image
