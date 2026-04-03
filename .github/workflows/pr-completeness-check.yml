@@ -44,7 +44,7 @@ jobs:
           require_pattern "^## Ticket" "Missing Ticket section"
           require_pattern "^## .*Design Reference" "Missing Design Reference section"
           require_pattern "^## .*Content Source" "Missing Content Source section"
-          require_pattern "^## Summary" "Missing Summary section"
+          require_pattern "^## .*Summary" "Missing Summary section"
           require_pattern "^## .*Decisions & Scope Changes" "Missing Decisions section"
           require_pattern "^## .*Self-Check" "Missing Self-Check section"
           require_pattern "^## .*Architecture Check" "Missing Architecture Check section"
@@ -85,10 +85,11 @@ jobs:
             FAILS=1
           fi
 
-          # Summary check (basic)
-          SUMMARY_BLOCK=$(echo "$PR_BODY" | awk '/^## Summary/{flag=1;next}/^## /{flag=0}flag')
-          if ! echo "$SUMMARY_BLOCK" | grep -Eiq '[A-Za-z]{10,}'; then
-            echo "❌ Summary too short or empty"
+          # Summary check: require meaningful text (total letters), not one 10+ char word
+          SUMMARY_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Summary/{flag=1;next}/^## /{flag=0}flag')
+          SUMMARY_LETTERS=$(echo "$SUMMARY_BLOCK" | tr -cd 'A-Za-z')
+          if [ "${#SUMMARY_LETTERS}" -lt 30 ]; then
+            echo "❌ Summary too short or empty (need more substance under ## Summary)"
             FAILS=1
           fi
 
