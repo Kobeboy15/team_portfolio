@@ -45,7 +45,16 @@ export default function ContactForm() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      let data: { message?: string; success?: boolean };
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error(
+          response.status === 429
+            ? "Too many requests. Please try again later."
+            : "Something went wrong."
+        );
+      }
 
       if (!response.ok) {
         throw new Error(data.message || "Something went wrong.");
@@ -128,6 +137,7 @@ export default function ContactForm() {
       <div>
         <Button
           type="submit"
+          disabled={status === "loading"}
           className="cursor-pointer"
           icon={
             <svg
