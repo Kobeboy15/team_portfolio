@@ -14,7 +14,7 @@ export function AboutGallery() {
   }
 
   return (
-    <div className="flex h-dvh pb-17 min-h-full w-max max-w-none flex-row flex-nowrap overflow-y-hidden [scrollbar-gutter:stable]">
+    <div className="flex h-dvh min-h-full w-max max-w-none flex-row flex-nowrap overflow-y-hidden [scrollbar-gutter:stable]">
       {halls.map((hall) => (
         <Fragment key={hall.yearId}>
           <AboutGallerySeparator src={hall.separator.src} alt={hall.separator.alt} />
