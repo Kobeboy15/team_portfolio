@@ -1,4 +1,5 @@
 import type { Project } from "../../types/projects";
+import { PROJECT_IMAGE_LAYOUT } from "../../lib/projectImageLayout";
 
 import { Heading } from "../ui/Heading";
 import { ImageFrame } from "../ui/ImageFrame";
@@ -98,7 +99,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
             placement="projects"
             src={project.image}
             alt={project.imageAlt}
-            className="h-auto w-full max-w-[443px] object-cover lg:max-w-[360px] xl:max-w-[443px] 2xl:max-w-(--token-project-image-width)"
+            className={PROJECT_IMAGE_LAYOUT.frameClassName}
           />
         </div>
 

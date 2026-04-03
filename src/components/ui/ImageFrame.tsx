@@ -1,5 +1,7 @@
 import Image, { ImageProps } from "next/image";
 
+import { PROJECT_IMAGE_LAYOUT } from "../../lib/projectImageLayout";
+
 /**
  * Placement presets from Figma (display size). Export assets at 2x for retina.
  * Use WebP for photos; SVG for icons/illustrations.
@@ -40,9 +42,9 @@ const placementConfig: Record<Exclude<ImageFramePlacement, "about-gallery-hero">
     sizes: "(min-width: 1536px) min(50vw, 2400px), (min-width: 768px) 600px, 90vw",
   },
   projects: {
-    width: 443,
-    height: 591,
-    sizes: "(min-width: 3840px) 1570px, (min-width: 3200px) 1300px, (min-width: 2560px) 1000px, (min-width: 1920px) 675px, (min-width: 1536px) 443px, (min-width: 1280px) 443px, (min-width: 1024px) 360px, (min-width: 768px) 443px, 100vw",
+    width: PROJECT_IMAGE_LAYOUT.intrinsicWidth,
+    height: PROJECT_IMAGE_LAYOUT.intrinsicHeight,
+    sizes: PROJECT_IMAGE_LAYOUT.sizes,
   },
 };
 
