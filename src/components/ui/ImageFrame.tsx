@@ -42,7 +42,7 @@ const placementConfig: Record<Exclude<ImageFramePlacement, "about-gallery-hero">
   projects: {
     width: 443,
     height: 591,
-    sizes: "(min-width: 3200px) 960px, (min-width: 2560px) 750px, (min-width: 1920px) 560px, (min-width: 1536px) 443px, (min-width: 1280px) 443px, (min-width: 1024px) 360px, (min-width: 768px) 443px, 100vw",
+    sizes: "(min-width: 3840px) 1570px, (min-width: 3200px) 1300px, (min-width: 2560px) 1000px, (min-width: 1920px) 675px, (min-width: 1536px) 443px, (min-width: 1280px) 443px, (min-width: 1024px) 360px, (min-width: 768px) 443px, 100vw",
   },
 };
 

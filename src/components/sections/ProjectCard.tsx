@@ -93,7 +93,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
         </div>
 
         {/* Project Image */}
-        <div className="min-w-0 flex justify-start lg:justify-center">
+        <div className="min-w-0 flex justify-center">
           <ImageFrame
             placement="projects"
             src={project.image}

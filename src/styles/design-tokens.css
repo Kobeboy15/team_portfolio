@@ -140,8 +140,8 @@
     );
 
     /* Project image - fluid from 2xl up, with a cap that still respects shorter viewports. */
-    --token-project-image-fluid-slope: 0.3;
-    --token-project-image-max: min(960px, calc((100dvh - 10rem) * 0.749577));
+    --token-project-image-fluid-slope: 0.6;
+    --token-project-image-max: min(1600px, calc((100dvh - 4rem) * 0.749577));
     --token-project-image-width: clamp(
       443px,
       calc(443px + (100vw - 1536px) * var(--token-project-image-fluid-slope)),
