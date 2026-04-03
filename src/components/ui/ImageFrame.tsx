@@ -104,6 +104,28 @@ export function ImageFrame({
   // const priority = priorityProp ?? placement === "hero"; * This is in case we want to go back to lazy loading
   const priority = true;
 
+  if (placement === "projects") {
+    return (
+      <div
+        className={cn(className)}
+        style={{ aspectRatio: `${width} / ${height}` }}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          sizes={sizes}
+          priority={priority}
+          placeholder={placeholder}
+          blurDataURL={blurDataURL}
+          className="object-contain h-full w-full"
+          quality={70}
+          {...rest}
+        />
+      </div>
+    );
+  }
+
   return (
     <Image
       src={src}
