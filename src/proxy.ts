@@ -5,7 +5,7 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const LIMIT = 5;
 const WINDOW_MS = 60_000;
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   if (request.nextUrl.pathname !== "/api/contact") {
     return NextResponse.next();
   }
