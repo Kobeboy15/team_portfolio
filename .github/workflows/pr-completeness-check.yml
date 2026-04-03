@@ -1,0 +1,124 @@
+name: PR Completeness Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+jobs:
+  check-pr-body:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR description completeness
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          FAILS=0
+
+          echo "Running PR completeness check..."
+
+          require_pattern() {
+            PATTERN="$1"
+            MESSAGE="$2"
+            echo "$PR_BODY" | grep -Eiq "$PATTERN" || {
+              echo "❌ $MESSAGE"
+              FAILS=1
+            }
+          }
+
+          require_not_placeholder() {
+            LABEL="$1"
+            PLACEHOLDER="$2"
+            VALUE=$(echo "$PR_BODY" | awk "/^## $LABEL/{flag=1;next}/^## /{flag=0}flag" | tr -d '\r')
+            echo "$VALUE" | grep -Fqi "$PLACEHOLDER" && {
+              echo "❌ $LABEL still contains placeholder text"
+              FAILS=1
+            }
+          }
+
+          # Section presence (headings may include emoji/suffix after ## )
+          require_pattern "^## Ticket" "Missing Ticket section"
+          require_pattern "^## .*Design Reference" "Missing Design Reference section"
+          require_pattern "^## .*Content Source" "Missing Content Source section"
+          require_pattern "^## Summary" "Missing Summary section"
+          require_pattern "^## .*Decisions & Scope Changes" "Missing Decisions section"
+          require_pattern "^## .*Self-Check" "Missing Self-Check section"
+          require_pattern "^## .*Architecture Check" "Missing Architecture Check section"
+          require_pattern "^## Preview" "Missing Preview section"
+
+          # Ticket block extraction (multiline-safe)
+          TICKET_BLOCK=$(echo "$PR_BODY" | awk '/^## Ticket/{flag=1;next}/^## /{flag=0}flag')
+          echo "$TICKET_BLOCK" | grep -Eiq 'https?://' || {
+            echo "❌ Ticket link missing or still placeholder"
+            FAILS=1
+          }
+
+          # Preview check
+          PREVIEW_BLOCK=$(echo "$PR_BODY" | awk '/^## Preview/{flag=1;next}/^## /{flag=0}flag')
+          echo "$PREVIEW_BLOCK" | grep -Eiq 'https?://|localhost' || {
+            echo "❌ Preview URL missing"
+            FAILS=1
+          }
+
+          # Design reference check
+          DESIGN_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Design Reference/{flag=1;next}/^## /{flag=0}flag')
+          echo "$DESIGN_BLOCK" | grep -Eiq 'https?://|N/A' || {
+            echo "❌ Design Reference must contain link or N/A"
+            FAILS=1
+          }
+
+          # Content source check
+          CONTENT_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Content Source/{flag=1;next}/^## /{flag=0}flag')
+          echo "$CONTENT_BLOCK" | grep -Eiq 'https?://|N/A' || {
+            echo "❌ Content Source must contain link or N/A"
+            FAILS=1
+          }
+
+          echo "$CONTENT_BLOCK" | grep -Eiq 'Content source linked and used:[[:space:]]*(Yes|No|N/A)' || {
+            echo "❌ Content source usage not specified"
+            FAILS=1
+          }
+
+          # Summary check (basic)
+          SUMMARY_BLOCK=$(echo "$PR_BODY" | awk '/^## Summary/{flag=1;next}/^## /{flag=0}flag')
+          echo "$SUMMARY_BLOCK" | grep -Eiq '[A-Za-z]{10,}' || {
+            echo "❌ Summary too short or empty"
+            FAILS=1
+          }
+
+          # Decisions check
+          DECISIONS_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Decisions & Scope Changes/{flag=1;next}/^## /{flag=0}flag')
+          echo "$DECISIONS_BLOCK" | grep -Eiq 'No changes from original spec|[A-Za-z]{8,}' || {
+            echo "❌ Decisions section empty"
+            FAILS=1
+          }
+
+          # Self-check boxes
+          SELF_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Self-Check/{flag=1;next}/^## /{flag=0}flag')
+          UNCHECKED_SELF=$(echo "$SELF_BLOCK" | grep -c '^- \[ \]' || true)
+          if [ "$UNCHECKED_SELF" -gt 0 ]; then
+            echo "❌ $UNCHECKED_SELF unchecked Self-Check items"
+            FAILS=1
+          fi
+
+          # Architecture check logic
+          ARCH_BLOCK=$(echo "$PR_BODY" | awk '/^## .*Architecture Check/{flag=1;next}/^## /{flag=0}flag')
+          UNCHECKED_ARCH=$(echo "$ARCH_BLOCK" | grep -c '^- \[ \]' || true)
+
+          if [ "$UNCHECKED_ARCH" -gt 0 ] && ! echo "$ARCH_BLOCK" | grep -Eiq 'because|reason|no component or data changes|N/A'; then
+            echo "❌ Architecture check incomplete without justification"
+            FAILS=1
+          fi
+
+          # Placeholder checks
+          require_not_placeholder "Ticket" "[Basecamp ticket link]"
+          require_not_placeholder "Design Reference" "[Figma link or N/A]"
+          require_not_placeholder "Content Source" "[Basecamp doc / content reference link or N/A]"
+          require_not_placeholder "Preview" "[url]"
+
+          if [ "$FAILS" -gt 0 ]; then
+            echo ""
+            echo "PR is not ready for review. Fix the items above."
+            exit 1
+          fi
+
+          echo "✅ PR description check passed"
