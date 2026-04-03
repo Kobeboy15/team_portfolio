@@ -4,6 +4,14 @@ import { HeroSection } from "../components/sections/HeroSection";
 import { AboutSection } from "../components/sections/about/AboutSection";
 import { SkillsSection } from "../components/sections/SkillsSection";
 import { ProjectsSection } from "../components/sections/ProjectsSection";
+import { ContactSection } from "../components/sections/ContactSection";
+
+import {
+  ButtonTestSection,
+  CardTestSection,
+  HeadingTestSection,
+  ImageFrameTestSection,
+} from "../components/test-components";
 
 export default function Home() {
   return (
@@ -14,6 +22,7 @@ export default function Home() {
         <AboutSection />
         <SkillsSection />
         <ProjectsSection />
+        <ContactSection />
       </main>
     </div>
   );
