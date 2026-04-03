@@ -26,6 +26,7 @@ export default function Home() {
         <AboutSection />
         <SkillsSection />
       </main>
+      hello
     </div>
   );
 }
