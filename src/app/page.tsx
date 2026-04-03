@@ -3,6 +3,7 @@ import { NavigationHeader } from "../components/ui/NavigationHeader";
 import { HeroSection } from "../components/sections/HeroSection";
 import { AboutSection } from "../components/sections/about/AboutSection";
 import { SkillsSection } from "../components/sections/SkillsSection";
+import { ContactSection } from "../components/sections/ContactSection";
 
 import {
   ButtonTestSection,
@@ -25,6 +26,7 @@ export default function Home() {
         <ImageFrameTestSection /> */}
         <AboutSection />
         <SkillsSection />
+        <ContactSection />
       </main>
     </div>
   );

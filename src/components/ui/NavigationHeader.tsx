@@ -12,6 +12,7 @@ export function NavigationHeader() {
   const toggle = () => setIsOpen((prev) => !prev);
   const [visible, setVisible] = useState(true);
   const [isInHero, setIsInHero] = useState(false);
+  const [isInContact, setIsInContact] = useState(false);
 
   const lastScrollY = useRef(0);
   const pathname = usePathname();
@@ -22,7 +23,7 @@ export function NavigationHeader() {
 
       if (currentScrollY < 10) {
         setVisible(true);
-      } else if (currentScrollY > lastScrollY.current) {
+      } else if (currentScrollY > lastScrollY.current && !isInContact) {
         setVisible(false);
         setIsOpen(false);
       } else {
@@ -34,7 +35,7 @@ export function NavigationHeader() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isInContact]);
 
   // Lock body scroll when mobile menu is open (mobile only)
   useEffect(() => {
@@ -86,14 +87,40 @@ export function NavigationHeader() {
     };
   }, [pathname]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    const el = document.getElementById("contact");
+    if (!el) {
+      Promise.resolve().then(() => {
+        if (!cancelled) setIsInContact(false);
+      });
+      return () => { cancelled = true; };
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInContact(entry.isIntersecting);
+      },
+      { root: null, threshold: 0, rootMargin: "-72px 0px -100% 0px" }
+    );
+
+    observer.observe(el);
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+    };
+  }, [pathname]);
+
   const navItems = ["About", "Expertise", "Projects", "Contact"];
 
   return (
     <>
       <header
-        className={`bg-background fixed top-0 left-0 z-50 h-18 w-screen
+        className={`${isInContact? "bg-transparent" : "bg-background"} fixed top-0 left-0 z-50 h-18 w-screen
           transition-transform duration-300 ease-in-out
-          ${visible ? "translate-y-0" : "-translate-y-full"}`}
+          ${visible ? "translate-y-0" : "-translate-y-full"}
+          ${isInContact ? "max-md:opacity-0 max-md:pointer-events-none" : ""}`}
       >
         <div className="flex items-center justify-between h-full px-6 md:px-16 py-4">
           {/* Home button / brand */}
