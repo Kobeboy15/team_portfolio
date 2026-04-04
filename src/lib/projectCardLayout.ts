@@ -2,6 +2,10 @@
  * Fixed **content** heights for the desktop (lg+) project card skeleton.
  * Labels sit outside these boxes. Edit here to retune the sticky-scroll frame.
  *
+ * Tech, Outcomes, and link rows in `ProjectCardDesktop` are always mounted
+ * (with empty placeholders when needed) so the sticky index swap does not
+ * shift layout.
+ *
  * @see https://valentincheval.design/projects/
  */
 export const PROJECT_CARD_DESKTOP_CONTENT_HEIGHT_PX = {
