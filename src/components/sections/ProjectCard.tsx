@@ -180,17 +180,17 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
 
       {/* lg+: fixed skeleton — Cheval-style stable frame for future sticky index */}
       <div className="hidden w-full lg:block">
-        <div className="grid gap-8 lg:grid-cols-[minmax(270px,1fr)_minmax(280px,360px)_minmax(0,220px)] lg:items-stretch lg:gap-y-10 lg:gap-x-6 xl:grid-cols-[minmax(240px,350px)_minmax(320px,443px)_minmax(180px,280px)] xl:gap-x-10 2xl:grid-cols-[minmax(260px,350px)_minmax(443px,var(--token-project-image-width))_minmax(260px,350px)] 2xl:gap-x-[clamp(32px,6vw,123px)]">
-          <div className="flex min-h-0 min-w-0 flex-col gap-8 lg:gap-10">
+        <div className="mx-auto grid w-full max-w-[min(100%,90rem)] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)_minmax(0,1fr)] lg:items-stretch lg:gap-y-10 lg:gap-x-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,443px)_minmax(0,1fr)] xl:gap-x-10 2xl:max-w-[min(100%,160rem)] 2xl:grid-cols-[minmax(0,1fr)_minmax(443px,var(--token-project-image-width))_minmax(0,1fr)] 2xl:gap-x-[clamp(32px,6vw,123px)]">
+          <div className="flex min-h-0 min-w-0 flex-col gap-8 lg:h-full lg:justify-center lg:gap-10">
             <header aria-hidden className="shrink-0">
               <div
                 className="flex flex-col justify-end overflow-hidden"
                 style={contentHeightStyle(H.title)}
               >
                 <Heading
-                  size="display-96"
+                  size="display-64"
                   as="h2"
-                  className="line-clamp-2 text-display-48! leading-[0.8] sm:text-display-96!"
+                  className="line-clamp-2 xl:text-[5rem]! xl:leading-[0.8]! 2xl:text-display-96!"
                 >
                   <span>{project.title}</span>
                 </Heading>
@@ -246,7 +246,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
             />
           </div>
 
-          <div className="flex min-h-0 min-w-0 flex-col gap-8 lg:gap-10 xl:gap-12">
+          <div className="flex min-h-0 min-w-0 flex-col gap-8 lg:h-full lg:justify-center lg:gap-10 xl:gap-12">
             {project.techStack.length > 0 ? (
               <div className="flex min-h-0 flex-col gap-3">
                 <p className="font-sans text-sora-14 font-light text-accent">
@@ -285,7 +285,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
 
             {hasLinks ? (
               <div
-                className="mt-auto flex shrink-0 flex-col gap-3 pt-1"
+                className="flex shrink-0 flex-col gap-3 pt-1"
                 style={{
                   minHeight:
                     PROJECT_CARD_DESKTOP_LINK_ROW_MIN_HEIGHT_PX * 2 + 12,
