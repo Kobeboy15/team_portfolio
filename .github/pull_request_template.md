@@ -51,3 +51,12 @@ Short async video (Loom, etc.) for whoever continues this feature. Skip this sec
 
 - Next dev picking up: Yes / No
 - Handoff video: [URL] (required when picking up is **Yes**; use **N/A** when **No**)
+
+If "Yes", include the following context in your video:
+
+- Component: [name + file path]
+- What it expects: [props/data shape]
+- Where to connect: [file path + location]
+- Notes: [decisions, warnings, anything important]
+
+Tag the next dev in this PR.
