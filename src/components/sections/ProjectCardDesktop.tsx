@@ -1,3 +1,5 @@
+"use client";
+
 import type { Project } from "../../types/projects";
 import {
   PROJECT_CARD_DESKTOP_CONTENT_HEIGHT_PX,
@@ -6,8 +8,8 @@ import {
 import { PROJECT_IMAGE_LAYOUT } from "../../lib/projectImageLayout";
 
 import { Heading } from "../ui/Heading";
-import { ImageFrame } from "../ui/ImageFrame";
 
+import { ProjectImageTransition, RollingTextSlot } from "./projectCardDesktopMotion";
 import {
   cn,
   contentHeightStyle,
@@ -33,8 +35,10 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
         <div className="mx-auto grid w-full max-w-[min(100%,90rem)] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)_minmax(0,1fr)] lg:items-stretch lg:gap-y-10 lg:gap-x-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,443px)_minmax(0,1fr)] xl:gap-x-10 2xl:max-w-[min(100%,160rem)] 2xl:grid-cols-[minmax(0,1fr)_minmax(443px,var(--token-project-image-width))_minmax(0,1fr)] 2xl:gap-x-[clamp(32px,6vw,123px)]">
           <div className="flex min-h-0 min-w-0 flex-col gap-8 lg:h-full lg:justify-center lg:gap-10">
             <header aria-hidden className="shrink-0">
-              <div
-                className="flex flex-col justify-end overflow-hidden"
+              <RollingTextSlot
+                projectId={project.id}
+                slotId="title"
+                className="flex flex-col justify-end"
                 style={contentHeightStyle(H.title)}
               >
                 <Heading
@@ -44,9 +48,11 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                 >
                   <span>{project.title}</span>
                 </Heading>
-              </div>
-              <div
-                className="flex items-end overflow-hidden"
+              </RollingTextSlot>
+              <RollingTextSlot
+                projectId={project.id}
+                slotId="year"
+                className="flex items-end"
                 style={contentHeightStyle(H.year)}
               >
                 <Heading
@@ -57,37 +63,41 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                 >
                   {project.year}
                 </Heading>
-              </div>
+              </RollingTextSlot>
             </header>
 
             <div className="flex min-h-0 flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">Description</p>
-              <div
-                className="min-w-0 max-w-[34ch] overflow-hidden font-sans text-sora-14 font-light leading-6 text-foreground"
+              <RollingTextSlot
+                projectId={project.id}
+                slotId="description"
+                className="min-w-0 max-w-[34ch] font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.description)}
               >
                 <p className="line-clamp-8 whitespace-pre-line">
                   {project.description.join("\n\n")}
                 </p>
-              </div>
+              </RollingTextSlot>
             </div>
 
             <div className="flex flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">
                 Role/Project Type
               </p>
-              <div
-                className="min-w-0 overflow-hidden font-sans text-sora-14 font-light leading-6 text-foreground"
+              <RollingTextSlot
+                projectId={project.id}
+                slotId="role"
+                className="min-w-0 font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.role)}
               >
                 <p className="truncate">{project.role}</p>
-              </div>
+              </RollingTextSlot>
             </div>
           </div>
 
           <div className="flex h-full min-h-0 min-w-0 items-center justify-center">
-            <ImageFrame
-              placement="projects"
+            <ProjectImageTransition
+              projectId={project.id}
               src={project.image}
               alt={project.imageAlt}
               className={PROJECT_IMAGE_LAYOUT.frameClassName}
@@ -97,8 +107,10 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
           <div className="flex min-h-0 min-w-0 flex-col gap-8 lg:h-full lg:justify-center lg:gap-10 xl:gap-12">
             <div className="flex min-h-0 flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">Tech Stack</p>
-              <div
-                className="min-w-0 overflow-hidden font-sans text-sora-14 font-light leading-6 text-foreground"
+              <RollingTextSlot
+                projectId={project.id}
+                slotId="tech"
+                className="min-w-0 font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.techStack)}
               >
                 {project.techStack.length > 0 ? (
@@ -110,13 +122,15 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                     {"\u00A0"}
                   </p>
                 )}
-              </div>
+              </RollingTextSlot>
             </div>
 
             <div className="flex min-h-0 flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">Outcomes</p>
-              <div
-                className="min-w-0 overflow-hidden font-sans text-sora-14 font-light leading-6 text-foreground"
+              <RollingTextSlot
+                projectId={project.id}
+                slotId="outcomes"
+                className="min-w-0 font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.outcomes)}
               >
                 {project.outcomes.length > 0 ? (
@@ -132,7 +146,7 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                     <li className="sr-only">No outcomes listed.</li>
                   </ul>
                 )}
-              </div>
+              </RollingTextSlot>
             </div>
 
             <div
@@ -142,48 +156,52 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
               }}
             >
               <div
-                className="flex items-center overflow-hidden"
+                className="flex items-center"
                 style={{
                   minHeight: PROJECT_CARD_DESKTOP_LINK_ROW_MIN_HEIGHT_PX,
                 }}
               >
-                {project.liveUrl ? (
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 font-sans text-sora-14 font-light text-foreground transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                    aria-label={`${project.title} live demo`}
-                  >
-                    <span>View more</span>
-                    <ExternalLinkIcon />
-                  </a>
-                ) : (
-                  <LinkPlaceholder>
-                    <span>View more</span>
-                    <ExternalLinkIcon />
-                  </LinkPlaceholder>
-                )}
+                <RollingTextSlot projectId={project.id} slotId="cta-live" className="min-w-0">
+                  {project.liveUrl ? (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 font-sans text-sora-14 font-light text-foreground transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label={`${project.title} live demo`}
+                    >
+                      <span>View more</span>
+                      <ExternalLinkIcon />
+                    </a>
+                  ) : (
+                    <LinkPlaceholder>
+                      <span>View more</span>
+                      <ExternalLinkIcon />
+                    </LinkPlaceholder>
+                  )}
+                </RollingTextSlot>
               </div>
               <div
-                className="flex items-center overflow-hidden"
+                className="flex items-center"
                 style={{
                   minHeight: PROJECT_CARD_DESKTOP_LINK_ROW_MIN_HEIGHT_PX,
                 }}
               >
-                {project.githubUrl ? (
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-sans text-sora-14 font-light text-foreground/75 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                    aria-label={`${project.title} GitHub repository`}
-                  >
-                    GitHub
-                  </a>
-                ) : (
-                  <LinkPlaceholder>GitHub</LinkPlaceholder>
-                )}
+                <RollingTextSlot projectId={project.id} slotId="cta-github" className="min-w-0">
+                  {project.githubUrl ? (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-sans text-sora-14 font-light text-foreground/75 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label={`${project.title} GitHub repository`}
+                    >
+                      GitHub
+                    </a>
+                  ) : (
+                    <LinkPlaceholder>GitHub</LinkPlaceholder>
+                  )}
+                </RollingTextSlot>
               </div>
             </div>
           </div>
