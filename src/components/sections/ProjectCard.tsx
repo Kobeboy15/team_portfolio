@@ -34,7 +34,6 @@ function ProjectGroup({ label, items }: ProjectGroupProps) {
 }
 
 export function ProjectCard({ project, className }: ProjectCardProps) {
-  const titleId = `${project.id}-title`;
   const hasLinks = Boolean(project.liveUrl || project.githubUrl);
 
   return (
@@ -52,7 +51,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
                 as="h2"
                 className="text-display-48! leading-[0.8] sm:text-display-96!"
               >
-                <span id={titleId}>{project.title}</span>
+                {project.title}
               </Heading>
               <Heading
                 size="display-48"
