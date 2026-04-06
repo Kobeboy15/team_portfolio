@@ -1,4 +1,4 @@
-import type { Skill } from "../types/skills";
+import type { Skill, GridVariants } from "../types/skills";
 
 export const skills: Skill[] = [
   { 
@@ -70,6 +70,7 @@ export const skills: Skill[] = [
   { 
     order: 2,
     name: "Development", 
+    gridVariant: 3,
     bento: [
       {
         slot: "card1",
@@ -130,6 +131,7 @@ export const skills: Skill[] = [
   { 
     order: 3,
     name: "Operations", 
+    gridVariant: 2,
     bento: [
       {
         slot: "card1",
@@ -181,5 +183,66 @@ export const skills: Skill[] = [
         }
       },
     ],
+  },
+];
+
+export const desktopGridVariants : GridVariants[] = [
+  {
+    card1: { gridColumn: "1 / span 2", gridRow: "1 / span 4" },
+    card2: { gridColumn: "3 / span 1", gridRow: "1 / span 4" },
+    card3: { gridColumn: "1 / span 1", gridRow: "5 / span 5" },
+    card4: { gridColumn: "2 / span 1", gridRow: "5 / span 3" },
+    card5: { gridColumn: "3 / span 1", gridRow: "5 / span 7" },
+    card6: { gridColumn: "1 / span 1", gridRow: "10 / span 2" },
+    card7: { gridColumn: "2 / span 1", gridRow: "8 / span 4" },
+  },
+  {
+    card1: { gridColumn: "2 / span 2", gridRow: "8 / span 4" },
+    card2: { gridColumn: "1 / span 1", gridRow: "1 / span 4" },
+    card3: { gridColumn: "3 / span 1", gridRow: "3 / span 5" },
+    card4: { gridColumn: "1 / span 1", gridRow: "5 / span 3" },
+    card5: { gridColumn: "2 / span 1", gridRow: "1 / span 7" },
+    card6: { gridColumn: "3 / span 1", gridRow: "1 / span 2" },
+    card7: { gridColumn: "1 / span 1", gridRow: "8 / span 4" },
+  },
+  {
+    card1: { gridColumn: "2 / span 2", gridRow: "1 / span 4" },
+    card2: { gridColumn: "2 / span 1", gridRow: "5 / span 4" },
+    card3: { gridColumn: "1 / span 1", gridRow: "3 / span 5" },
+    card4: { gridColumn: "2 / span 1", gridRow: "9 / span 3" },
+    card5: { gridColumn: "3 / span 1", gridRow: "7 / span 7" },
+    card6: { gridColumn: "1 / span 1", gridRow: "1 / span 2" },
+    card7: { gridColumn: "1 / span 1", gridRow: "8 / span 4" },
+    card8: { gridColumn: "3 / span 1", gridRow: "5 / span 2" },
+  },
+];
+
+export const mobileGridVariants: GridVariants[] = [
+  {
+    card1: { gridColumn: "1 / span 2", gridRow: "1 / span 1" },
+    card2: { gridColumn: "1 / span 1", gridRow: "2 / span 1" },
+    card3: { gridColumn: "1 / span 2", gridRow: "3 / span 1" },
+    card4: { gridColumn: "2 / span 1", gridRow: "2 / span 1" },
+    card5: { gridColumn: "1 / span 2", gridRow: "5 / span 1" },
+    card6: { gridColumn: "1 / span 1", gridRow: "4 / span 1" },
+    card7: { gridColumn: "2 / span 1", gridRow: "4 / span 1" },
+  },
+  {
+    card1: { gridColumn: "1 / span 2", gridRow: "5 / span 1" },
+    card2: { gridColumn: "1 / span 1", gridRow: "4 / span 1" },
+    card3: { gridColumn: "1 / span 2", gridRow: "3 / span 1" },
+    card4: { gridColumn: "2 / span 1", gridRow: "4 / span 1" },
+    card5: { gridColumn: "1 / span 2", gridRow: "1 / span 1" },
+    card6: { gridColumn: "1 / span 1", gridRow: "2 / span 1" },
+    card7: { gridColumn: "2 / span 1", gridRow: "2 / span 1" },
+  },
+  {
+    card1: { gridColumn: "1 / span 2", gridRow: "2 / span 1" },
+    card2: { gridColumn: "1 / span 2", gridRow: "5 / span 1" },
+    card3: { gridColumn: "2 / span 1", gridRow: "4 / span 1" },
+    card4: { gridColumn: "1 / span 1", gridRow: "4 / span 1" },
+    card5: { gridColumn: "1 / span 1", gridRow: "1 / span 1" },
+    card6: { gridColumn: "2 / span 1", gridRow: "1 / span 1" },
+    card7: { gridColumn: "1 / span 2", gridRow: "3 / span 1" },
   },
 ];

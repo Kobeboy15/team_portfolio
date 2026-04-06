@@ -34,7 +34,7 @@ export function CardContent({ content }: { content: BentoContent }) {
     case "icon-carousel":
       return (
             <div className="w-full h-full flex flex-col items-center justify-center">
-                <div className="w-full flex flex-col md:flex-row justify-center items-center gap-4">
+                <div className="w-full flex flex-row justify-center items-center gap-4 py-2">
                     {
                     content.icons.map((icon, i) => (
                         <div key={i} className="overflow-hidden rounded-[10px] px-5 py-4 md:p-7 " style={{ background: `linear-gradient(to bottom, var(--token-background) 50%, var(--token-background-2) 100%)` }}>

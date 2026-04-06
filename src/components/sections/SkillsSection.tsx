@@ -28,7 +28,7 @@ export function SkillsSection() {
                         </div>
 
                         <div className="flex justify-center items-center w-full h-full p-2 md:px-0">
-                            <BentoGrid items={skill.bento}/>
+                            <BentoGrid items={skill.bento} variant={skill.gridVariant} />
                         </div>
                     </div>
                 </div>

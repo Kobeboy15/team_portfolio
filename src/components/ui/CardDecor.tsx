@@ -1,6 +1,8 @@
-import { VARIANTS } from "./BentoGrid";
+import { desktopGridVariants } from "@/src/data/skills";
 
-export function CardDecor({ slot }: { slot: keyof typeof VARIANTS }) {
+// TODO: This is a temporary component to add decor to the bento grid. It should be replaced with a more flexible solution in the future, such as allowing the BentoItem to specify a decor component or style.
+// for a later ticket, ignore for now
+export function CardDecor({ slot }: { slot: keyof typeof desktopGridVariants[2] }) {
   switch (slot) {
     case "card2":
     case "card5":
@@ -8,6 +10,7 @@ export function CardDecor({ slot }: { slot: keyof typeof VARIANTS }) {
     case "card1":
     case "card4":
     case "card6":
+    case "card8":
         return <div className="font-bebas bg-(--token-background-2) text-(--token-accent) w-full h-full flex justify-center items-center text-lg md:text-4xl">코비 마이클</div>;
     case "card7":
     case "card3":

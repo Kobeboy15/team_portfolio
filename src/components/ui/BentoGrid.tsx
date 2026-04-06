@@ -1,41 +1,21 @@
 import { BentoItem } from "@/src/types/skills";
+import { GridVariants } from "@/src/types/skills";
 
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { CardDecor } from "./CardDecor";
 
+import { desktopGridVariants, mobileGridVariants } from "@/src/data/skills";
+
 const COLS = 3;
 const ROWS = 11;
 
-// Desktop layout (3-col)
-export const VARIANTS = {
-    card1: { gridColumn: "1 / span 2", gridRow: "1 / span 4" },
-    card2: { gridColumn: "3 / span 1", gridRow: "1 / span 4" },
-    card3: { gridColumn: "1 / span 1", gridRow: "5 / span 5" },
-    card4: { gridColumn: "2 / span 1", gridRow: "5 / span 3" },
-    card5: { gridColumn: "3 / span 1", gridRow: "5 / span 7" },
-    card6: { gridColumn: "1 / span 1", gridRow: "10 / span 2" },
-    card7: { gridColumn: "2 / span 1", gridRow: "8 / span 4" },
-};
-
-// Mobile layout (2-col)
-const MOBILE_VARIANTS: typeof VARIANTS = {
-    card1: { gridColumn: "1 / span 2", gridRow: "1 / span 1" },
-    card2: { gridColumn: "1 / span 1", gridRow: "2 / span 1" },
-    card3: { gridColumn: "1 / span 2", gridRow: "3 / span 1" },
-    card4: { gridColumn: "2 / span 1", gridRow: "2 / span 1" },
-    card5: { gridColumn: "1 / span 2", gridRow: "5 / span 1" },
-    card6: { gridColumn: "1 / span 1", gridRow: "4 / span 1" },
-    card7: { gridColumn: "2 / span 1", gridRow: "4 / span 1" },
-};
-
+const MOBILE_COLS = 2;
 const MOBILE_ROWS = 5;
 
-const ALL_SLOTS = Object.keys(VARIANTS) as Array<keyof typeof VARIANTS>;
-
-export function BentoGrid({ items }: { items: BentoItem[] }) {
-    const desktopCards = fillGrid(items, VARIANTS);
-    const mobileCards = fillGrid(items, MOBILE_VARIANTS);
+export function BentoGrid({ items, variant }: { items: BentoItem[]; variant?: number }) {
+    const desktopCards = fillGrid(items, desktopGridVariants[(variant ?? 1) - 1]);
+    const mobileCards = fillGrid(items, mobileGridVariants[(variant ?? 1) - 1]);
 
     return (
         <div className="w-full h-full flex justify-center items-center">
@@ -54,7 +34,7 @@ export function BentoGrid({ items }: { items: BentoItem[] }) {
             <div
                 className="grid md:hidden gap-1 h-full w-full"
                 style={{
-                    gridTemplateColumns: `repeat(2, 1fr)`,
+                    gridTemplateColumns: `repeat(${MOBILE_COLS}, 1fr)`,
                     gridTemplateRows: `repeat(${MOBILE_ROWS}, 1fr)`,
                 }}
             >
@@ -66,10 +46,11 @@ export function BentoGrid({ items }: { items: BentoItem[] }) {
 
 function fillGrid(
     items: BentoItem[],
-    variants: typeof VARIANTS
+    variants: GridVariants
 ): React.ReactElement[] {
     const cards: React.ReactElement[] = [];
-    const usedSlots = new Set(items.map((item) => item.slot));
+    const usedSlots = new Set<string>(items.map((item) => item.slot));
+    const allSlots = Object.keys(variants) as Array<keyof typeof variants>;
 
     for (const item of items) {
         cards.push(
@@ -81,7 +62,7 @@ function fillGrid(
         );
     }
 
-    for (const slot of ALL_SLOTS) {
+    for (const slot of allSlots) {
         if (!usedSlots.has(slot)) {
             cards.push(
                 <div key={slot} style={variants[slot]}>
