@@ -18,17 +18,17 @@ export function SkillsSection() {
                             <span className="text-(--token-accent)">{skill.name.toUpperCase()}</span>
                         </div>
 
-                        <div className="font-bebas text-display-48 md:text-display-96 leading-none absolute -left-11 md:-left-22 top-0 hidden md:flex flex-col gap-0 items-center">
-                            <span>
-                                {String(skill.order).padStart(2, '0')}
-                            </span>
-                            <span className="text-(--token-accent) [writing-mode:vertical-rl] rotate-180">
-                                {skill.name.toUpperCase()}
-                            </span>
-                        </div>
-
                         <div className="flex justify-center items-center w-full h-full p-2 md:px-0">
-                            <BentoGrid items={skill.bento} variant={skill.gridVariant} />
+                            <div className="inline-flex flex-row">
+                                <div className="font-bebas text-display-96 leading-none hidden md:flex flex-col gap-0 items-center mr-4 shrink-0">
+                                    <span>{String(skill.order).padStart(2, '0')}</span>
+                                    <span className="text-(--token-accent) [writing-mode:vertical-rl] rotate-180">
+                                        {skill.name.toUpperCase()}
+                                    </span>
+                                </div>
+
+                                <BentoGrid items={skill.bento} variant={skill.gridVariant} />
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,8 @@
-import React from "react";
+"use client";
 
-type CardSize = "1" | "2" | "3" | "4" | "5" | "6" | "7";
+import React, { useEffect, useState } from "react";
+
+export type CardSize = "1" | "2" | "3" | "4" | "5" | "6" | "7";
 
 const sizeDimensions: Record<
   CardSize,
@@ -41,13 +43,28 @@ function cn(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
+function useIsMd() {
+  const [isMd, setIsMd] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setIsMd(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMd(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  return isMd;
+}
+
 export function Card({
   size,
   variant = "background2",
   className,
   children,
 }: CardProps) {
-  const dimensions = size ? sizeDimensions[size] : undefined;
+  const isMd = useIsMd();
+  const dimensions = size && isMd ? sizeDimensions[size] : undefined;
   const isGradient = variant === "gradient";
 
   const style: React.CSSProperties = {

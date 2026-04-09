@@ -1,7 +1,7 @@
 import { BentoItem } from "@/src/types/skills";
 import { GridVariants } from "@/src/types/skills";
 
-import { Card } from "./Card";
+import { Card, CardSize } from "./Card";
 import { CardContent } from "./CardContent";
 import { CardDecor } from "./CardDecor";
 
@@ -13,18 +13,28 @@ const ROWS = 11;
 const MOBILE_COLS = 2;
 const MOBILE_ROWS = 5;
 
+const SLOT_SIZE: Record<string, CardSize> = {
+  card1: "1",
+  card2: "2",
+  card3: "3",
+  card4: "4",
+  card5: "5",
+  card6: "6",
+  card7: "7",
+};
+
 export function BentoGrid({ items, variant }: { items: BentoItem[]; variant?: number }) {
     const desktopCards = fillGrid(items, desktopGridVariants[(variant ?? 1) - 1]);
     const mobileCards = fillGrid(items, mobileGridVariants[(variant ?? 1) - 1]);
 
     return (
-        <div className="w-full h-full flex justify-center items-center">
+        <div className="h-full flex justify-center items-center">
             {/* Desktop grid */}
             <div
-                className="hidden md:grid gap-1 md:gap-3 h-full w-full"
+                className="hidden md:grid gap-3"
                 style={{
-                    gridTemplateColumns: `repeat(${COLS}, 1fr)`,
-                    gridTemplateRows: `repeat(${ROWS}, 1fr)`,
+                    gridTemplateColumns: `repeat(${COLS}, auto)`,
+                    gridTemplateRows: `repeat(${ROWS}, auto)`,
                 }}
             >
                 {desktopCards}
@@ -55,7 +65,7 @@ function fillGrid(
     for (const item of items) {
         cards.push(
             <div key={item.slot} style={variants[item.slot]}>
-                <Card variant={item.cardVariant ?? "background2"}>
+                <Card variant={item.cardVariant ?? "background2"}  size={SLOT_SIZE[item.slot]}>
                     <CardContent content={item.content} />
                 </Card>
             </div>
@@ -66,7 +76,7 @@ function fillGrid(
         if (!usedSlots.has(slot)) {
             cards.push(
                 <div key={slot} style={variants[slot]}>
-                    <Card variant="accent">
+                    <Card variant="accent" size={SLOT_SIZE[slot]}>
                         <CardDecor slot={slot} />
                     </Card>
                 </div>

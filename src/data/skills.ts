@@ -7,6 +7,7 @@ export const skills: Skill[] = [
     bento: [
       {
         slot: "card1",
+        test: 1,
         content: 
         {
           type: "heading",
@@ -15,6 +16,7 @@ export const skills: Skill[] = [
       },
       {
         slot: "card3",
+        test: 3,
         cardVariant: "gradient",
         content: 
         {
@@ -25,6 +27,7 @@ export const skills: Skill[] = [
       },
       {
         slot: "card4",
+        test: 4,
         content: 
         {
           type: "icon",
@@ -36,6 +39,7 @@ export const skills: Skill[] = [
       },
       {
         slot: "card5",
+        test: 5,
         content: 
         {
           type: "icon-carousel",
@@ -59,6 +63,7 @@ export const skills: Skill[] = [
       },
       {
         slot: "card6",
+        test: 6,
         content: 
         {
           type: "sub-heading",
@@ -70,7 +75,7 @@ export const skills: Skill[] = [
   { 
     order: 2,
     name: "Development", 
-    gridVariant: 3,
+    // gridVariant: 3,
     bento: [
       {
         slot: "card1",
@@ -131,7 +136,7 @@ export const skills: Skill[] = [
   { 
     order: 3,
     name: "Operations", 
-    gridVariant: 2,
+    // gridVariant: 2,
     bento: [
       {
         slot: "card1",

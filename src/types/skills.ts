@@ -7,6 +7,7 @@ export type Skill = {
 
 export type BentoItem = {
   slot: "card1" | "card2" | "card3" | "card4" | "card5" | "card6" | "card7";
+  test?: number;
   content: BentoContent;
   cardVariant?: "background2" | "accent" | "gradient";
 }
