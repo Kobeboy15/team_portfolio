@@ -17,6 +17,8 @@ export function AboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [translateX, setTranslateX] = useState("0%");
+  const [scrollHeight, setScrollHeight] = useState("300vh");
+  const [totalScrollPx, setTotalScrollPx] = useState(0);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -30,8 +32,12 @@ export function AboutSection() {
       const totalWidth = contentRef.current.scrollWidth;
       const viewportWidth = window.innerWidth;
       const scrollDistance = totalWidth - viewportWidth;
+      setTotalScrollPx(totalWidth - viewportWidth);
       const percentage = (scrollDistance / totalWidth) * 100;
       setTranslateX(`-${percentage}%`);
+
+      const scrollMultiplier = totalWidth / viewportWidth;
+      setScrollHeight(`${scrollMultiplier * 100 * 2}vh`);
     };
 
     calculateTranslate();
@@ -45,7 +51,7 @@ export function AboutSection() {
   const x = useTransform(scrollYProgress, [0, 1], ["0%", translateX]);
 
   return (
-    <div ref={sectionRef} className="relative w-full" style={{ height: "300vh" }}>
+    <div ref={sectionRef} className="relative w-full" style={{ height: scrollHeight }}>
       <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
         <motion.div ref={contentRef} style={{ x }} className="flex flex-nowrap w-max max-h-full">
           {/* Heading + Bio */}
@@ -60,7 +66,7 @@ export function AboutSection() {
           <AboutPoints />
 
           {/* Gallery */}
-          <AboutGallery />
+          <AboutGallery scrollYProgress={scrollYProgress} totalScrollWidth={totalScrollPx} />
         </motion.div>
       </Section>
       <ScrollProgressBar scrollYProgress={scrollYProgress} targetId="about" />
