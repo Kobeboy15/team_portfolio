@@ -21,7 +21,7 @@ export function HeroSection() {
           </h1>
           <RotatingRolePhrases
             phrases={heroData.rolePhrases}
-            className="w-full text-header-2 tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap"
+            className="w-full -mt-2.5 text-header-2 tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap"
           />
         </div>
 

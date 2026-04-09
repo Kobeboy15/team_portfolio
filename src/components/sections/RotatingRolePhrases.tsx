@@ -90,10 +90,10 @@ export function RotatingRolePhrases({
         >
           <motion.span
             key={index}
-            className="absolute inset-x-0 top-0 block w-full will-change-transform"
-            initial={{ y: "100%" }}
+            className="absolute inset-x-0 top-2.5 block w-full will-change-transform"
+            initial={{ y: "120%" }}
             animate={{ y: 0 }}
-            exit={{ y: "-100%" }}
+            exit={{ y: "-120%" }}
             transition={ROLE_PHRASE_TRANSITION}
           >
             {currentPhrase}
