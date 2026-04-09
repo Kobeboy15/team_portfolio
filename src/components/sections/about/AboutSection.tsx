@@ -23,6 +23,11 @@ export function AboutSection() {
     offset: ["start start", "end end"],
   });
 
+  const { scrollYProgress: imageRevealProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "start start"],
+  });
+
   useEffect(() => {
     const calculateTranslate = () => {
       if (!contentRef.current) return;
@@ -49,7 +54,7 @@ export function AboutSection() {
       <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
         <motion.div ref={contentRef} style={{ x }} className="flex flex-nowrap w-max max-h-full">
           {/* Heading + Bio */}
-          <AboutBio />
+          <AboutBio imageRevealProgress={imageRevealProgress} />
 
           {/* Points */}
           <section className="relative h-dvh w-[70vw] shrink-0 overflow-hidden" aria-label={aboutData.pointsImageAlt}>

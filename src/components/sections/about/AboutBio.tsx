@@ -1,7 +1,9 @@
+import type { MotionValue } from "framer-motion";
+
 import { aboutData } from "../../../data/about";
 
 import { Heading } from "../../ui/Heading";
-import { ImageFrame } from "../../ui/ImageFrame";
+import { AboutBioProfileImage } from "./AboutBioProfileImage";
 
 /**
  * Image display width per min-width tier: round(viewport × 594/1280), so 1280px → 594px.
@@ -38,13 +40,17 @@ const aboutImageSizes = [
   "100vw",
 ].join(", ");
 
-export function AboutBio() {
+export function AboutBio({
+  imageRevealProgress,
+}: {
+  imageRevealProgress?: MotionValue<number>;
+}) {
   return (
     <div className="w-screen max-h-dvh shrink-0 flex items-center justify-center md:justify-between bg-bio-background text-bio-text">
       {/* Wrapper mx: round(vp × 20/1280) per side — same scale as image (mx-5 ≈ 20px at 1280px). */}
       <div className="hidden lg:block min-[1024px]:mx-[16px] min-[1280px]:mx-[20px] min-[1600px]:mx-[25px] min-[1920px]:mx-[30px] min-[2160px]:mx-[34px] min-[2500px]:mx-[39px] min-[3000px]:mx-[47px] min-[3400px]:mx-[53px] min-[3800px]:mx-[59px] min-[4200px]:mx-[66px] min-[4600px]:mx-[72px] min-[5060px]:mx-[79px]">
-        <ImageFrame
-          placement="about"
+        <AboutBioProfileImage
+          imageRevealProgress={imageRevealProgress}
           src={aboutData.profileImage}
           alt={aboutData.profileImageAlt}
           sizes={aboutImageSizes}
