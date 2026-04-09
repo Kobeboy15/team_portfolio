@@ -52,7 +52,9 @@ export function AboutGalleryWall({
 
   const { offsetLeft, width } = wallData;
 
-  const clampedWidth = width - yearWidth - 100;
+    const availableTravel = Math.max(0, width - yearWidth - 100);
+    const remainingTrack = Math.max(0, totalScrollWidth - offsetLeft);
+    const clampedWidth = Math.min(availableTravel, remainingTrack);
 
   const enter = totalScrollWidth > 0 ? offsetLeft / totalScrollWidth : 0;
   const exit = totalScrollWidth > 0 ? (offsetLeft + clampedWidth) / totalScrollWidth : 1;
