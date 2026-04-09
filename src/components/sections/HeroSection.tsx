@@ -2,6 +2,7 @@ import { Section } from "../ui/Section";
 
 import { Button } from "../ui/Button";
 import { ImageFrame } from "../ui/ImageFrame";
+import { RotatingRolePhrases } from "./RotatingRolePhrases";
 
 import { heroData } from "../../data/hero";
 
@@ -18,11 +19,10 @@ export function HeroSection() {
           <h1 className="w-full text-header-1 tracking-display font-bebas whitespace-nowrap">
             {heroData.name}
           </h1>
-          {heroData.rolePhrases.length > 0 && (
-            <h2 className="w-full text-header-2 tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap">
-              {heroData.rolePhrases[0]}
-            </h2>
-          )}
+          <RotatingRolePhrases
+            phrases={heroData.rolePhrases}
+            className="w-full text-header-2 tracking-display font-bebas text-center sm:text-left text-accent whitespace-nowrap"
+          />
         </div>
 
         {/* Hero Bio and CTA */}
