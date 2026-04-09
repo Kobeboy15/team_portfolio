@@ -46,6 +46,7 @@ export function AboutGalleryWall({
     measure();
     const ro = new ResizeObserver(measure);
     if (yearRef.current) ro.observe(yearRef.current);
+    if (wallRef.current) ro.observe(wallRef.current);
     return () => ro.disconnect();
   }, []);
 
