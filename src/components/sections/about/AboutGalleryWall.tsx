@@ -83,14 +83,14 @@ export function AboutGalleryWall({
         style={{ x: yearX }}
         ref={yearRef}
         className={cn(
-          "absolute left-2 md:left-20 bottom-0 md:bottom-6 shrink-0 font-bebas uppercase",
+          "absolute left-2 md:left-20 bottom-0 md:bottom-6 shrink-0 font-bebas uppercase z-0",
           "text-display-96 md:text-years leading-(--text-years--line-height) tracking-years",
         )}
       >
         {year}
       </motion.h2>
 
-      <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center py-10 min-[768px]:py-12 gap-24 min-[768px]:gap-36 min-[1024px]:gap-48 min-[1280px]:gap-60 min-[1536px]:gap-72 min-[1920px]:gap-[360px] min-[2160px]:gap-[405px] min-[2500px]:gap-[469px] min-[3000px]:gap-[563px] min-[3400px]:gap-[638px] min-[3800px]:gap-[713px] min-[4200px]:gap-[788px] min-[4600px]:gap-[863px] min-[5060px]:gap-[949px]">
+      <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center py-10 min-[768px]:py-12 gap-24 min-[768px]:gap-36 min-[1024px]:gap-48 min-[1280px]:gap-60 min-[1536px]:gap-72 min-[1920px]:gap-[360px] min-[2160px]:gap-[405px] min-[2500px]:gap-[469px] min-[3000px]:gap-[563px] min-[3400px]:gap-[638px] min-[3800px]:gap-[713px] min-[4200px]:gap-[788px] min-[4600px]:gap-[863px] min-[5060px]:gap-[949px] z-1">
         {items.map((slide, index) => (
           <AboutGallerySlide key={`${slide.image}-${index}`} {...slide} />
         ))}
