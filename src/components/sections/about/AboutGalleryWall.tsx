@@ -1,6 +1,4 @@
-"use client";
-
-import { useRef, useLayoutEffect, useState } from "react";
+import { useRef, useLayoutEffect, useState, useMemo } from "react";
 import { useTransform, motion, MotionValue } from "framer-motion";
 import type { AboutSlide } from "../../../types/about";
 import { AboutGallerySlide } from "./AboutGallerySlide";
@@ -27,42 +25,55 @@ export function AboutGalleryWall({
   totalScrollWidth,
 }: AboutGalleryWallProps) {
   const wallRef = useRef<HTMLElement>(null);
-  const [wallData, setWallData] = useState({ offsetLeft: 0, width: 0 });
   const yearRef = useRef<HTMLHeadingElement>(null);
+
+  const [wallData, setWallData] = useState({ offsetLeft: 0, width: 0 });
   const [yearWidth, setYearWidth] = useState(0);
 
   useLayoutEffect(() => {
     const measure = () => {
-      if (yearRef.current) {
-        setYearWidth(yearRef.current.offsetWidth);
-      }
-      if (wallRef.current) {
+      if (yearRef.current) setYearWidth(yearRef.current.offsetWidth);
+      if (wallRef.current)
         setWallData({
           offsetLeft: wallRef.current.offsetLeft,
           width: wallRef.current.offsetWidth,
         });
-      }
     };
+
     measure();
+
     const ro = new ResizeObserver(measure);
+    const scrollContainer = wallRef.current?.closest<HTMLElement>(
+      "[data-scroll-container]"
+    );
+    if (scrollContainer) ro.observe(scrollContainer);
     if (yearRef.current) ro.observe(yearRef.current);
     if (wallRef.current) ro.observe(wallRef.current);
-    return () => ro.disconnect();
+
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
   }, []);
 
-  const { offsetLeft, width } = wallData;
-
+  const { enter, exit, clampedWidth } = useMemo(() => {
+    const { offsetLeft, width } = wallData;
     const availableTravel = Math.max(0, width - yearWidth - 100);
     const remainingTrack = Math.max(0, totalScrollWidth - offsetLeft);
     const clampedWidth = Math.min(availableTravel, remainingTrack);
-
-  const enter = totalScrollWidth > 0 ? offsetLeft / totalScrollWidth : 0;
-  const exit = totalScrollWidth > 0 ? (offsetLeft + clampedWidth) / totalScrollWidth : 1;
+    const enter = totalScrollWidth > 0 ? offsetLeft / totalScrollWidth : 0;
+    const exit =
+      totalScrollWidth > 0
+        ? (offsetLeft + clampedWidth) / totalScrollWidth
+        : 1;
+    return { enter, exit, clampedWidth };
+  }, [wallData, yearWidth, totalScrollWidth]);
 
   const yearX = useTransform(
     scrollYProgress,
     [0, enter, exit, 1],
-    [0, 0, clampedWidth, clampedWidth],
+    [0, 0, clampedWidth, clampedWidth]
   );
 
   return (
@@ -71,11 +82,10 @@ export function AboutGalleryWall({
       className={cn(
         "flex relative h-full w-max min-h-0 shrink-0 flex-row items-center text-foreground",
         "pl-6 md:pl-12 2xl:pl-20 pr-16 md:pr-28 lg:pr-44 2xl:pr-72 gap-16",
-        backgroundClassName,
+        backgroundClassName
       )}
       aria-labelledby={yearId}
     >
-      {/* Space placeholder for the year */}
       <div className="block w-[305px] lg:w-[330px]" />
 
       <motion.h2
@@ -84,7 +94,7 @@ export function AboutGalleryWall({
         ref={yearRef}
         className={cn(
           "absolute left-2 md:left-20 bottom-0 md:bottom-6 shrink-0 font-bebas uppercase z-0",
-          "text-display-96 md:text-years leading-(--text-years--line-height) tracking-years",
+          "text-display-96 md:text-years leading-(--text-years--line-height) tracking-years"
         )}
       >
         {year}

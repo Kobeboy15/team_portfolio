@@ -37,7 +37,7 @@ export function AboutSection() {
       setTranslateX(`-${percentage}%`);
 
       const isMobile = window.innerWidth < 768;
-      const speedMod = isMobile ? 1.5 : 1;
+      const speedMod = isMobile ? 0.75 : 1;
       setScrollHeight(`${(scrollDistance * speedMod) + window.innerHeight}px`);
     };
 
