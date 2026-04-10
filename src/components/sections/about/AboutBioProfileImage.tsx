@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   motion,
   useReducedMotion,
@@ -10,8 +9,6 @@ import {
 } from "framer-motion";
 
 import { ImageFrame } from "../../ui/ImageFrame";
-
-const LG_MEDIA_QUERY = "(min-width: 1024px)";
 
 /** Spring config — same feel as hero shrink (tune here). */
 const SCALE_SPRING = { stiffness: 160, damping: 28 };
@@ -33,26 +30,7 @@ export function AboutBioProfileImage({
   sizes,
   className,
 }: AboutBioProfileImageProps) {
-  const [isLgUp, setIsLgUp] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const mediaQuery = window.matchMedia(LG_MEDIA_QUERY);
-    const sync = () => setIsLgUp(mediaQuery.matches);
-
-    sync();
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", sync);
-      return () => mediaQuery.removeEventListener("change", sync);
-    }
-
-    mediaQuery.addListener(sync);
-    return () => mediaQuery.removeListener(sync);
-  }, []);
-
-  if (!isLgUp || !imageRevealProgress) {
+  if (!imageRevealProgress) {
     return (
       <ImageFrame
         placement="about"

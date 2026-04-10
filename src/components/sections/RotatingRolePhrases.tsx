@@ -85,7 +85,9 @@ export function RotatingRolePhrases({
           initial={false}
           mode="sync"
           onExitComplete={() => {
-            setAnnouncedPhrase(phrases[index]);
+            const safePhrase =
+              phrases[index] ?? phrases[phrases.length - 1] ?? "";
+            setAnnouncedPhrase(safePhrase);
           }}
         >
           <motion.span
