@@ -31,9 +31,9 @@ export function AboutSection() {
 
       const totalWidth = contentRef.current.scrollWidth;
       const viewportWidth = window.innerWidth;
-      const scrollDistance = totalWidth - viewportWidth;
-      setTotalScrollPx(totalWidth - viewportWidth);
-      const percentage = (scrollDistance / totalWidth) * 100;
+      const scrollDistance = Math.max(0, totalWidth - viewportWidth);
+      setTotalScrollPx(scrollDistance);
+      const percentage = totalWidth > 0 ? (scrollDistance / totalWidth) * 100 : 0;
       setTranslateX(`-${percentage}%`);
 
       const isMobile = window.innerWidth < 768;
@@ -58,7 +58,7 @@ export function AboutSection() {
   return (
     <div ref={sectionRef} className="relative w-full" style={{ height: scrollHeight }}>
       <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
-        <motion.div ref={contentRef} style={{ x }} className="flex flex-nowrap w-max max-h-full">
+        <motion.div ref={contentRef} data-scroll-container style={{ x }} className="flex flex-nowrap w-max max-h-full">
           {/* Heading + Bio */}
           <AboutBio />
 

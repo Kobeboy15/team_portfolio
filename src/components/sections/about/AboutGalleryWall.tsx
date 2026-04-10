@@ -59,14 +59,16 @@ export function AboutGalleryWall({
 
   const { enter, exit, clampedWidth } = useMemo(() => {
     const { offsetLeft, width } = wallData;
+    
     const availableTravel = Math.max(0, width - yearWidth - 100);
     const remainingTrack = Math.max(0, totalScrollWidth - offsetLeft);
     const clampedWidth = Math.min(availableTravel, remainingTrack);
-    const enter = totalScrollWidth > 0 ? offsetLeft / totalScrollWidth : 0;
-    const exit =
-      totalScrollWidth > 0
-        ? (offsetLeft + clampedWidth) / totalScrollWidth
-        : 1;
+
+    const rawEnter = totalScrollWidth > 0 ? offsetLeft / totalScrollWidth : 0;
+    const rawExit = totalScrollWidth > 0 ? (offsetLeft + clampedWidth) / totalScrollWidth : 1;
+    const enter = Math.min(1, Math.max(0, rawEnter));
+    const exit = Math.min(1, Math.max(enter, rawExit));
+
     return { enter, exit, clampedWidth };
   }, [wallData, yearWidth, totalScrollWidth]);
 
