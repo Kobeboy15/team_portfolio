@@ -36,8 +36,9 @@ export function AboutSection() {
       const percentage = (scrollDistance / totalWidth) * 100;
       setTranslateX(`-${percentage}%`);
 
-      const scrollMultiplier = totalWidth / viewportWidth;
-      setScrollHeight(`${scrollMultiplier * 100 * 2}vh`);
+      const isMobile = window.innerWidth < 768;
+      const speedMod = isMobile ? 1.5 : 1;
+      setScrollHeight(`${(scrollDistance * speedMod) + window.innerHeight}px`);
     };
 
     calculateTranslate();
@@ -45,7 +46,11 @@ export function AboutSection() {
     const resizeObserver = new ResizeObserver(calculateTranslate);
     if (contentRef.current) resizeObserver.observe(contentRef.current);
 
-    return () => resizeObserver.disconnect();
+    window.addEventListener("resize", calculateTranslate);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", calculateTranslate);
+    };
   }, []);
 
   const x = useTransform(scrollYProgress, [0, 1], ["0%", translateX]);
