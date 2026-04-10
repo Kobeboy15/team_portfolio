@@ -88,11 +88,11 @@ export function AboutBio({
                 min-[5060px]:h-[2530px]
             `}
       >
-        <Heading size="display-96" as="h1" className="text-display-48! md:text-display-96! lg:text-display-48! xl:text-display-128! text-bio-text!">
+        <Heading size="display-96" as="h1" className="text-display-48! md:text-display-96! lg:text-display-48! xl:text-display-128! text-bio-text! pt-18">
           About Me
         </Heading>
         <hr className="border-none h-1 md:h-2 w-40 md:w-80 bg-accent" aria-hidden="true" />
-        <p className="mt-12 lg:mt-4 xl:mt-12 max-w-[1000px]">{aboutData.bio}</p>
+        <p className="mt-12 lg:mt-4 xl:mt-12 max-w-[1000px] font-sora 2xl:text-sora-18">{aboutData.bio}</p>
       </div>
     </div>
   );
