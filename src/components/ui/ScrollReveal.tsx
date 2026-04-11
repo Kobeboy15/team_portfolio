@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 const scrollRevealEase = [0.22, 1, 0.36, 1] as const;
 
-const scrollRevealDuration = 0.42;
+const scrollRevealDuration = 1.42;
 const scrollRevealDurationReduced = 0.14;
 
 export type ScrollRevealProps = {

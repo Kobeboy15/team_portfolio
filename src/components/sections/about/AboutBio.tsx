@@ -6,6 +6,7 @@ import { aboutData } from "../../../data/about";
 import { heroData } from "../../../data/hero";
 
 import { Heading } from "../../ui/Heading";
+import { ScrollReveal } from "../../ui/ScrollReveal";
 import { useHeroAboutImage } from "../HeroAboutImageContext";
 import { AboutBioProfileImage } from "./AboutBioProfileImage";
 
@@ -111,11 +112,15 @@ export function AboutBio() {
                 min-[5060px]:h-[2530px]
             `}
       >
-        <Heading size="display-96" as="h1" className="text-display-48! md:text-display-96! lg:text-display-48! xl:text-display-128! text-bio-text! pt-18">
-          About Me
-        </Heading>
+        <ScrollReveal>
+          <Heading size="display-96" as="h1" className="text-display-48! md:text-display-96! lg:text-display-48! xl:text-display-128! text-bio-text! pt-18">
+            About Me
+          </Heading>
+        </ScrollReveal>
         <hr className="border-none h-1 md:h-2 w-40 md:w-80 bg-accent" aria-hidden="true" />
-        <p className="mt-12 lg:mt-4 xl:mt-12 max-w-[1000px] font-sora 2xl:text-sora-18">{aboutData.bio}</p>
+        <ScrollReveal delay={0.1}>
+          <p className="mt-12 lg:mt-4 xl:mt-12 max-w-[1000px] font-sora 2xl:text-sora-18">{aboutData.bio}</p>
+        </ScrollReveal>
       </div>
     </div>
   );
