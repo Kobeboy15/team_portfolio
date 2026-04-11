@@ -1,6 +1,7 @@
 import type { AboutSlide } from "../../../types/about";
 
 import { ImageFrame } from "../../ui/ImageFrame";
+import { ScrollReveal } from "../../ui/ScrollReveal";
 
 const TOP_SPACER_MIN_PX = 12;
 const TOP_SPACER_MAX_PX = 110;
@@ -52,9 +53,12 @@ export function AboutGallerySlide({ title, description, image, imageAlt, classNa
 
   const copyBlock = (
     <div className="flex shrink-0 flex-col gap-2">
-      <h3 className="font-bebas text-xl uppercase tracking-wide text-foreground">{title}</h3>
-
-      <p className="text-sora-14 font-light leading-relaxed">{description}</p>
+      <ScrollReveal>
+        <h3 className="font-bebas text-xl uppercase tracking-wide text-foreground">{title}</h3>
+      </ScrollReveal>
+      <ScrollReveal delay={0.1}>
+        <p className="text-sora-14 font-light leading-relaxed">{description}</p>
+      </ScrollReveal>
     </div>
   );
 
