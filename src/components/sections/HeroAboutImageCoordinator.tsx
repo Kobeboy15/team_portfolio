@@ -112,8 +112,11 @@ function FlightProgressBridge({
 }) {
   const heroRef = useRef(heroSection);
   const aboutRef = useRef(aboutRoot);
-  heroRef.current = heroSection;
-  aboutRef.current = aboutRoot;
+
+  useLayoutEffect(() => {
+    heroRef.current = heroSection;
+    aboutRef.current = aboutRoot;
+  }, [heroSection, aboutRoot]);
 
   const { scrollYProgress: pHero } = useScroll({
     target: heroRef,
@@ -184,17 +187,15 @@ export function HeroAboutImageCoordinator({
 
   const flightActive = Boolean(isLg && !reduceMotion);
 
-  const [dockedInAbout, setDockedInAbout] = useState(false);
+  /** Only meaningful while flight is active; UI uses `dockedInAbout` below. */
+  const [rawDockedInAbout, setRawDockedInAbout] = useState(false);
+
+  const dockedInAbout = flightActive && rawDockedInAbout;
 
   useEffect(() => {
-    if (!flightActive) {
-      setDockedInAbout(false);
-      setTMotion(null);
-      return;
-    }
-    if (!tMotion) return;
+    if (!flightActive || !tMotion) return;
     const onChange = (v: number) => {
-      setDockedInAbout((d) => {
+      setRawDockedInAbout((d) => {
         if (v >= 0.97) return true;
         if (v < 0.9) return false;
         return d;
