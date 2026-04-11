@@ -1,8 +1,12 @@
-import type { MotionValue } from "framer-motion";
+"use client";
+
+import { useCallback } from "react";
 
 import { aboutData } from "../../../data/about";
+import { heroData } from "../../../data/hero";
 
 import { Heading } from "../../ui/Heading";
+import { useHeroAboutImage } from "../HeroAboutImageContext";
 import { AboutBioProfileImage } from "./AboutBioProfileImage";
 
 /**
@@ -40,21 +44,7 @@ const aboutImageSizes = [
   "100vw",
 ].join(", ");
 
-export function AboutBio({
-  imageRevealProgress,
-}: {
-  imageRevealProgress?: MotionValue<number>;
-}) {
-  return (
-    <div className="w-screen max-h-dvh shrink-0 flex items-center justify-center md:justify-between bg-bio-background text-bio-text">
-      {/* Wrapper mx: round(vp × 20/1280) per side — same scale as image (mx-5 ≈ 20px at 1280px). */}
-      <div className="hidden lg:block min-[1024px]:mx-[16px] min-[1280px]:mx-[20px] min-[1600px]:mx-[25px] min-[1920px]:mx-[30px] min-[2160px]:mx-[34px] min-[2500px]:mx-[39px] min-[3000px]:mx-[47px] min-[3400px]:mx-[53px] min-[3800px]:mx-[59px] min-[4200px]:mx-[66px] min-[4600px]:mx-[72px] min-[5060px]:mx-[79px]">
-        <AboutBioProfileImage
-          imageRevealProgress={imageRevealProgress}
-          src={aboutData.profileImage}
-          alt={aboutData.profileImageAlt}
-          sizes={aboutImageSizes}
-          className="min-[1024px]:w-[475px] min-[1280px]:w-[594px] min-[1600px]:w-[743px] min-[1920px]:w-[891px] min-[2160px]:w-[1001px] min-[2500px]:w-[1160px] min-[3000px]:w-[1392px] min-[3400px]:w-[1578px] min-[3800px]:w-[1763px] min-[4200px]:w-[1949px] min-[4600px]:w-[2135px] min-[5060px]:w-[2348px]
+const imageClassName = `min-[1024px]:w-[475px] min-[1280px]:w-[594px] min-[1600px]:w-[743px] min-[1920px]:w-[891px] min-[2160px]:w-[1001px] min-[2500px]:w-[1160px] min-[3000px]:w-[1392px] min-[3400px]:w-[1578px] min-[3800px]:w-[1763px] min-[4200px]:w-[1949px] min-[4600px]:w-[2135px] min-[5060px]:w-[2348px]
           h-[528px]
           min-[1024px]:h-[511px]
           min-[1280px]:h-[640px]
@@ -67,8 +57,41 @@ export function AboutBio({
           min-[3800px]:h-[1900px]
           min-[4200px]:h-[2100px]
           min-[4600px]:h-[2300px]
-          min-[5060px]:h-[2530px] object-cover"
-        />
+          min-[5060px]:h-[2530px] object-cover`;
+
+export function AboutBio() {
+  const ctx = useHeroAboutImage();
+
+  const setAboutRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      ctx?.registerAboutSlot(node);
+    },
+    [ctx]
+  );
+
+  const flight = ctx?.flightActive;
+  const docked = ctx?.dockedInAbout;
+
+  /** In-flow photo when not flying, or after handoff to About strip. */
+  const showInFlowImage = !flight || Boolean(docked);
+
+  return (
+    <div className="w-screen max-h-dvh shrink-0 flex items-center justify-center md:justify-between bg-bio-background text-bio-text">
+      {/* Wrapper mx: round(vp × 20/1280) per side — same scale as image (mx-5 ≈ 20px at 1280px). */}
+      <div
+        ref={setAboutRef}
+        className="hidden lg:block min-[1024px]:mx-[16px] min-[1280px]:mx-[20px] min-[1600px]:mx-[25px] min-[1920px]:mx-[30px] min-[2160px]:mx-[34px] min-[2500px]:mx-[39px] min-[3000px]:mx-[47px] min-[3400px]:mx-[53px] min-[3800px]:mx-[59px] min-[4200px]:mx-[66px] min-[4600px]:mx-[72px] min-[5060px]:mx-[79px]"
+      >
+        {showInFlowImage ? (
+          <AboutBioProfileImage
+            src={heroData.heroImageSrc}
+            alt={heroData.heroImageAlt}
+            sizes={aboutImageSizes}
+            className={imageClassName}
+          />
+        ) : (
+          <div className={imageClassName} aria-hidden />
+        )}
       </div>
       <div
         className={`

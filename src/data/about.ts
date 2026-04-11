@@ -5,8 +5,6 @@ const TIMELINE_BASE = "/images/about/timeline";
 export const aboutData: AboutData = {
   // Placeholder data, to be replaced with actual content in the future
   bio: "I’m a frontend engineer with over 8 years of experience building scalable, high-performance web applications and SaaS platforms. I specialize in modern frontend development using React, Next.js, and TypeScript, with a strong focus on performance, accessibility, and creating intuitive user experiences.",
-  profileImage: "/images/about/about-profile.webp",
-  profileImageAlt: "Profile picture of me",
 
   pointsImage: "/images/about/about-points.webp",
   pointsImageAlt: "Photograph by me",

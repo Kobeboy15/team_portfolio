@@ -5,6 +5,7 @@ import { useScroll, useTransform, motion } from "framer-motion";
 
 import { aboutData } from "../../../data/about";
 
+import { ABOUT_SECTION_ROOT_ID } from "../heroAboutConstants";
 import { ImageFrame } from "../../ui/ImageFrame";
 import { ScrollProgressBar } from "../../ui/ScrollProgressBar";
 import { Section } from "../../ui/Section";
@@ -23,11 +24,6 @@ export function AboutSection() {
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
-  });
-
-  const { scrollYProgress: imageRevealProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "start start"],
   });
 
   useEffect(() => {
@@ -61,11 +57,16 @@ export function AboutSection() {
   const x = useTransform(scrollYProgress, [0, 1], ["0%", translateX]);
 
   return (
-    <div ref={sectionRef} className="relative w-full" style={{ height: scrollHeight }}>
+    <div
+      ref={sectionRef}
+      id={ABOUT_SECTION_ROOT_ID}
+      className="relative w-full"
+      style={{ height: scrollHeight }}
+    >
       <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
         <motion.div ref={contentRef} data-scroll-container style={{ x }} className="flex flex-nowrap w-max max-h-full">
           {/* Heading + Bio */}
-          <AboutBio imageRevealProgress={imageRevealProgress} />
+          <AboutBio />
 
           {/* Points */}
           <section className="relative h-dvh w-[70vw] shrink-0 overflow-hidden" aria-label={aboutData.pointsImageAlt}>

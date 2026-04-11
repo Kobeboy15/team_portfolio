@@ -1,6 +1,7 @@
 import { Section } from "../ui/Section";
 
 import { Button } from "../ui/Button";
+import { HeroImageColumn } from "./HeroImageColumn";
 import { HeroScrollImage } from "./HeroScrollImage";
 import { RotatingRolePhrases } from "./RotatingRolePhrases";
 
@@ -54,14 +55,14 @@ export function HeroSection() {
           </div>
 
           {/* Hero Image */}
-          <div className="relative w-full sm:w-[380px] sm:h-[450px] md:w-[420px] md:h-[500px] lg:w-[620px] lg:h-[465px] xl:w-[773px] xl:h-[580px] xl:shrink-0 aspect-773/580 xl:aspect-auto px-3 sm:px-0 lg:pr-15 xl:pr-22 2xl:pr-(--token-hero-image-padding-right) 2xl:w-(--token-hero-image-width) 2xl:h-auto 2xl:aspect-773/580 2xl:shrink-0">
+          <HeroImageColumn className="relative w-full sm:w-[380px] sm:h-[450px] md:w-[420px] md:h-[500px] lg:w-[620px] lg:h-[465px] xl:w-[773px] xl:h-[580px] xl:shrink-0 aspect-773/580 xl:aspect-auto px-3 sm:px-0 lg:pr-15 xl:pr-22 2xl:pr-(--token-hero-image-padding-right) 2xl:w-(--token-hero-image-width) 2xl:h-auto 2xl:aspect-773/580 2xl:shrink-0">
             <HeroScrollImage
               src={heroData.heroImageSrc}
               alt={heroData.heroImageAlt}
               className="h-full w-auto object-cover sm:relative sm:bottom-5 lg:bottom-6 xl:bottom-8 2xl:bottom-(--token-hero-image-frame-bottom)"
               priority={true}
             />
-          </div>
+          </HeroImageColumn>
         </div>
       </div>
     </Section>

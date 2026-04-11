@@ -1,7 +1,5 @@
 export type AboutData = {
   bio: string;
-  profileImage: string;
-  profileImageAlt: string;
 
   pointsImage: string;
   pointsImageAlt: string;
