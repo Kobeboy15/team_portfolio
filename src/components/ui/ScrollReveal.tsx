@@ -13,10 +13,18 @@ export type ScrollRevealProps = {
   className?: string;
   /** Seconds; added to transition (skipped when reduced motion is preferred). */
   delay?: number;
+  /** Opacity-only: use inside nested motion (e.g. RollingTextSlot) to avoid stacked vertical offset. */
+  variant?: "default" | "opacity";
 };
 
-export function ScrollReveal({ children, className, delay = 0 }: ScrollRevealProps) {
+export function ScrollReveal({
+  children,
+  className,
+  delay = 0,
+  variant = "default",
+}: ScrollRevealProps) {
   const reduceMotion = useReducedMotion();
+  const opacityOnly = variant === "opacity" || reduceMotion;
 
   const transition = {
     duration: reduceMotion ? scrollRevealDurationReduced : scrollRevealDuration,
@@ -27,8 +35,8 @@ export function ScrollReveal({ children, className, delay = 0 }: ScrollRevealPro
   return (
     <motion.div
       className={className}
-      initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-      whileInView={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+      initial={opacityOnly ? { opacity: 0 } : { opacity: 0, y: 20 }}
+      whileInView={opacityOnly ? { opacity: 1 } : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={transition}
     >

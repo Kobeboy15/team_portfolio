@@ -8,6 +8,7 @@ import {
 import { PROJECT_IMAGE_LAYOUT } from "../../lib/projectImageLayout";
 
 import { Heading } from "../ui/Heading";
+import { ScrollReveal } from "../ui/ScrollReveal";
 
 import { ProjectImageTransition, RollingTextSlot } from "./projectCardDesktopMotion";
 import {
@@ -74,9 +75,11 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                 className="min-w-0 max-w-[34ch] font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.description)}
               >
-                <p className="line-clamp-8 whitespace-pre-line">
-                  {project.description.join("\n\n")}
-                </p>
+                <ScrollReveal variant="opacity" className="w-full min-w-0">
+                  <p className="line-clamp-8 whitespace-pre-line">
+                    {project.description.join("\n\n")}
+                  </p>
+                </ScrollReveal>
               </RollingTextSlot>
             </div>
 
@@ -90,7 +93,9 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                 className="min-w-0 font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.role)}
               >
-                <p className="truncate">{project.role}</p>
+                <ScrollReveal variant="opacity" className="w-full min-w-0">
+                  <p className="truncate">{project.role}</p>
+                </ScrollReveal>
               </RollingTextSlot>
             </div>
           </div>
@@ -113,15 +118,17 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                 className="min-w-0 font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.techStack)}
               >
-                {project.techStack.length > 0 ? (
-                  <p className="line-clamp-4 whitespace-pre-line">
-                    {project.techStack.join("\n")}
-                  </p>
-                ) : (
-                  <p className="line-clamp-4 whitespace-pre-line" aria-hidden>
-                    {"\u00A0"}
-                  </p>
-                )}
+                <ScrollReveal variant="opacity" className="w-full min-w-0">
+                  {project.techStack.length > 0 ? (
+                    <p className="line-clamp-4 whitespace-pre-line">
+                      {project.techStack.join("\n")}
+                    </p>
+                  ) : (
+                    <p className="line-clamp-4 whitespace-pre-line" aria-hidden>
+                      {"\u00A0"}
+                    </p>
+                  )}
+                </ScrollReveal>
               </RollingTextSlot>
             </div>
 
@@ -133,19 +140,21 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                 className="min-w-0 font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.outcomes)}
               >
-                {project.outcomes.length > 0 ? (
-                  <ul className="space-y-1">
-                    {project.outcomes.map((item, index) => (
-                      <li key={`outcome-${index}`} className="line-clamp-3">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <ul className="space-y-1" aria-hidden>
-                    <li className="sr-only">No outcomes listed.</li>
-                  </ul>
-                )}
+                <ScrollReveal variant="opacity" className="w-full min-w-0">
+                  {project.outcomes.length > 0 ? (
+                    <ul className="space-y-1">
+                      {project.outcomes.map((item, index) => (
+                        <li key={`outcome-${index}`} className="line-clamp-3">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <ul className="space-y-1" aria-hidden>
+                      <li className="sr-only">No outcomes listed.</li>
+                    </ul>
+                  )}
+                </ScrollReveal>
               </RollingTextSlot>
             </div>
 
@@ -162,23 +171,25 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                 }}
               >
                 <RollingTextSlot projectId={project.id} slotId="cta-live" className="min-w-0">
-                  {project.liveUrl ? (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-2 font-sans text-sora-14 font-light text-foreground transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      aria-label={`${project.title} live demo`}
-                    >
-                      <span>View more</span>
-                      <ExternalLinkIcon />
-                    </a>
-                  ) : (
-                    <LinkPlaceholder>
-                      <span>View more</span>
-                      <ExternalLinkIcon />
-                    </LinkPlaceholder>
-                  )}
+                  <ScrollReveal variant="opacity" className="w-full min-w-0">
+                    {project.liveUrl ? (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 font-sans text-sora-14 font-light text-foreground transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        aria-label={`${project.title} live demo`}
+                      >
+                        <span>View more</span>
+                        <ExternalLinkIcon />
+                      </a>
+                    ) : (
+                      <LinkPlaceholder>
+                        <span>View more</span>
+                        <ExternalLinkIcon />
+                      </LinkPlaceholder>
+                    )}
+                  </ScrollReveal>
                 </RollingTextSlot>
               </div>
               <div
@@ -188,19 +199,21 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                 }}
               >
                 <RollingTextSlot projectId={project.id} slotId="cta-github" className="min-w-0">
-                  {project.githubUrl ? (
-                    <a
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="font-sans text-sora-14 font-light text-foreground/75 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      aria-label={`${project.title} GitHub repository`}
-                    >
-                      GitHub
-                    </a>
-                  ) : (
-                    <LinkPlaceholder>GitHub</LinkPlaceholder>
-                  )}
+                  <ScrollReveal variant="opacity" className="w-full min-w-0">
+                    {project.githubUrl ? (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-sans text-sora-14 font-light text-foreground/75 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        aria-label={`${project.title} GitHub repository`}
+                      >
+                        GitHub
+                      </a>
+                    ) : (
+                      <LinkPlaceholder>GitHub</LinkPlaceholder>
+                    )}
+                  </ScrollReveal>
                 </RollingTextSlot>
               </div>
             </div>
