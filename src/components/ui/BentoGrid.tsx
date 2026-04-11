@@ -3,6 +3,7 @@ import { BentoItem } from "@/src/types/skills";
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { CardDecor } from "./CardDecor";
+import { ScrollReveal } from "./ScrollReveal";
 
 const COLS = 3;
 const ROWS = 11;
@@ -39,18 +40,41 @@ export function BentoGrid({ items }: { items: BentoItem[] }) {
   );
 }
 
+const STAGGER_STEP_S = 0.05;
+
 function fillGrid(items: BentoItem[]): React.ReactElement[] {
     const cards: React.ReactElement[] = [];
     const usedSlots = new Set(items.map(item => item.slot));
+    let index = 0;
 
     for (const item of items)
     {
-        cards.push(<div key={item.slot} style={VARIANTS[item.slot]}><Card variant={item.cardVariant ?? "background2"}><CardContent content={item.content}></CardContent></Card></div>);
+        const delay = index * STAGGER_STEP_S;
+        index += 1;
+        cards.push(
+            <div key={item.slot} style={VARIANTS[item.slot]}>
+                <ScrollReveal className="h-full w-full min-h-0" delay={delay}>
+                    <Card variant={item.cardVariant ?? "background2"}>
+                        <CardContent content={item.content}></CardContent>
+                    </Card>
+                </ScrollReveal>
+            </div>
+        );
     }
 
     for (const slot of ALL_SLOTS) {
         if (!usedSlots.has(slot)) {
-            cards.push(<div key={slot} style={VARIANTS[slot]}><Card variant="accent"><CardDecor slot={slot}></CardDecor></Card></div>);
+            const delay = index * STAGGER_STEP_S;
+            index += 1;
+            cards.push(
+                <div key={slot} style={VARIANTS[slot]}>
+                    <ScrollReveal className="h-full w-full min-h-0" delay={delay}>
+                        <Card variant="accent">
+                            <CardDecor slot={slot}></CardDecor>
+                        </Card>
+                    </ScrollReveal>
+                </div>
+            );
         }
     }
 
