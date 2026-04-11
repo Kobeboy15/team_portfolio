@@ -30,12 +30,91 @@ const LG_MEDIA_QUERY = "(min-width: 1024px)";
 
 const T_SPRING = { stiffness: 160, damping: 32 };
 
+/** Handoff when lerped fixed rect matches about slot (px), not raw scroll progress. */
+const RECT_MATCH_EPS_PX = 2.5;
+/** Avoid docking at t≈0 when hero/about rects can be numerically odd. */
+const MIN_T_TO_ALLOW_DOCK = 0.72;
+/** Hysteresis: undock when scroll springs back below this or rects separate. */
+const UNDOCK_T = 0.86;
+const UNDOCK_ERR_PX = 10;
+
 function mergeFlightProgress(heroP: number, aboutP: number): number {
   return 0.5 * heroP + 0.5 * aboutP;
 }
 
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
+}
+
+function maxRectDeltaVsAbout(
+  tv: number,
+  rh: DOMRect,
+  ra: DOMRect
+): { err: number; left: number; top: number; width: number; height: number } {
+  const left = lerp(rh.left, ra.left, tv);
+  const top = lerp(rh.top, ra.top, tv);
+  const width = lerp(rh.width, ra.width, tv);
+  const height = lerp(rh.height, ra.height, tv);
+  const err = Math.max(
+    Math.abs(left - ra.left),
+    Math.abs(top - ra.top),
+    Math.abs(width - ra.width),
+    Math.abs(height - ra.height)
+  );
+  return { err, left, top, width, height };
+}
+
+/**
+ * Sets docked when lerped overlay box matches about slot; undocks on scroll-back via t/err hysteresis.
+ */
+function RectHandoffProbe({
+  flightActive,
+  tMotion,
+  heroSlot,
+  aboutSlot,
+  onDockedChange,
+}: {
+  flightActive: boolean;
+  tMotion: MotionValue<number> | null;
+  heroSlot: HTMLElement | null;
+  aboutSlot: HTMLElement | null;
+  onDockedChange: (docked: boolean) => void;
+}) {
+  const prevRef = useRef<boolean>(false);
+
+  useAnimationFrame(() => {
+    if (!flightActive) {
+      if (prevRef.current) {
+        prevRef.current = false;
+        onDockedChange(false);
+      }
+      return;
+    }
+    if (!tMotion || !heroSlot || !aboutSlot) return;
+
+    const tv = Math.min(1, Math.max(0, tMotion.get()));
+    const rh = heroSlot.getBoundingClientRect();
+    const ra = aboutSlot.getBoundingClientRect();
+    const { err } = maxRectDeltaVsAbout(tv, rh, ra);
+
+    const closeEnough =
+      tv >= MIN_T_TO_ALLOW_DOCK && err <= RECT_MATCH_EPS_PX;
+
+    let next: boolean;
+    if (!prevRef.current) {
+      next = closeEnough;
+    } else {
+      if (tv < UNDOCK_T || err > UNDOCK_ERR_PX) next = false;
+      else next = true;
+    }
+
+    if (next !== prevRef.current) {
+      prevRef.current = next;
+      onDockedChange(next);
+    }
+  });
+
+  return null;
 }
 
 function FlightLayer({
@@ -190,21 +269,11 @@ export function HeroAboutImageCoordinator({
   /** Only meaningful while flight is active; UI uses `dockedInAbout` below. */
   const [rawDockedInAbout, setRawDockedInAbout] = useState(false);
 
-  const dockedInAbout = flightActive && rawDockedInAbout;
+  const onDockedChange = useCallback((docked: boolean) => {
+    setRawDockedInAbout(docked);
+  }, []);
 
-  useEffect(() => {
-    if (!flightActive || !tMotion) return;
-    const onChange = (v: number) => {
-      setRawDockedInAbout((d) => {
-        if (v >= 0.97) return true;
-        if (v < 0.9) return false;
-        return d;
-      });
-    };
-    onChange(tMotion.get());
-    const unsub = tMotion.on("change", onChange);
-    return () => unsub();
-  }, [flightActive, tMotion]);
+  const dockedInAbout = flightActive && rawDockedInAbout;
 
   const showOverlay = Boolean(
     flightActive &&
@@ -234,6 +303,15 @@ export function HeroAboutImageCoordinator({
           heroSection={heroSectionEl}
           aboutRoot={aboutRootEl}
           onReady={onFlightTReady}
+        />
+      ) : null}
+      {flightActive && tMotion ? (
+        <RectHandoffProbe
+          flightActive={flightActive}
+          tMotion={tMotion}
+          heroSlot={heroSlot}
+          aboutSlot={aboutSlot}
+          onDockedChange={onDockedChange}
         />
       ) : null}
       {flightActive && tMotion ? (
