@@ -6,13 +6,12 @@ import { ScrollReveal } from "../ui/ScrollReveal";
 import ContactForm from "../ui/ContactForm";
 
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
 
+import { useClientMounted } from "@/src/hooks/useClientMounted";
 import { contactData } from "../../data/contact";
 
 export function ContactSection() {
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => setMounted(true), []);
+    const mounted = useClientMounted();
 
     const { resolvedTheme } = useTheme();
 

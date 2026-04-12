@@ -2,11 +2,11 @@
 
 import { BentoContent } from "@/src/types/skills";
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+
+import { useClientMounted } from "@/src/hooks/useClientMounted";
 
 export function CardContent({ content }: { content: BentoContent }) {
-    const [mounted, setMounted] = useState(false);
-    useEffect(() => setMounted(true), []);
+    const mounted = useClientMounted();
 
     const { resolvedTheme } = useTheme();
 
