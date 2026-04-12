@@ -94,7 +94,7 @@ function HeroScrollImageFlightSlot({
         src={src}
         alt={alt}
         imageRef={setImageSlot}
-        className={`${className} opacity-0`.trim()}
+        className={[className, "opacity-0"].filter(Boolean).join(" ")}
         priority={priority}
       />
     </motion.div>
