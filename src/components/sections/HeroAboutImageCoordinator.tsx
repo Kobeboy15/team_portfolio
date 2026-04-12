@@ -268,10 +268,18 @@ export function HeroAboutImageCoordinator({
 
   /** Only meaningful while flight is active; UI uses `dockedInAbout` below. */
   const [rawDockedInAbout, setRawDockedInAbout] = useState(false);
+  const [prevFlightActive, setPrevFlightActive] = useState(flightActive);
 
   const onDockedChange = useCallback((docked: boolean) => {
     setRawDockedInAbout(docked);
   }, []);
+
+  if (prevFlightActive !== flightActive) {
+    setPrevFlightActive(flightActive);
+    if (!flightActive) {
+      setRawDockedInAbout(false);
+    }
+  }
 
   const dockedInAbout = flightActive && rawDockedInAbout;
 
