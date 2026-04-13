@@ -42,13 +42,15 @@ export function ProjectCardDesktop({ project, className }: ProjectCardDesktopPro
                 className="flex flex-col justify-end"
                 style={contentHeightStyle(H.title)}
               >
-                <Heading
-                  size="display-64"
-                  as="h2"
-                  className="line-clamp-2 xl:text-[5rem]! xl:leading-[0.8]! 2xl:text-display-96!"
-                >
-                  <span>{project.title}</span>
-                </Heading>
+                <div className="line-clamp-2 lg:pt-px lg:-mb-px xl:pt-[2px] xl:-mb-[2px] 2xl:pt-[3px] 2xl:-mb-[3px]">
+                  <Heading
+                    size="display-64"
+                    as="h2"
+                    className="xl:text-[5rem]! xl:leading-[0.8]! 2xl:text-display-96!"
+                  >
+                    <span>{project.title}</span>
+                  </Heading>
+                </div>
               </RollingTextSlot>
               <RollingTextSlot
                 projectId={project.id}
