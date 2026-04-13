@@ -57,5 +57,4 @@ export type GridVariants = {
   5: GridPlacement;
   6: GridPlacement;
   7: GridPlacement;
-  8?: GridPlacement;
 }

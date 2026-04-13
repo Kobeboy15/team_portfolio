@@ -54,19 +54,8 @@ const lgSizeDimensions: Record<CardSize, { width: number; height: number }> = {
   "7": { width: 360, height: 260 },
 };
 
-const xl2SizeDimensions: Record<CardSize, { width: number; height: number }> = {
-  "1": { width: 820, height: 300 },
-  "2": { width: 400, height: 300 },
-  "3": { width: 400, height: 360 },
-  "4": { width: 400, height: 220 },
-  "5": { width: 400, height: 560 },
-  "6": { width: 400, height: 170 },
-  "7": { width: 400, height: 280 },
-};
-
 const breakpoints = [
-  { query: "(min-width: 1536px)", dims: xl2SizeDimensions }, // 2xl
-  { query: "(min-width: 1280px)", dims: lgSizeDimensions },  // lg
+  { query: "(min-width: 1980px)", dims: lgSizeDimensions },
   { query: "(min-width: 1130px)", dims: sizeDimensions },
   { query: "(min-width: 700px)",  dims: tabletSizeDimensions },
   { query: "(min-width: 500px)",  dims: largeMobileSizeDimensions },

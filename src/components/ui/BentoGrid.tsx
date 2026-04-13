@@ -14,11 +14,19 @@ const MOBILE_COLS = 2;
 const MOBILE_ROWS = 7;
 
 export function BentoGrid({ items, variant }: { items: BentoItem[]; variant?: number }) {
-    const desktopCards = fillGrid(items, desktopGridVariants[(variant ?? 1) - 1]);
-    const mobileCards = fillGrid(items, mobileGridVariants[0]);
+    const variantIndex = Math.min(
+        Math.max((variant ?? 1) - 1, 0),
+        desktopGridVariants.length - 1
+    );
+ 
+    const desktopCards = fillGrid(items, desktopGridVariants[variantIndex]);
+    const mobileCards = fillGrid(
+        items,
+        mobileGridVariants[Math.min(variantIndex, mobileGridVariants.length - 1)]
+    );
 
     return (
-        <div className="h-full flex justify-center items-center">
+        <div className="flex justify-center items-center">
             {/* Desktop grid */}
             <div
                 className="hidden desktop-grid gap-3"

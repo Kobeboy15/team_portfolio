@@ -227,22 +227,4 @@ export const mobileGridVariants: GridVariants[] = [
     6: { gridColumn: "1 / span 1", gridRow: "4 / span 1" },
     7: { gridColumn: "2 / span 1", gridRow: "4 / span 1" },
   },
-  {
-    1: { gridColumn: "1 / span 2", gridRow: "5 / span 1" },
-    2: { gridColumn: "1 / span 1", gridRow: "4 / span 1" },
-    3: { gridColumn: "1 / span 2", gridRow: "3 / span 1" },
-    4: { gridColumn: "2 / span 1", gridRow: "4 / span 1" },
-    5: { gridColumn: "1 / span 2", gridRow: "1 / span 1" },
-    6: { gridColumn: "1 / span 1", gridRow: "2 / span 1" },
-    7: { gridColumn: "2 / span 1", gridRow: "2 / span 1" },
-  },
-  {
-    1: { gridColumn: "1 / span 2", gridRow: "2 / span 1" },
-    2: { gridColumn: "1 / span 2", gridRow: "5 / span 1" },
-    3: { gridColumn: "2 / span 1", gridRow: "4 / span 1" },
-    4: { gridColumn: "1 / span 1", gridRow: "4 / span 1" },
-    5: { gridColumn: "1 / span 1", gridRow: "1 / span 1" },
-    6: { gridColumn: "2 / span 1", gridRow: "1 / span 1" },
-    7: { gridColumn: "1 / span 2", gridRow: "3 / span 1" },
-  },
 ];
