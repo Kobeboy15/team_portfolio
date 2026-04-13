@@ -1,7 +1,7 @@
 import { BentoItem } from "@/src/types/skills";
-import { GridVariants } from "@/src/types/skills";
+import { GridVariants, CardSlot } from "@/src/types/skills";
 
-import { Card, CardSize } from "./Card";
+import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { CardDecor } from "./CardDecor";
 
@@ -11,27 +11,17 @@ const COLS = 3;
 const ROWS = 11;
 
 const MOBILE_COLS = 2;
-const MOBILE_ROWS = 5;
-
-const SLOT_SIZE: Record<string, CardSize> = {
-  card1: "1",
-  card2: "2",
-  card3: "3",
-  card4: "4",
-  card5: "5",
-  card6: "6",
-  card7: "7",
-};
+const MOBILE_ROWS = 7;
 
 export function BentoGrid({ items, variant }: { items: BentoItem[]; variant?: number }) {
     const desktopCards = fillGrid(items, desktopGridVariants[(variant ?? 1) - 1]);
-    const mobileCards = fillGrid(items, mobileGridVariants[(variant ?? 1) - 1]);
+    const mobileCards = fillGrid(items, mobileGridVariants[0]);
 
     return (
         <div className="h-full flex justify-center items-center">
             {/* Desktop grid */}
             <div
-                className="hidden md:grid gap-3"
+                className="hidden desktop-grid gap-3"
                 style={{
                     gridTemplateColumns: `repeat(${COLS}, auto)`,
                     gridTemplateRows: `repeat(${ROWS}, auto)`,
@@ -42,10 +32,10 @@ export function BentoGrid({ items, variant }: { items: BentoItem[]; variant?: nu
 
             {/* Mobile grid */}
             <div
-                className="grid md:hidden gap-1 h-full w-full"
+                className="grid mobile-display gap-1"
                 style={{
-                    gridTemplateColumns: `repeat(${MOBILE_COLS}, 1fr)`,
-                    gridTemplateRows: `repeat(${MOBILE_ROWS}, 1fr)`,
+                    gridTemplateColumns: `repeat(${MOBILE_COLS}, auto)`,
+                    gridTemplateRows: `repeat(${MOBILE_ROWS}, auto)`,
                 }}
             >
                 {mobileCards}
@@ -59,13 +49,13 @@ function fillGrid(
     variants: GridVariants
 ): React.ReactElement[] {
     const cards: React.ReactElement[] = [];
-    const usedSlots = new Set<string>(items.map((item) => item.slot));
-    const allSlots = Object.keys(variants) as Array<keyof typeof variants>;
+    const usedSlots = new Set<CardSlot>(items.map((item) => item.slot));
+    const allSlots = Object.keys(variants) as CardSlot[];
 
     for (const item of items) {
         cards.push(
             <div key={item.slot} style={variants[item.slot]}>
-                <Card variant={item.cardVariant ?? "background2"}  size={SLOT_SIZE[item.slot]}>
+                <Card variant={item.cardVariant ?? "background2"}  size={item.slot}>
                     <CardContent content={item.content} />
                 </Card>
             </div>
@@ -76,7 +66,7 @@ function fillGrid(
         if (!usedSlots.has(slot)) {
             cards.push(
                 <div key={slot} style={variants[slot]}>
-                    <Card variant="accent" size={SLOT_SIZE[slot]}>
+                    <Card variant="accent" size={slot}>
                         <CardDecor slot={slot} />
                     </Card>
                 </div>

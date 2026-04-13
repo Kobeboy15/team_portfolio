@@ -6,8 +6,7 @@ export type Skill = {
 }
 
 export type BentoItem = {
-  slot: "card1" | "card2" | "card3" | "card4" | "card5" | "card6" | "card7";
-  test?: number;
+  slot: CardSlot;
   content: BentoContent;
   cardVariant?: "background2" | "accent" | "gradient";
 }
@@ -43,18 +42,20 @@ export type Icon = {
   path: string;
 };
 
+export type CardSlot = "1" | "2" | "3" | "4" | "5" | "6" | "7";
+
 export type GridPlacement = {
     gridColumn: string;
     gridRow: string;
 };
 
 export type GridVariants = {
-  card1: GridPlacement;
-  card2: GridPlacement;
-  card3: GridPlacement;
-  card4: GridPlacement;
-  card5: GridPlacement;
-  card6: GridPlacement;
-  card7: GridPlacement;
-  card8?: GridPlacement;
+  1: GridPlacement;
+  2: GridPlacement;
+  3: GridPlacement;
+  4: GridPlacement;
+  5: GridPlacement;
+  6: GridPlacement;
+  7: GridPlacement;
+  8?: GridPlacement;
 }
