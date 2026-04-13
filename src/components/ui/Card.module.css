@@ -1,0 +1,168 @@
+.cardSize1 {
+  width: 320px;
+  height: 236px;
+}
+
+.cardSize2 {
+  width: 160px;
+  height: 236px;
+}
+
+.cardSize3 {
+  width: 320px;
+  height: 236px;
+}
+
+.cardSize4 {
+  width: 160px;
+  height: 236px;
+}
+
+.cardSize5 {
+  width: 320px;
+  height: 236px;
+}
+
+.cardSize6 {
+  width: 160px;
+  height: 236px;
+}
+
+.cardSize7 {
+  width: 160px;
+  height: 236px;
+}
+
+@media (min-width: 500px) {
+  .cardSize1 {
+    width: 420px;
+  }
+
+  .cardSize2 {
+    width: 210px;
+  }
+
+  .cardSize3 {
+    width: 420px;
+  }
+
+  .cardSize4 {
+    width: 210px;
+  }
+
+  .cardSize5 {
+    width: 420px;
+  }
+
+  .cardSize6 {
+    width: 210px;
+  }
+
+  .cardSize7 {
+    width: 210px;
+  }
+}
+
+@media (min-width: 700px) {
+  .cardSize1 {
+    width: 636px;
+  }
+
+  .cardSize2 {
+    width: 318px;
+  }
+
+  .cardSize3 {
+    width: 636px;
+  }
+
+  .cardSize4 {
+    width: 318px;
+  }
+
+  .cardSize5 {
+    width: 636px;
+  }
+
+  .cardSize6 {
+    width: 318px;
+  }
+
+  .cardSize7 {
+    width: 318px;
+  }
+}
+
+@media (min-width: 1130px) {
+  .cardSize1 {
+    width: 655px;
+    height: 236px;
+  }
+
+  .cardSize2 {
+    width: 325px;
+    height: 236px;
+  }
+
+  .cardSize3 {
+    width: 325px;
+    height: 286px;
+  }
+
+  .cardSize4 {
+    width: 325px;
+    height: 186px;
+  }
+
+  .cardSize5 {
+    width: 325px;
+    height: 436px;
+  }
+
+  .cardSize6 {
+    width: 325px;
+    height: 135px;
+  }
+
+  .cardSize7 {
+    width: 325px;
+    height: 235px;
+  }
+}
+
+@media (min-width: 1980px) {
+  .cardSize1 {
+    width: 720px;
+    height: 260px;
+  }
+
+  .cardSize2 {
+    width: 360px;
+    height: 260px;
+  }
+
+  .cardSize3 {
+    width: 360px;
+    height: 320px;
+  }
+
+  .cardSize4 {
+    width: 360px;
+    height: 200px;
+  }
+
+  .cardSize5 {
+    width: 360px;
+    height: 480px;
+  }
+
+  .cardSize6 {
+    width: 360px;
+    height: 150px;
+  }
+
+  .cardSize7 {
+    width: 360px;
+    height: 260px;
+  }
+}
