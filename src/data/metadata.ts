@@ -6,6 +6,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kobe Michael",
     description: "A portfolio showcasing selected work and projects.",
-    images: ["/og-image.jpg"],
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Kobe Michael portfolio preview",
+      },
+    ],
   },
 };
