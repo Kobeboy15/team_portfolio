@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import {
-  useAnimationFrame,
   useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
@@ -67,93 +66,105 @@ function maxRectDeltaVsAbout(
 /**
  * Sets docked when lerped overlay box matches about slot; undocks on scroll-back via t/err hysteresis.
  */
-function RectHandoffProbe({
-  flightActive,
-  tMotion,
-  heroSlot,
-  aboutSlot,
-  onDockedChange,
-}: {
-  flightActive: boolean;
-  tMotion: MotionValue<number> | null;
-  heroSlot: HTMLElement | null;
-  aboutSlot: HTMLElement | null;
-  onDockedChange: (docked: boolean) => void;
-}) {
-  const prevRef = useRef<boolean>(false);
-
-  useAnimationFrame(() => {
-    if (!flightActive) {
-      if (prevRef.current) {
-        prevRef.current = false;
-        onDockedChange(false);
-      }
-      return;
-    }
-    if (!tMotion || !heroSlot || !aboutSlot) return;
-
-    const tv = Math.min(1, Math.max(0, tMotion.get()));
-    const rh = heroSlot.getBoundingClientRect();
-    const ra = aboutSlot.getBoundingClientRect();
-    const { err } = maxRectDeltaVsAbout(tv, rh, ra);
-
-    const closeEnough =
-      tv >= MIN_T_TO_ALLOW_DOCK && err <= RECT_MATCH_EPS_PX;
-
-    let next: boolean;
-    if (!prevRef.current) {
-      next = closeEnough;
-    } else {
-      if (tv < UNDOCK_T || err > UNDOCK_ERR_PX) next = false;
-      else next = true;
-    }
-
-    if (next !== prevRef.current) {
-      prevRef.current = next;
-      onDockedChange(next);
-    }
-  });
-
-  return null;
-}
-
 function FlightLayer({
+  flightActive,
   heroSlot,
   aboutSlot,
   t,
   visible,
+  dockedInAbout,
+  onDockedChange,
 }: {
+  flightActive: boolean;
   heroSlot: HTMLElement | null;
   aboutSlot: HTMLElement | null;
   t: MotionValue<number>;
   visible: boolean;
+  dockedInAbout: boolean;
+  onDockedChange: (docked: boolean) => void;
 }) {
   const leftMv = useMotionValue(0);
   const topMv = useMotionValue(0);
   const widthMv = useMotionValue(0);
   const heightMv = useMotionValue(0);
+  const dockedRef = useRef(dockedInAbout);
 
-  useAnimationFrame(() => {
-    if (!visible || !heroSlot || !aboutSlot) return;
+  useEffect(() => {
+    dockedRef.current = dockedInAbout;
+  }, [dockedInAbout]);
+
+  const syncPosition = useCallback(() => {
+    if (!flightActive) {
+      if (dockedRef.current) {
+        dockedRef.current = false;
+        onDockedChange(false);
+      }
+      return;
+    }
+    if (!heroSlot || !aboutSlot) return;
+
     const tv = Math.min(1, Math.max(0, t.get()));
     const rh = heroSlot.getBoundingClientRect();
     const ra = aboutSlot.getBoundingClientRect();
-    leftMv.set(lerp(rh.left, ra.left, tv));
-    topMv.set(lerp(rh.top, ra.top, tv));
-    widthMv.set(lerp(rh.width, ra.width, tv));
-    heightMv.set(lerp(rh.height, ra.height, tv));
-  });
+    const { err, left, top, width, height } = maxRectDeltaVsAbout(tv, rh, ra);
 
-  useMotionValueEvent(t, "change", () => {
-    if (!visible || !heroSlot || !aboutSlot) return;
-    const tv = Math.min(1, Math.max(0, t.get()));
-    const rh = heroSlot.getBoundingClientRect();
-    const ra = aboutSlot.getBoundingClientRect();
-    leftMv.set(lerp(rh.left, ra.left, tv));
-    topMv.set(lerp(rh.top, ra.top, tv));
-    widthMv.set(lerp(rh.width, ra.width, tv));
-    heightMv.set(lerp(rh.height, ra.height, tv));
-  });
+    leftMv.set(left);
+    topMv.set(top);
+    widthMv.set(width);
+    heightMv.set(height);
+
+    const closeEnough =
+      tv >= MIN_T_TO_ALLOW_DOCK && err <= RECT_MATCH_EPS_PX;
+
+    const nextDocked = dockedRef.current
+      ? !(tv < UNDOCK_T || err > UNDOCK_ERR_PX)
+      : closeEnough;
+
+    if (nextDocked !== dockedRef.current) {
+      dockedRef.current = nextDocked;
+      onDockedChange(nextDocked);
+    }
+  }, [
+    aboutSlot,
+    flightActive,
+    heroSlot,
+    heightMv,
+    leftMv,
+    onDockedChange,
+    t,
+    topMv,
+    widthMv,
+  ]);
+
+  useMotionValueEvent(t, "change", syncPosition);
+
+  useLayoutEffect(() => {
+    syncPosition();
+
+    const rafId = window.requestAnimationFrame(syncPosition);
+    return () => window.cancelAnimationFrame(rafId);
+  }, [syncPosition, visible]);
+
+  useEffect(() => {
+    if (!flightActive || !heroSlot || !aboutSlot) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      syncPosition();
+    });
+
+    resizeObserver.observe(heroSlot);
+    resizeObserver.observe(aboutSlot);
+
+    const handleResize = () => {
+      syncPosition();
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [aboutSlot, flightActive, heroSlot, syncPosition]);
 
   if (!visible) return null;
 
@@ -314,20 +325,14 @@ export function HeroAboutImageCoordinator({
         />
       ) : null}
       {flightActive && tMotion ? (
-        <RectHandoffProbe
-          flightActive={flightActive}
-          tMotion={tMotion}
-          heroSlot={heroSlot}
-          aboutSlot={aboutSlot}
-          onDockedChange={onDockedChange}
-        />
-      ) : null}
-      {flightActive && tMotion ? (
         <FlightLayer
+          flightActive={flightActive}
           heroSlot={heroSlot}
           aboutSlot={aboutSlot}
           t={tMotion}
           visible={showOverlay}
+          dockedInAbout={dockedInAbout}
+          onDockedChange={onDockedChange}
         />
       ) : null}
     </HeroAboutImageContextProvider>
