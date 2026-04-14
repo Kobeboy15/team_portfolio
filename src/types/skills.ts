@@ -2,10 +2,11 @@ export type Skill = {
   order: number;
   name: string;            // ie. "Design"
   bento: BentoItem[];
+  gridVariant?: number;
 }
 
 export type BentoItem = {
-  slot: "card1" | "card2" | "card3" | "card4" | "card5" | "card6" | "card7";
+  slot: CardSlot;
   content: BentoContent;
   cardVariant?: "background2" | "accent" | "gradient";
 }
@@ -40,3 +41,20 @@ export type Icon = {
   name: string;
   path: string;
 };
+
+export type CardSlot = "1" | "2" | "3" | "4" | "5" | "6" | "7";
+
+export type GridPlacement = {
+    gridColumn: string;
+    gridRow: string;
+};
+
+export type GridVariants = {
+  1: GridPlacement;
+  2: GridPlacement;
+  3: GridPlacement;
+  4: GridPlacement;
+  5: GridPlacement;
+  6: GridPlacement;
+  7: GridPlacement;
+}

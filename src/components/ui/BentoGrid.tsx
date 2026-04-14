@@ -1,56 +1,84 @@
 import { BentoItem } from "@/src/types/skills";
+import { GridVariants, CardSlot } from "@/src/types/skills";
 
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { CardDecor } from "./CardDecor";
 
+import { desktopGridVariants, mobileGridVariants } from "@/src/data/skills";
+
 const COLS = 3;
 const ROWS = 11;
 
-export const VARIANTS = {
-    card1: { gridColumn: "1 / span 2", gridRow: "1 / span 4" },
-    card2: { gridColumn: "3 / span 1", gridRow: "1 / span 4" },
-    card3: { gridColumn: "1 / span 1", gridRow: "5 / span 5" },
-    card4: { gridColumn: "2 / span 1", gridRow: "5 / span 3" },
-    card5: { gridColumn: "3 / span 1", gridRow: "5 / span 7" },
-    card6: { gridColumn: "1 / span 1", gridRow: "10 / span 2" },
-    card7: { gridColumn: "2 / span 1", gridRow: "8 / span 4" },
+const MOBILE_COLS = 2;
+const MOBILE_ROWS = 7;
 
-};
+export function BentoGrid({ items, variant }: { items: BentoItem[]; variant?: number }) {
+    const variantIndex = Math.min(
+        Math.max((variant ?? 1) - 1, 0),
+        desktopGridVariants.length - 1
+    );
+ 
+    const desktopCards = fillGrid(items, desktopGridVariants[variantIndex]);
+    const mobileCards = fillGrid(
+        items,
+        mobileGridVariants[Math.min(variantIndex, mobileGridVariants.length - 1)]
+    );
 
-const ALL_SLOTS = Object.keys(VARIANTS) as Array<keyof typeof VARIANTS>;
+    return (
+        <div className="flex justify-center items-center">
+            {/* Desktop grid */}
+            <div
+                className="hidden desktop-grid gap-3"
+                style={{
+                    gridTemplateColumns: `repeat(${COLS}, auto)`,
+                    gridTemplateRows: `repeat(${ROWS}, auto)`,
+                }}
+            >
+                {desktopCards}
+            </div>
 
-export function BentoGrid({ items }: { items: BentoItem[] }) {
-    const cards = fillGrid(items);
-
-  return (
-    <div className="w-full h-full flex justify-center items-center">
-        <div 
-            className="gap-1 md:gap-3 h-full w-full"
-            style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${COLS}, 1fr)`,
-                gridTemplateRows: `repeat(${ROWS}, 1fr)`,
-            }}
-        >
-            {cards}
+            {/* Mobile grid */}
+            <div
+                className="grid mobile-display gap-1"
+                style={{
+                    gridTemplateColumns: `repeat(${MOBILE_COLS}, auto)`,
+                    gridTemplateRows: `repeat(${MOBILE_ROWS}, auto)`,
+                }}
+            >
+                {mobileCards}
+            </div>
         </div>
-    </div>
-  );
+    );
 }
 
-function fillGrid(items: BentoItem[]): React.ReactElement[] {
+function fillGrid(
+    items: BentoItem[],
+    variants: GridVariants
+): React.ReactElement[] {
     const cards: React.ReactElement[] = [];
-    const usedSlots = new Set(items.map(item => item.slot));
+    const usedSlots = new Set<CardSlot>(items.map((item) => item.slot));
+    const allSlots = Object.keys(variants) as CardSlot[];
 
-    for (const item of items)
-    {
-        cards.push(<div key={item.slot} style={VARIANTS[item.slot]}><Card variant={item.cardVariant ?? "background2"}><CardContent content={item.content}></CardContent></Card></div>);
+    for (const item of items) {
+        cards.push(
+            <div key={item.slot} style={variants[item.slot]}>
+                <Card variant={item.cardVariant ?? "background2"}  size={item.slot}>
+                    <CardContent content={item.content} />
+                </Card>
+            </div>
+        );
     }
 
-    for (const slot of ALL_SLOTS) {
+    for (const slot of allSlots) {
         if (!usedSlots.has(slot)) {
-            cards.push(<div key={slot} style={VARIANTS[slot]}><Card variant="accent"><CardDecor slot={slot}></CardDecor></Card></div>);
+            cards.push(
+                <div key={slot} style={variants[slot]}>
+                    <Card variant="accent" size={slot}>
+                        <CardDecor slot={slot} />
+                    </Card>
+                </div>
+            );
         }
     }
 

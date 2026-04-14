@@ -1,4 +1,4 @@
-import type { Skill } from "../types/skills";
+import type { Skill, GridVariants } from "../types/skills";
 
 export const skills: Skill[] = [
   { 
@@ -6,7 +6,7 @@ export const skills: Skill[] = [
     name: "Design", 
     bento: [
       {
-        slot: "card1",
+        slot: "1",
         content: 
         {
           type: "heading",
@@ -14,7 +14,7 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card3",
+        slot: "3",
         cardVariant: "gradient",
         content: 
         {
@@ -24,7 +24,7 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card4",
+        slot: "4",
         content: 
         {
           type: "icon",
@@ -35,7 +35,7 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card5",
+        slot: "5",
         content: 
         {
           type: "icon-carousel",
@@ -58,7 +58,7 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card6",
+        slot: "6",
         content: 
         {
           type: "sub-heading",
@@ -70,9 +70,10 @@ export const skills: Skill[] = [
   { 
     order: 2,
     name: "Development", 
+    gridVariant: 3,
     bento: [
       {
-        slot: "card1",
+        slot: "1",
         content: 
         {
           type: "heading",
@@ -80,16 +81,17 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card7",
+        slot: "5",
         cardVariant: "gradient",
         content: 
         {
           type: "paragraph",
-          value: "8+ years building modern frontend systems using React, Next.js, and TypeScript. Focused on performance, accessibility, and component-driven architecture.",
+          heading: "Frontend Engineering Expertise",
+          value: "8+ years building modern frontend systems using React, Next.js, and TypeScript. Focused on performance, accessibility, and component-driven architecture, with an emphasis on scalable, maintainable UI patterns.",
         }
       },
       {
-        slot: "card4",
+        slot: "4",
         content: 
         {
           type: "sub-heading",
@@ -97,7 +99,7 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card6",
+        slot: "6",
         content: 
         {
           type: "sub-heading",
@@ -105,7 +107,7 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card2",
+        slot: "2",
         content: 
         {
           type: "icon-carousel",
@@ -130,9 +132,10 @@ export const skills: Skill[] = [
   { 
     order: 3,
     name: "Operations", 
+    gridVariant: 2,
     bento: [
       {
-        slot: "card1",
+        slot: "1",
         content: 
         {
           type: "heading",
@@ -140,7 +143,7 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card3",
+        slot: "3",
         cardVariant: "gradient",
         content: 
         {
@@ -150,7 +153,7 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card6",
+        slot: "6",
         content: 
         {
           type: "sub-heading",
@@ -158,7 +161,7 @@ export const skills: Skill[] = [
         }
       },
       {
-        slot: "card5",
+        slot: "5",
         content: 
         {
           type: "icon-carousel",
@@ -181,5 +184,47 @@ export const skills: Skill[] = [
         }
       },
     ],
+  },
+];
+
+export const desktopGridVariants : GridVariants[] = [
+  {
+    1: { gridColumn: "1 / span 2", gridRow: "1 / span 4" },
+    2: { gridColumn: "3 / span 1", gridRow: "1 / span 4" },
+    3: { gridColumn: "1 / span 1", gridRow: "5 / span 5" },
+    4: { gridColumn: "2 / span 1", gridRow: "5 / span 3" },
+    5: { gridColumn: "3 / span 1", gridRow: "5 / span 7" },
+    6: { gridColumn: "1 / span 1", gridRow: "10 / span 2" },
+    7: { gridColumn: "2 / span 1", gridRow: "8 / span 4" },
+  },
+  {
+    1: { gridColumn: "2 / span 2", gridRow: "8 / span 4" },
+    2: { gridColumn: "1 / span 1", gridRow: "1 / span 4" },
+    3: { gridColumn: "3 / span 1", gridRow: "3 / span 5" },
+    4: { gridColumn: "1 / span 1", gridRow: "5 / span 3" },
+    5: { gridColumn: "2 / span 1", gridRow: "1 / span 7" },
+    6: { gridColumn: "3 / span 1", gridRow: "1 / span 2" },
+    7: { gridColumn: "1 / span 1", gridRow: "8 / span 4" },
+  },
+  {
+    1: { gridColumn: "2 / span 2", gridRow: "1 / span 4" },
+    2: { gridColumn: "1 / span 1", gridRow: "8 / span 4" },
+    3: { gridColumn: "1 / span 1", gridRow: "3 / span 5" },
+    4: { gridColumn: "3 / span 1", gridRow: "5 / span 3" },
+    5: { gridColumn: "2 / span 1", gridRow: "5 / span 7" },
+    6: { gridColumn: "1 / span 1", gridRow: "1 / span 2" },
+    7: { gridColumn: "3 / span 1", gridRow: "8 / span 4" },
+  },
+];
+
+export const mobileGridVariants: GridVariants[] = [
+  {
+    1: { gridColumn: "1 / span 2", gridRow: "1 / span 1" },
+    2: { gridColumn: "1 / span 1", gridRow: "2 / span 1" },
+    3: { gridColumn: "1 / span 2", gridRow: "3 / span 1" },
+    4: { gridColumn: "2 / span 1", gridRow: "2 / span 1" },
+    5: { gridColumn: "1 / span 2", gridRow: "5 / span 1" },
+    6: { gridColumn: "1 / span 1", gridRow: "4 / span 1" },
+    7: { gridColumn: "2 / span 1", gridRow: "4 / span 1" },
   },
 ];
