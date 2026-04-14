@@ -142,7 +142,7 @@ export function ScrollProgressBar({
   return (
     <motion.div
       aria-hidden="true"
-      className="pointer-events-none fixed right-0 left-0 z-30 pb-[env(safe-area-inset-bottom)]"
+      className="pointer-events-none fixed right-0 left-0 z-30"
       style={{
         bottom: bottomOffsetPx,
         opacity: isExclusiveFullscreen ? opacity : 0,
