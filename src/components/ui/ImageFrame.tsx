@@ -1,4 +1,5 @@
-import Image, { ImageProps } from "next/image";
+import Image, { type ImageProps } from "next/image";
+import type { Ref } from "react";
 
 import { PROJECT_IMAGE_LAYOUT } from "../../lib/projectImageLayout";
 
@@ -49,6 +50,8 @@ const placementConfig: Record<Exclude<ImageFramePlacement, "about-gallery-hero">
 };
 
 export type ImageFrameProps = Omit<ImageProps, "width" | "height" | "sizes" | "priority" | "fill"> & {
+  /** For scroll/layout measurement (e.g. hero flight); forwarded to the rendered `<img>`. */
+  imageRef?: Ref<HTMLImageElement | null>;
   /** Preset from Figma; determines display size and responsive sizes. */
   placement: ImageFramePlacement;
   /** Override placement width (e.g. for timeline "various"). Ignored for about-gallery-hero. */
@@ -71,6 +74,7 @@ export function ImageFrame({
   height: heightOverride,
   sizes: sizesOverride,
   priority: priorityProp,
+  imageRef,
   src,
   alt,
   className,
@@ -128,6 +132,7 @@ export function ImageFrame({
 
   return (
     <Image
+      ref={imageRef}
       src={src}
       alt={alt}
       width={width}

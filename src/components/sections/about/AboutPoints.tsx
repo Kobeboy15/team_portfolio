@@ -1,4 +1,5 @@
 import { aboutData } from "../../../data/about";
+import { ScrollReveal } from "../../ui/ScrollReveal";
 
 export function AboutPoints() {
   return (
@@ -12,9 +13,13 @@ export function AboutPoints() {
             aboutData.points.map((point, index) => (
                 <div key={index}>
                     <div className="flex flex-col max-w-[100vw] lg:px-[10vw] lg:flex-row lg:gap-10 px-12 py-6 mx-5 lg:mx-0 font-sora 2xl:text-sora-18">
-                        <h3 className="min-w-48 lg:mb-5">{point.title}</h3>
+                        <ScrollReveal>
+                            <h3 className="min-w-48 lg:mb-5">{point.title}</h3>
+                        </ScrollReveal>
                         <hr className="lg:hidden border-none h-px bg-border mr-12 mt-1 mb-2"/>
-                        <p>{point.description}</p>
+                        <ScrollReveal delay={0.1}>
+                            <p>{point.description}</p>
+                        </ScrollReveal>
                     </div>
                     {index < aboutData.points.length - 1 && <hr className="hidden lg:block border-none h-px bg-border mx-12"/>}
                 </div>

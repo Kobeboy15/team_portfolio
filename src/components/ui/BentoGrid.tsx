@@ -4,6 +4,7 @@ import { GridVariants, CardSlot } from "@/src/types/skills";
 import { Card } from "./Card";
 import { CardContent } from "./CardContent";
 import { CardDecor } from "./CardDecor";
+import { ScrollReveal } from "./ScrollReveal";
 
 import { desktopGridVariants, mobileGridVariants } from "@/src/data/skills";
 
@@ -52,6 +53,8 @@ export function BentoGrid({ items, variant }: { items: BentoItem[]; variant?: nu
     );
 }
 
+const STAGGER_STEP_S = 0.05;
+
 function fillGrid(
     items: BentoItem[],
     variants: GridVariants
@@ -59,24 +62,35 @@ function fillGrid(
     const cards: React.ReactElement[] = [];
     const usedSlots = new Set<CardSlot>(items.map((item) => item.slot));
     const allSlots = Object.keys(variants) as CardSlot[];
+    let index = 0;
 
     for (const item of items) {
+        const delay = index * STAGGER_STEP_S;
+        index += 1;
+
         cards.push(
             <div key={item.slot} style={variants[item.slot]}>
-                <Card variant={item.cardVariant ?? "background2"}  size={item.slot}>
-                    <CardContent content={item.content} />
-                </Card>
+                <ScrollReveal className="h-full w-full min-h-0" delay={delay}>
+                    <Card variant={item.cardVariant ?? "background2"} size={item.slot}>
+                        <CardContent content={item.content} />
+                    </Card>
+                </ScrollReveal>
             </div>
         );
     }
 
     for (const slot of allSlots) {
         if (!usedSlots.has(slot)) {
+            const delay = index * STAGGER_STEP_S;
+            index += 1;
+
             cards.push(
                 <div key={slot} style={variants[slot]}>
-                    <Card variant="accent" size={slot}>
-                        <CardDecor slot={slot} />
-                    </Card>
+                    <ScrollReveal className="h-full w-full min-h-0" delay={delay}>
+                        <Card variant="accent" size={slot}>
+                            <CardDecor slot={slot} />
+                        </Card>
+                    </ScrollReveal>
                 </div>
             );
         }
