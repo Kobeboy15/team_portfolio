@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
 import { Sora, Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
+export { metadata } from "../data/metadata";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -20,11 +20,6 @@ const inter = Inter({
   subsets: ["latin"],
   weight: "400",
 });
-
-export const metadata: Metadata = {
-  title: "Kobe Michael",
-  description: "A portfolio showcasing selected work and projects.",
-};
 
 export default function RootLayout({
   children,
