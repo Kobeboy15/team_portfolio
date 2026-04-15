@@ -171,7 +171,7 @@ function FlightLayer({
   return (
     <motion.div
       aria-hidden
-      className="pointer-events-none fixed z-60 overflow-hidden rounded-sm shadow-lg"
+      className="pointer-events-none fixed z-[60] overflow-hidden rounded-sm shadow-lg"
       style={{
         left: leftMv,
         top: topMv,
