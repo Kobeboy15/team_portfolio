@@ -2,12 +2,23 @@
 
 import { useState, useRef, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import type { NavigationItem } from "@/src/data/navigation";
 
 import { Button } from "./Button";
 import { ThemeToggle } from "./ThemeToggle";
 import { HamburgerIcon } from "./HamburgerIcon";
 
-export function NavigationHeader() {
+interface NavigationHeaderProps {
+  brandName: string;
+  brandHref: string;
+  navItems: NavigationItem[];
+}
+
+export function NavigationHeader({
+  brandName,
+  brandHref,
+  navItems,
+}: NavigationHeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen((prev) => !prev);
   const [visible, setVisible] = useState(true);
@@ -112,8 +123,6 @@ export function NavigationHeader() {
     };
   }, [pathname]);
 
-  const navItems = ["About", "Expertise", "Projects", "Contact"];
-
   return (
     <>
       <header
@@ -130,11 +139,11 @@ export function NavigationHeader() {
               tabIndex={-1}
               className="text-sora-24 font-extrabold tracking-tight text-foreground opacity-0"
             >
-              Kobe
+              {brandName}
             </span>
           ) : (
-            <a href="#hero" className="text-sora-24 font-extrabold tracking-tight text-foreground">
-              Kobe
+            <a href={brandHref} className="text-sora-24 font-extrabold tracking-tight text-foreground">
+              {brandName}
             </a>
           )}
 
@@ -149,8 +158,8 @@ export function NavigationHeader() {
                 className={`flex items-center gap-4 pr-2 whitespace-nowrap transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
               >
                 {navItems.map((item) => (
-                  <Button key={item} href={`#${item.toLowerCase()}`}>
-                    {item}
+                  <Button key={item.href} href={item.href}>
+                    {item.label}
                   </Button>
                 ))}
                 <ThemeToggle />
@@ -182,15 +191,15 @@ export function NavigationHeader() {
               tabIndex={-1}
               className="text-sora-24 font-extrabold tracking-tight text-foreground opacity-0"
             >
-              Kobe
+              {brandName}
             </span>
           ) : (
             <a
-              href="#hero"
+              href={brandHref}
               onClick={() => setIsOpen(false)}
               className="text-sora-24 font-extrabold tracking-tight text-foreground"
             >
-              Kobe
+              {brandName}
             </a>
           )}
           <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
@@ -200,12 +209,12 @@ export function NavigationHeader() {
         <nav className="flex flex-col items-start justify-center flex-1 gap-6 px-6 pb-16">
           {navItems.map((item, i) => (
             <div
-              key={item}
+              key={item.href}
               className={`transition-all duration-500 ease-in-out ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: isOpen ? `${150 + i * 60}ms` : "0ms" }}
             >
-              <Button href={`#${item.toLowerCase()}`} onClick={() => setIsOpen(false)}>
-                {item}
+              <Button href={item.href} onClick={() => setIsOpen(false)}>
+                {item.label}
               </Button>
             </div>
           ))}

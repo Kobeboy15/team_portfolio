@@ -1,4 +1,5 @@
 import { NavigationHeader } from "../components/ui/NavigationHeader";
+import { navigationData } from "@/src/data/navigation";
 
 import { HeroAboutImageCoordinator } from "../components/sections/HeroAboutImageCoordinator";
 import { HeroSection } from "../components/sections/HeroSection";
@@ -17,7 +18,11 @@ import {
 export default function Home() {
   return (
     <div className="min-h-screen bg-background font-sans">
-      <NavigationHeader />
+      <NavigationHeader
+        brandName={navigationData.brandName}
+        brandHref={navigationData.brandHref}
+        navItems={navigationData.navItems}
+      />
       <main className="flex min-h-screen w-full flex-col items-center justify-between">
         <HeroAboutImageCoordinator>
           <HeroSection />
