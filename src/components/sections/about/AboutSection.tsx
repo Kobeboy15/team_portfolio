@@ -63,7 +63,7 @@ export function AboutSection() {
       className="relative w-full"
       style={{ height: scrollHeight }}
     >
-      <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
+      <Section className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
         <motion.div ref={contentRef} data-scroll-container style={{ x }} className="flex flex-nowrap w-max max-h-full">
           {/* Heading + Bio */}
           <AboutBio />
@@ -80,7 +80,7 @@ export function AboutSection() {
           <AboutGallery scrollYProgress={scrollYProgress} totalScrollWidth={totalScrollPx} />
         </motion.div>
       </Section>
-      <ScrollProgressBar scrollYProgress={scrollYProgress} targetId="about" />
+      <ScrollProgressBar scrollYProgress={scrollYProgress} targetId={ABOUT_SECTION_ROOT_ID} />
     </div>
   );
 }
