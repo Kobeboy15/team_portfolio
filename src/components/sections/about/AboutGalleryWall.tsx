@@ -127,7 +127,7 @@ function MobileAboutGalleryWall({
       className={cn("relative w-full py-6 text-foreground", backgroundClassName)}
       aria-labelledby={yearId}
     >
-      <div className={cn("sticky top-18 z-10 px-5 py-4", backgroundClassName)}>
+      <div className={cn("px-5 py-4", backgroundClassName)}>
         <h2
           id={yearId}
           className="font-bebas text-display-96 leading-(--text-years--line-height) tracking-years uppercase"
