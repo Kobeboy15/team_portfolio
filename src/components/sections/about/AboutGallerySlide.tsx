@@ -44,9 +44,17 @@ function cn(...classes: (string | undefined)[]): string {
 
 export type AboutGallerySlideProps = AboutSlide & {
   className?: string;
+  orientation?: "horizontal" | "vertical";
 };
 
-export function AboutGallerySlide({ title, description, image, imageAlt, className }: AboutGallerySlideProps) {
+export function AboutGallerySlide({
+  title,
+  description,
+  image,
+  imageAlt,
+  className,
+  orientation = "horizontal",
+}: AboutGallerySlideProps) {
   const topSpacerPx = hashImageToTopSpacerPx(image);
   const articleAlign = hashImageToArticleAlign(image);
   const spacerOnBottom = articleAlign === "end";
@@ -61,6 +69,22 @@ export function AboutGallerySlide({ title, description, image, imageAlt, classNa
       </ScrollReveal>
     </div>
   );
+
+  if (orientation === "vertical") {
+    return (
+      <article className={cn("flex w-full flex-col gap-4 px-5 pb-8", className)}>
+        <ImageFrame
+          placement="timeline"
+          src={image}
+          alt={imageAlt}
+          className="h-auto max-h-[70dvh] w-full shrink-0 object-cover shadow-xl"
+        />
+        <div className="flex w-full flex-col gap-2">
+          {copyBlock}
+        </div>
+      </article>
+    );
+  }
 
   return (
     <article className={cn("flex flex-col gap-3 sm:flex-row items-center sm:gap-4 max-w-[90vw]", ARTICLE_ALIGN_CLASS[articleAlign], className)}>

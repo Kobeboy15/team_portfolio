@@ -14,7 +14,9 @@ import { AboutBio } from "./AboutBio";
 import { AboutGallery } from "./AboutGallery";
 import { AboutPoints } from "./AboutPoints";
 
-export function AboutSection() {
+const DESKTOP_ABOUT_SCROLL_ID = "about-desktop-scroll-area";
+
+function DesktopAboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [translateX, setTranslateX] = useState("0%");
@@ -37,8 +39,7 @@ export function AboutSection() {
       const percentage = totalWidth > 0 ? (scrollDistance / totalWidth) * 100 : 0;
       setTranslateX(`-${percentage}%`);
 
-      const isMobile = window.innerWidth < 768;
-      const speedMod = isMobile ? 0.75 : 1;
+      const speedMod = window.innerWidth < 640 ? 0.75 : 1;
       setScrollHeight(`${(scrollDistance * speedMod) + window.innerHeight}px`);
     };
 
@@ -59,28 +60,48 @@ export function AboutSection() {
   return (
     <div
       ref={sectionRef}
-      id={ABOUT_SECTION_ROOT_ID}
-      className="relative w-full"
+      id={DESKTOP_ABOUT_SCROLL_ID}
+      className="relative hidden w-full sm:block"
       style={{ height: scrollHeight }}
     >
-      <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
+      <Section className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
         <motion.div ref={contentRef} data-scroll-container style={{ x }} className="flex flex-nowrap w-max max-h-full">
-          {/* Heading + Bio */}
           <AboutBio />
-
-          {/* Points */}
           <section className="relative h-dvh w-[70vw] shrink-0 overflow-hidden" aria-label={aboutData.pointsImageAlt}>
             <div className="relative h-full w-full overflow-hidden">
               <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
             </div>
           </section>
           <AboutPoints />
-
-          {/* Gallery */}
           <AboutGallery scrollYProgress={scrollYProgress} totalScrollWidth={totalScrollPx} />
         </motion.div>
       </Section>
-      <ScrollProgressBar scrollYProgress={scrollYProgress} targetId="about" />
+      <ScrollProgressBar scrollYProgress={scrollYProgress} targetId={DESKTOP_ABOUT_SCROLL_ID} />
+    </div>
+  );
+}
+
+function MobileAboutSection() {
+  return (
+    <Section className="block w-full max-w-none overflow-hidden pt-0! sm:hidden">
+      <AboutBio />
+      <section className="relative h-[clamp(320px,70dvh,960px)] w-full overflow-hidden" aria-label={aboutData.pointsImageAlt}>
+        <div className="relative h-full w-full overflow-hidden">
+          <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
+        </div>
+      </section>
+      <AboutPoints />
+      <AboutGallery orientation="vertical" />
+    </Section>
+  );
+}
+
+export function AboutSection() {
+  return (
+    <div id={ABOUT_SECTION_ROOT_ID} className="relative w-full">
+      <div id="about" className="absolute top-0" aria-hidden="true" />
+      <MobileAboutSection />
+      <DesktopAboutSection />
     </div>
   );
 }

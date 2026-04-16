@@ -7,21 +7,34 @@ import { buildAboutGalleryHalls } from "../../../lib/buildAboutGalleryHalls";
 import { AboutGallerySeparator } from "./AboutGallerySeparator";
 import { AboutGalleryWall } from "./AboutGalleryWall";
 
+type AboutGalleryOrientation = "horizontal" | "vertical";
+
 type AboutGalleryProps = {
-  scrollYProgress: MotionValue<number>;
-  totalScrollWidth: number;
+  scrollYProgress?: MotionValue<number>;
+  totalScrollWidth?: number;
+  orientation?: AboutGalleryOrientation;
 };
 
-export function AboutGallery({ scrollYProgress, totalScrollWidth }: AboutGalleryProps) {
+export function AboutGallery({
+  scrollYProgress,
+  totalScrollWidth = 0,
+  orientation = "horizontal",
+}: AboutGalleryProps) {
   const halls = buildAboutGalleryHalls(aboutData.timeline, aboutData.timelineSeparators);
 
   if (halls.length === 0) return null;
 
   return (
-    <div className="flex h-dvh min-h-full w-max max-w-none flex-row flex-nowrap overflow-y-hidden [scrollbar-gutter:stable]">
+    <div
+      className={
+        orientation === "vertical"
+          ? "flex w-full max-w-none flex-col overflow-x-hidden"
+          : "flex h-dvh min-h-full w-max max-w-none flex-row flex-nowrap overflow-y-hidden [scrollbar-gutter:stable]"
+      }
+    >
       {halls.map((hall) => (
         <Fragment key={hall.yearId}>
-          <AboutGallerySeparator src={hall.separator.src} alt={hall.separator.alt} />
+          <AboutGallerySeparator src={hall.separator.src} alt={hall.separator.alt} orientation={orientation} />
           <AboutGalleryWall
             year={hall.year}
             yearId={hall.yearId}
@@ -29,6 +42,7 @@ export function AboutGallery({ scrollYProgress, totalScrollWidth }: AboutGallery
             items={[...hall.slides]}
             scrollYProgress={scrollYProgress}
             totalScrollWidth={totalScrollWidth}
+            orientation={orientation}
           />
         </Fragment>
       ))}

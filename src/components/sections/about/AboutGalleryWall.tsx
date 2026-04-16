@@ -12,18 +12,23 @@ type AboutGalleryWallProps = {
   yearId: string;
   backgroundClassName: string;
   items: AboutSlide[];
-  scrollYProgress: MotionValue<number>;
+  scrollYProgress?: MotionValue<number>;
   totalScrollWidth: number;
+  orientation?: "horizontal" | "vertical";
 };
 
-export function AboutGalleryWall({
+type DesktopAboutGalleryWallProps = Omit<AboutGalleryWallProps, "scrollYProgress" | "orientation"> & {
+  scrollYProgress: MotionValue<number>;
+};
+
+function DesktopAboutGalleryWall({
   year,
   yearId,
   backgroundClassName,
   items,
   scrollYProgress,
   totalScrollWidth,
-}: AboutGalleryWallProps) {
+}: DesktopAboutGalleryWallProps) {
   const wallRef = useRef<HTMLElement>(null);
   const yearRef = useRef<HTMLHeadingElement>(null);
 
@@ -96,17 +101,62 @@ export function AboutGalleryWall({
         ref={yearRef}
         className={cn(
           "absolute left-2 md:left-20 bottom-0 md:bottom-6 shrink-0 font-bebas uppercase z-0",
-          "text-display-96 md:text-years leading-(--text-years--line-height) tracking-years"
-        )}
-      >
-        {year}
-      </motion.h2>
+        "text-display-96 md:text-years leading-(--text-years--line-height) tracking-years"
+      )}
+    >
+      {year}
+    </motion.h2>
 
       <div className="flex min-h-0 flex-1 flex-row flex-nowrap items-center py-10 min-[768px]:py-12 gap-24 min-[768px]:gap-36 min-[1024px]:gap-48 min-[1280px]:gap-60 min-[1536px]:gap-72 min-[1920px]:gap-[360px] min-[2160px]:gap-[405px] min-[2500px]:gap-[469px] min-[3000px]:gap-[563px] min-[3400px]:gap-[638px] min-[3800px]:gap-[713px] min-[4200px]:gap-[788px] min-[4600px]:gap-[863px] min-[5060px]:gap-[949px] z-1">
         {items.map((slide, index) => (
-          <AboutGallerySlide key={`${slide.image}-${index}`} {...slide} />
+          <AboutGallerySlide key={`${slide.image}-${index}`} {...slide} orientation="horizontal" />
         ))}
       </div>
     </section>
   );
+}
+
+function MobileAboutGalleryWall({
+  year,
+  yearId,
+  backgroundClassName,
+  items,
+}: AboutGalleryWallProps) {
+  return (
+    <section
+      className={cn("relative w-full py-6 text-foreground", backgroundClassName)}
+      aria-labelledby={yearId}
+    >
+      <div className={cn("sticky top-18 z-10 px-5 py-4", backgroundClassName)}>
+        <h2
+          id={yearId}
+          className="font-bebas text-display-96 leading-(--text-years--line-height) tracking-years uppercase"
+        >
+          {year}
+        </h2>
+      </div>
+
+      <div className="flex w-full flex-col gap-8 pb-8 pt-2">
+        {items.map((slide, index) => (
+          <AboutGallerySlide
+            key={`${slide.image}-${index}`}
+            {...slide}
+            orientation="vertical"
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export function AboutGalleryWall(props: AboutGalleryWallProps) {
+  if (props.orientation === "vertical") {
+    return <MobileAboutGalleryWall {...props} />;
+  }
+
+  if (!props.scrollYProgress) {
+    return null;
+  }
+
+  return <DesktopAboutGalleryWall {...props} scrollYProgress={props.scrollYProgress} />;
 }
