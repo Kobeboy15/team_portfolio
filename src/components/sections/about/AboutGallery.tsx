@@ -13,12 +13,14 @@ type AboutGalleryProps = {
   scrollYProgress?: MotionValue<number>;
   totalScrollWidth?: number;
   orientation?: AboutGalleryOrientation;
+  useStableMobileMediaHeight?: boolean;
 };
 
 export function AboutGallery({
   scrollYProgress,
   totalScrollWidth = 0,
   orientation = "horizontal",
+  useStableMobileMediaHeight = false,
 }: AboutGalleryProps) {
   const halls = buildAboutGalleryHalls(aboutData.timeline, aboutData.timelineSeparators);
 
@@ -34,7 +36,12 @@ export function AboutGallery({
     >
       {halls.map((hall) => (
         <Fragment key={hall.yearId}>
-          <AboutGallerySeparator src={hall.separator.src} alt={hall.separator.alt} orientation={orientation} />
+          <AboutGallerySeparator
+            src={hall.separator.src}
+            alt={hall.separator.alt}
+            orientation={orientation}
+            useStableMobileMediaHeight={useStableMobileMediaHeight}
+          />
           <AboutGalleryWall
             year={hall.year}
             yearId={hall.yearId}

@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useSyncExternalStore } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 
 import { aboutData } from "../../../data/about";
+import { isLikelyIosAffectedWebKit } from "../../../lib/isLikelyIosAffectedWebKit";
 
 import { ABOUT_SECTION_ROOT_ID } from "../heroAboutConstants";
 import { ImageFrame } from "../../ui/ImageFrame";
@@ -15,6 +16,15 @@ import { AboutGallery } from "./AboutGallery";
 import { AboutPoints } from "./AboutPoints";
 
 const DESKTOP_ABOUT_SCROLL_ID = "about-desktop-scroll-area";
+const subscribeToPlatformSnapshot = () => () => {};
+
+function useStableMobileMediaHeightForIos() {
+  return useSyncExternalStore(
+    subscribeToPlatformSnapshot,
+    isLikelyIosAffectedWebKit,
+    () => false,
+  );
+}
 
 function DesktopAboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -82,16 +92,22 @@ function DesktopAboutSection() {
 }
 
 function MobileAboutSection() {
+  const useStableMobileMediaHeight = useStableMobileMediaHeightForIos();
+
+  const mobileImageHeightClass = useStableMobileMediaHeight
+    ? "relative h-[clamp(320px,70svh,960px)] w-full overflow-hidden"
+    : "relative h-[clamp(320px,70dvh,960px)] w-full overflow-hidden";
+
   return (
     <Section className="block w-full max-w-none overflow-hidden pt-0! sm:hidden">
       <AboutBio />
-      <section className="relative h-[clamp(320px,70dvh,960px)] w-full overflow-hidden" aria-label={aboutData.pointsImageAlt}>
+      <section className={mobileImageHeightClass} aria-label={aboutData.pointsImageAlt}>
         <div className="relative h-full w-full overflow-hidden">
           <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
         </div>
       </section>
       <AboutPoints />
-      <AboutGallery orientation="vertical" />
+      <AboutGallery orientation="vertical" useStableMobileMediaHeight={useStableMobileMediaHeight} />
     </Section>
   );
 }
