@@ -45,7 +45,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
       <div className="block w-full">
         <div className="grid gap-8 lg:grid-cols-[minmax(270px,1fr)_minmax(280px,360px)_minmax(0,220px)] lg:items-center lg:gap-y-10 lg:gap-x-6 xl:grid-cols-[minmax(240px,350px)_minmax(320px,443px)_minmax(180px,280px)] xl:gap-x-10 2xl:grid-cols-[minmax(260px,350px)_minmax(443px,var(--token-project-image-width))_minmax(260px,350px)] 2xl:gap-x-[clamp(32px,6vw,123px)]">
           <div className="min-w-0 flex flex-col gap-8 lg:gap-10">
-            <header className="-space-y-2">
+            <header className="-space-y-1 sm:-space-y-2">
               <Heading
                 size="display-96"
                 as="h2"
