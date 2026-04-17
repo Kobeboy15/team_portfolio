@@ -10,6 +10,7 @@ import { AboutGalleryWall } from "./AboutGalleryWall";
 type AboutGalleryOrientation = "horizontal" | "vertical";
 
 type AboutGalleryProps = {
+  idNamespace: string;
   scrollYProgress?: MotionValue<number>;
   totalScrollWidth?: number;
   orientation?: AboutGalleryOrientation;
@@ -17,6 +18,7 @@ type AboutGalleryProps = {
 };
 
 export function AboutGallery({
+  idNamespace,
   scrollYProgress,
   totalScrollWidth = 0,
   orientation = "horizontal",
@@ -35,7 +37,7 @@ export function AboutGallery({
       }
     >
       {halls.map((hall) => (
-        <Fragment key={hall.yearId}>
+        <Fragment key={`${hall.yearId}-${idNamespace}`}>
           <AboutGallerySeparator
             src={hall.separator.src}
             alt={hall.separator.alt}
@@ -43,6 +45,7 @@ export function AboutGallery({
             useStableMobileMediaHeight={useStableMobileMediaHeight}
           />
           <AboutGalleryWall
+            idNamespace={idNamespace}
             year={hall.year}
             yearId={hall.yearId}
             backgroundClassName={hall.backgroundClassName}
