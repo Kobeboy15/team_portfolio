@@ -45,6 +45,7 @@ function cn(...classes: (string | undefined)[]): string {
 export type AboutGallerySlideProps = AboutSlide & {
   className?: string;
   orientation?: "horizontal" | "vertical";
+  useStableMobileMediaHeight?: boolean;
 };
 
 export function AboutGallerySlide({
@@ -54,10 +55,14 @@ export function AboutGallerySlide({
   imageAlt,
   className,
   orientation = "horizontal",
+  useStableMobileMediaHeight = false,
 }: AboutGallerySlideProps) {
   const topSpacerPx = hashImageToTopSpacerPx(image);
   const articleAlign = hashImageToArticleAlign(image);
   const spacerOnBottom = articleAlign === "end";
+  const verticalImageClass = useStableMobileMediaHeight
+    ? "h-auto max-h-[70svh] w-full shrink-0 object-cover shadow-xl"
+    : "h-auto max-h-[70dvh] w-full shrink-0 object-cover shadow-xl";
 
   const copyBlock = (
     <div className="flex shrink-0 flex-col gap-2">
@@ -77,7 +82,7 @@ export function AboutGallerySlide({
           placement="timeline"
           src={image}
           alt={imageAlt}
-          className="h-auto max-h-[70dvh] w-full shrink-0 object-cover shadow-xl"
+          className={verticalImageClass}
         />
         <div className="flex w-full flex-col gap-2">
           {copyBlock}

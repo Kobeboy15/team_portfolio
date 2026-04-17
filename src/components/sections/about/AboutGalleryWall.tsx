@@ -15,6 +15,7 @@ type AboutGalleryWallProps = {
   scrollYProgress?: MotionValue<number>;
   totalScrollWidth: number;
   orientation?: "horizontal" | "vertical";
+  useStableMobileMediaHeight?: boolean;
 };
 
 type DesktopAboutGalleryWallProps = Omit<AboutGalleryWallProps, "scrollYProgress" | "orientation"> & {
@@ -121,6 +122,7 @@ function MobileAboutGalleryWall({
   yearId,
   backgroundClassName,
   items,
+  useStableMobileMediaHeight = false,
 }: AboutGalleryWallProps) {
   return (
     <section
@@ -142,6 +144,7 @@ function MobileAboutGalleryWall({
             key={`${slide.image}-${index}`}
             {...slide}
             orientation="vertical"
+            useStableMobileMediaHeight={useStableMobileMediaHeight}
           />
         ))}
       </div>

@@ -50,6 +50,7 @@ export function AboutGallery({
             scrollYProgress={scrollYProgress}
             totalScrollWidth={totalScrollWidth}
             orientation={orientation}
+            useStableMobileMediaHeight={useStableMobileMediaHeight}
           />
         </Fragment>
       ))}
