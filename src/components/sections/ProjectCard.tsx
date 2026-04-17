@@ -70,6 +70,15 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
               </ScrollReveal>
             </header>
 
+            <div className="min-w-0 flex justify-center">
+              <ImageFrame
+                placement="projects"
+                src={project.image}
+                alt={project.imageAlt}
+                className={PROJECT_IMAGE_LAYOUT.frameClassName}
+              />
+            </div>
+
             <div className="flex flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">
                 Description
@@ -94,15 +103,6 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
                 </p>
               </ScrollReveal>
             </div>
-          </div>
-
-          <div className="min-w-0 flex justify-center">
-            <ImageFrame
-              placement="projects"
-              src={project.image}
-              alt={project.imageAlt}
-              className={PROJECT_IMAGE_LAYOUT.frameClassName}
-            />
           </div>
 
           <div className="min-w-0 flex flex-col gap-8 lg:gap-10 xl:gap-12">
