@@ -27,7 +27,7 @@ export function CardContent({ content }: { content: BentoContent }) {
     case "icon":
       return (
             <div className="w-full h-full flex flex-col md:flex-row justify-center items-center gap-2 sm:gap-3 md:gap-4 px-3 py-3 sm:px-4 sm:py-4 md:px-5 md:py-5 lg:px-6 lg:py-6">
-                <img src={content.icon.path} alt={content.icon.name} className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-12 lg:h-12 ${invertClass}`} />
+                <img src={content.icon.path} alt="" aria-hidden="true" className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 lg:w-12 lg:h-12 ${invertClass}`} />
                 <span className="font-sora text-base sm:text-lg md:text-3xl lg:text-4xl text-(--token-foreground)">{content.icon.name}</span>
             </div>
         );

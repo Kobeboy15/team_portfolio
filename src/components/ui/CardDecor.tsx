@@ -7,7 +7,7 @@ export function CardDecor({ slot }: { slot: CardSlot }) {
   switch (slot) {
     case "2":
     case "5":
-        return <div className="w-full h-full flex justify-center items-center"><img src={"images/skills/skills-decor-circle.webp"} className="w-full h-auto md:h-full md:w-auto p-1"></img></div>;
+        return <div className="w-full h-full flex justify-center items-center"><img src={"images/skills/skills-decor-circle.webp"} alt="" className="w-full h-auto md:h-full md:w-auto p-1"></img></div>;
     case "1":
     case "4":
     case "6":
@@ -16,8 +16,8 @@ export function CardDecor({ slot }: { slot: CardSlot }) {
     case "3":
         return (
             <div className="w-full h-full relative">
-                <img src={"images/skills/skills-decor-flower-left.webp"} className="absolute top-0 left-0 h-[70%] w-auto md:w-[40%] md:h-auto"></img>
-                <img src={"images/skills/skills-decor-flower-right.webp"} className="absolute bottom-0 right-0 h-[70%] w-auto md:w-[40%] md:h-auto"></img>
+                <img src={"images/skills/skills-decor-flower-left.webp"} alt="" className="absolute top-0 left-0 h-[70%] w-auto md:w-[40%] md:h-auto"></img>
+                <img src={"images/skills/skills-decor-flower-right.webp"} alt="" className="absolute bottom-0 right-0 h-[70%] w-auto md:w-[40%] md:h-auto"></img>
             </div>
         );
   }

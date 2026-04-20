@@ -22,7 +22,7 @@ export function ContactSection() {
         <div className="flex flex-col md:flex-row w-full flex-1 border-t border-current/20">
             <div className="flex flex-col w-full md:w-2/5 border-b md:border-b-0 md:border-r border-current/20 p-7 items-end">
                 <ScrollReveal className="w-full">
-                    <h1 className="w-full text-header-1 tracking-display font-bebas whitespace-nowrap">{contactData.slogan}</h1>
+                    <h2 className="w-full text-header-1 tracking-display font-bebas whitespace-nowrap">{contactData.slogan}</h2>
                 </ScrollReveal>
                 <ScrollReveal delay={0.1}>
                     <Button
@@ -57,8 +57,13 @@ export function ContactSection() {
                     <div className="flex gap-7">
                         {contactData.socials.map((social, i) => (
                             <ScrollReveal key={i} delay={i * 0.06}>
-                                <a href={social.url} target="_blank" rel="noopener noreferrer">
-                                    <img src={social.icon} alt={social.name} className={`w-8 h-8 ${invertClass}`} />
+                                <a
+                                    href={social.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={social.name}
+                                >
+                                    <img src={social.icon} alt="" aria-hidden="true" className={`w-8 h-8 ${invertClass}`} />
                                 </a>
                             </ScrollReveal>
                         ))}

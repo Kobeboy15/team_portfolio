@@ -7,15 +7,62 @@ import { Button } from "./Button";
 import { ThemeToggle } from "./ThemeToggle";
 import { HamburgerIcon } from "./HamburgerIcon";
 
+const MOBILE_MENU_ID = "mobile-navigation-menu";
+const FOCUSABLE_SELECTOR = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(", ");
+
+function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
+  if (!container) return [];
+
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+    (element) => {
+      if (element.hasAttribute("disabled")) return false;
+      if (element.getAttribute("aria-hidden") === "true") return false;
+      if (element.closest("[inert]")) return false;
+
+      const style = window.getComputedStyle(element);
+      return style.display !== "none" && style.visibility !== "hidden";
+    }
+  );
+}
+
 export function NavigationHeader() {
   const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen((prev) => !prev);
   const [visible, setVisible] = useState(true);
   const [isInHero, setIsInHero] = useState(false);
   const [isInContact, setIsInContact] = useState(false);
 
   const lastScrollY = useRef(0);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null);
+  const mobileCloseButtonRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
+  const shouldRestoreFocusRef = useRef(false);
   const pathname = usePathname();
+
+  const closeMobileMenu = (restoreFocus = true) => {
+    shouldRestoreFocusRef.current = restoreFocus;
+    setIsOpen(false);
+  };
+
+  const toggleMobileMenu = () => {
+    if (!isOpen) {
+      restoreFocusRef.current = document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : mobileTriggerRef.current;
+      shouldRestoreFocusRef.current = true;
+      setIsOpen(true);
+      return;
+    }
+
+    closeMobileMenu(true);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +72,9 @@ export function NavigationHeader() {
         setVisible(true);
       } else if (currentScrollY > lastScrollY.current && !isInContact) {
         setVisible(false);
-        setIsOpen(false);
+        if (isOpen) {
+          closeMobileMenu(true);
+        }
       } else {
         setVisible(true);
       }
@@ -35,7 +84,7 @@ export function NavigationHeader() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isInContact]);
+  }, [isInContact, isOpen]);
 
   // Lock body scroll when mobile menu is open (mobile only)
   useEffect(() => {
@@ -44,9 +93,11 @@ export function NavigationHeader() {
       document.body.style.overflow = isOpen && mq.matches ? "hidden" : "";
     };
     const handleViewportChange = () => {
-      setIsOpen(false);
+      if (isOpen) {
+        closeMobileMenu(false);
+      }
       updateOverflow();
-    }
+    };
     updateOverflow();
     mq.addEventListener("change", handleViewportChange);
     return () => {
@@ -56,11 +107,73 @@ export function NavigationHeader() {
   }, [isOpen]);
 
   useEffect(() => {
+    if (!isOpen) {
+      if (shouldRestoreFocusRef.current) {
+        const target = restoreFocusRef.current;
+        if (target && document.contains(target)) {
+          target.focus();
+        }
+      }
+
+      shouldRestoreFocusRef.current = false;
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      const focusable = getFocusableElements(mobileMenuRef.current);
+      const firstTarget = focusable[0] ?? mobileCloseButtonRef.current;
+      firstTarget?.focus();
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMobileMenu(true);
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const focusable = getFocusableElements(mobileMenuRef.current);
+      if (focusable.length === 0) {
+        event.preventDefault();
+        mobileCloseButtonRef.current?.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const activeElement = document.activeElement;
+
+      if (event.shiftKey) {
+        if (activeElement === first || !mobileMenuRef.current?.contains(activeElement)) {
+          event.preventDefault();
+          last.focus();
+        }
+        return;
+      }
+
+      if (activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
+  useEffect(() => {
     let cancelled = false;
 
     const el = document.getElementById("hero");
     if (!el) {
-      // Update state async to avoid synchronous setState warnings.
       Promise.resolve().then(() => {
         if (!cancelled) setIsInHero(false);
       });
@@ -69,8 +182,6 @@ export function NavigationHeader() {
       };
     }
 
-    // Hide the header "home/brand" while the hero section is visible.
-    // rootMargin accounts for the fixed header height (h-18 ~= 72px).
     const observer = new IntersectionObserver(
       ([entry]) => setIsInHero(entry.isIntersecting),
       {
@@ -95,7 +206,9 @@ export function NavigationHeader() {
       Promise.resolve().then(() => {
         if (!cancelled) setIsInContact(false);
       });
-      return () => { cancelled = true; };
+      return () => {
+        cancelled = true;
+      };
     }
 
     const observer = new IntersectionObserver(
@@ -117,13 +230,12 @@ export function NavigationHeader() {
   return (
     <>
       <header
-        className={`${isInContact? "bg-transparent" : "bg-background"} fixed top-0 left-0 z-50 h-18 w-screen
+        className={`${isInContact ? "bg-transparent" : "bg-background"} fixed top-0 left-0 z-50 h-18 w-screen
           transition-transform duration-300 ease-in-out
           ${visible ? "translate-y-0" : "-translate-y-full"}
           ${isInContact ? "max-md:opacity-0 max-md:pointer-events-none" : ""}`}
       >
-        <div className="flex items-center justify-between h-full px-6 md:px-16 py-4">
-          {/* Home button / brand */}
+        <div className="flex items-center justify-between h-full px-6 py-4 md:px-16">
           {isInHero ? (
             <span
               aria-hidden="true"
@@ -138,15 +250,14 @@ export function NavigationHeader() {
             </a>
           )}
 
-          {/* ── Desktop nav ── */}
-          <div className="hidden md:flex items-center">
+          <div className="hidden items-center md:flex">
             <div
               aria-hidden={!isOpen}
               inert={!isOpen}
               className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-w-[700px]" : "max-w-0"}`}
             >
               <nav
-                className={`flex items-center gap-4 pr-2 whitespace-nowrap transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+                className={`flex items-center gap-4 whitespace-nowrap pr-2 transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
               >
                 {navItems.map((item) => (
                   <Button key={item} href={`#${item.toLowerCase()}`}>
@@ -156,26 +267,29 @@ export function NavigationHeader() {
                 <ThemeToggle />
               </nav>
             </div>
-            <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
+            <HamburgerIcon isOpen={isOpen} onToggle={toggleMobileMenu} />
           </div>
 
-          {/* ── Mobile: only hamburger ── */}
           <div className="flex md:hidden">
-            <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
+            <HamburgerIcon
+              isOpen={isOpen}
+              onToggle={toggleMobileMenu}
+              controlsId={MOBILE_MENU_ID}
+              buttonRef={mobileTriggerRef}
+            />
           </div>
         </div>
       </header>
 
-      {/* ── Mobile full-screen slide-down menu ── */}
       <div
+        id={MOBILE_MENU_ID}
+        ref={mobileMenuRef}
         aria-hidden={!isOpen || !visible}
         inert={!isOpen || !visible}
-        className={`md:hidden fixed inset-0 z-40 bg-background flex flex-col
-          transition-transform duration-500 ease-in-out
+        className={`fixed inset-0 z-40 flex flex-col bg-background transition-transform duration-500 ease-in-out md:hidden
           ${isOpen && visible ? "translate-y-0 pointer-events-auto" : "-translate-y-full pointer-events-none"}`}
       >
-        {/* Top row — mirrors the header so brand + X stay in place */}
-        <div className="flex items-center justify-between h-18 px-6 py-4 shrink-0">
+        <div className="flex h-18 shrink-0 items-center justify-between px-6 py-4">
           {isInHero ? (
             <span
               aria-hidden="true"
@@ -187,24 +301,28 @@ export function NavigationHeader() {
           ) : (
             <a
               href="#hero"
-              onClick={() => setIsOpen(false)}
+              onClick={() => closeMobileMenu(true)}
               className="text-sora-24 font-extrabold tracking-tight text-foreground"
             >
               Kobe
             </a>
           )}
-          <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
+          <HamburgerIcon
+            isOpen={isOpen}
+            onToggle={toggleMobileMenu}
+            controlsId={MOBILE_MENU_ID}
+            buttonRef={mobileCloseButtonRef}
+          />
         </div>
 
-        {/* Nav links — vertical, staggered fade-in */}
-        <nav className="flex flex-col items-start justify-center flex-1 gap-6 px-6 pb-16">
+        <nav className="flex flex-1 flex-col items-start justify-center gap-6 px-6 pb-16">
           {navItems.map((item, i) => (
             <div
               key={item}
               className={`transition-all duration-500 ease-in-out ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: isOpen ? `${150 + i * 60}ms` : "0ms" }}
             >
-              <Button href={`#${item.toLowerCase()}`} onClick={() => setIsOpen(false)}>
+              <Button href={`#${item.toLowerCase()}`} onClick={() => closeMobileMenu(true)}>
                 {item}
               </Button>
             </div>
