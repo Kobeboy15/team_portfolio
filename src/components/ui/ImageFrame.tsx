@@ -110,23 +110,41 @@ export function ImageFrame({
 
   if (placement === "projects") {
     return (
-      <div
-        className={cn(className)}
-        style={{ aspectRatio: `${width} / ${height}` }}
-      >
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          sizes={sizes}
-          priority={priority}
-          placeholder={placeholder}
-          blurDataURL={blurDataURL}
-          className="object-contain h-full w-full"
-          quality={70}
-          {...rest}
-        />
-      </div>
+      <>
+        <div className={cn("lg:hidden", className)}>
+          <Image
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            sizes={sizes}
+            priority={priority}
+            placeholder={placeholder}
+            blurDataURL={blurDataURL}
+            className="h-auto w-full"
+            quality={70}
+            {...rest}
+          />
+        </div>
+
+        <div
+          className={cn("hidden lg:block", className)}
+          style={{ aspectRatio: `${width} / ${height}` }}
+        >
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            sizes={sizes}
+            priority={priority}
+            placeholder={placeholder}
+            blurDataURL={blurDataURL}
+            className="object-contain h-full w-full"
+            quality={70}
+            {...rest}
+          />
+        </div>
+      </>
     );
   }
 

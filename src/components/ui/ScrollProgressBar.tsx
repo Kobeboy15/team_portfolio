@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, useTransform, type MotionValue } from "framer-motion";
 
+import { isLikelyIosAffectedWebKit } from "../../lib/isLikelyIosAffectedWebKit";
+
 const FADE_SHOULDER = 0.05;
 
 /** Subpixel noise from toolbar animation; values below this snap to 0 to avoid jitter. */
@@ -11,17 +13,9 @@ const BOTTOM_OFFSET_JITTER_PX = 1;
 /**
  * iOS Safari pins `position: fixed` to the layout viewport bottom, while the visible
  * viewport bottom moves when browser chrome shows/hides. `env(safe-area-inset-bottom)`
- * covers the hardware safe area only, not the transient toolbar inset — so we offset
+ * covers the hardware safe area only, not the transient toolbar inset, so we offset
  * `bottom` using `visualViewport` when the platform is affected.
  */
-function isLikelyIosAffectedWebKit(): boolean {
-  if (typeof navigator === "undefined") return false;
-  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) return true;
-  // iPadOS “desktop” Safari often reports MacIntel + touch.
-  if (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) return true;
-  return false;
-}
-
 export type ScrollProgressBarProps = {
   scrollYProgress: MotionValue<number>;
   /**

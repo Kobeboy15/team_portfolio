@@ -18,7 +18,7 @@ export function HeroSection() {
       <div className="flex flex-col w-full h-full ">
         {/* Hero Name and Role Phrases */}
         <div className="flex flex-col items-center sm:items-start justify-start pt-2 lg:pt-0 sm:pl-1 2xl:pl-(--token-hero-headings-padding-left)">
-          <h1 className="w-full text-header-1 tracking-display font-bebas whitespace-nowrap">
+          <h1 className="w-full text-center sm:text-left text-header-1 tracking-display font-bebas whitespace-normal sm:whitespace-nowrap">
             {heroData.name}
           </h1>
           <RotatingRolePhrases

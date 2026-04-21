@@ -3,6 +3,7 @@ import { PROJECT_IMAGE_LAYOUT } from "../../lib/projectImageLayout";
 
 import { Heading } from "../ui/Heading";
 import { ImageFrame } from "../ui/ImageFrame";
+import { ScrollReveal } from "../ui/ScrollReveal";
 
 import { cn, ExternalLinkIcon } from "./projectCardShared";
 
@@ -24,11 +25,13 @@ function ProjectGroup({ label, items }: ProjectGroupProps) {
   return (
     <div className="flex flex-col gap-3">
       <p className="font-sans text-sora-14 font-light text-accent">{label}</p>
-      <ul className="space-y-1 font-sans text-sora-14 font-light leading-6 text-foreground">
-        {items.map((item, index) => (
-          <li key={`${label}-${index}`}>{item}</li>
-        ))}
-      </ul>
+      <ScrollReveal delay={0.15}>
+        <ul className="space-y-1 font-sans text-sora-14 font-light leading-6 text-foreground">
+          {items.map((item, index) => (
+            <li key={`${label}-${index}`}>{item}</li>
+          ))}
+        </ul>
+      </ScrollReveal>
     </div>
   );
 }
@@ -45,52 +48,61 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
       <div className="block w-full">
         <div className="grid gap-8 lg:grid-cols-[minmax(270px,1fr)_minmax(280px,360px)_minmax(0,220px)] lg:items-center lg:gap-y-10 lg:gap-x-6 xl:grid-cols-[minmax(240px,350px)_minmax(320px,443px)_minmax(180px,280px)] xl:gap-x-10 2xl:grid-cols-[minmax(260px,350px)_minmax(443px,var(--token-project-image-width))_minmax(260px,350px)] 2xl:gap-x-[clamp(32px,6vw,123px)]">
           <div className="min-w-0 flex flex-col gap-8 lg:gap-10">
-            <header className="-space-y-2">
-              <Heading
-                size="display-96"
-                as="h2"
-                className="text-display-48! leading-[0.8] sm:text-display-96!"
-              >
-                {project.title}
-              </Heading>
-              <Heading
-                size="display-48"
-                tone="accent"
-                as="p"
-                className="text-display-36! leading-none sm:text-display-48!"
-              >
-                {project.year}
-              </Heading>
+            <header className="-space-y-1 sm:-space-y-2">
+              <ScrollReveal>
+                <Heading
+                  size="display-96"
+                  as="h2"
+                  className="text-display-48! leading-[0.8] sm:text-display-96!"
+                >
+                  {project.title}
+                </Heading>
+              </ScrollReveal>
+              <ScrollReveal delay={0.05}>
+                <Heading
+                  size="display-48"
+                  tone="accent"
+                  as="p"
+                  className="text-display-36! leading-none sm:text-display-48!"
+                >
+                  {project.year}
+                </Heading>
+              </ScrollReveal>
             </header>
+
+            <div className="min-w-0 flex justify-center">
+              <ImageFrame
+                placement="projects"
+                src={project.image}
+                alt={project.imageAlt}
+                className={PROJECT_IMAGE_LAYOUT.frameClassName}
+              />
+            </div>
 
             <div className="flex flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">
                 Description
               </p>
-              <div className="space-y-4 font-sans text-sora-14 font-light leading-6 text-foreground lg:max-w-[34ch]">
+              <ScrollReveal
+                delay={0.1}
+                className="space-y-4 font-sans text-sora-14 font-light leading-6 text-foreground lg:max-w-[34ch]"
+              >
                 {project.description.map((paragraph, index) => (
                   <p key={`${project.id}-description-${index}`}>{paragraph}</p>
                 ))}
-              </div>
+              </ScrollReveal>
             </div>
 
             <div className="flex flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">
                 Role/Project Type
               </p>
-              <p className="font-sans text-sora-14 font-light leading-6 text-foreground">
-                {project.role}
-              </p>
+              <ScrollReveal delay={0.12}>
+                <p className="font-sans text-sora-14 font-light leading-6 text-foreground">
+                  {project.role}
+                </p>
+              </ScrollReveal>
             </div>
-          </div>
-
-          <div className="min-w-0 flex justify-center">
-            <ImageFrame
-              placement="projects"
-              src={project.image}
-              alt={project.imageAlt}
-              className={PROJECT_IMAGE_LAYOUT.frameClassName}
-            />
           </div>
 
           <div className="min-w-0 flex flex-col gap-8 lg:gap-10 xl:gap-12">
@@ -98,32 +110,34 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
             <ProjectGroup label="Outcomes" items={project.outcomes} />
 
             {hasLinks ? (
-              <div className="flex flex-col items-start gap-3 pt-1">
-                {project.liveUrl ? (
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 font-sans text-sora-14 font-light text-foreground transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                    aria-label={`${project.title} live demo`}
-                  >
-                    <span>View more</span>
-                    <ExternalLinkIcon />
-                  </a>
-                ) : null}
+              <ScrollReveal delay={0.18}>
+                <div className="flex flex-col items-start gap-3 pt-1">
+                  {project.liveUrl ? (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 font-sans text-sora-14 font-light text-foreground transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label={`${project.title} live demo`}
+                    >
+                      <span>View more</span>
+                      <ExternalLinkIcon />
+                    </a>
+                  ) : null}
 
-                {project.githubUrl ? (
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-sans text-sora-14 font-light text-foreground/75 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                    aria-label={`${project.title} GitHub repository`}
-                  >
-                    GitHub
-                  </a>
-                ) : null}
-              </div>
+                  {project.githubUrl ? (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-sans text-sora-14 font-light text-foreground/75 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                      aria-label={`${project.title} GitHub repository`}
+                    >
+                      GitHub
+                    </a>
+                  ) : null}
+                </div>
+              </ScrollReveal>
             ) : null}
           </div>
         </div>
