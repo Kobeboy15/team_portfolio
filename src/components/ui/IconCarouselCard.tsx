@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { animate, motion, useInView, useMotionValue, useReducedMotion } from "framer-motion";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import type { Icon } from "@/src/types/skills";
 
@@ -12,12 +12,15 @@ type IconCarouselCardProps = {
   invertClass?: string;
 };
 
+type SlotMeasurement = {
+  left: number;
+  width: number;
+};
+
 const VISIBLE_ICON_COUNT = 3;
 const ADVANCE_INTERVAL_MS = 2200;
-const STEP_TRANSITION = {
-  duration: 0.52,
-  ease: [0.22, 1, 0.36, 1] as const,
-};
+const STEP_DURATION_S = 0.58;
+const STEP_EASE = [0.22, 1, 0.36, 1] as const;
 
 export function IconCarouselCard({
   icons,
@@ -27,27 +30,101 @@ export function IconCarouselCard({
 }: IconCarouselCardProps) {
   const reduceMotion = useReducedMotion();
   const viewportRef = useRef<HTMLDivElement | null>(null);
+  const measureRowRef = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(viewportRef, { amount: 0.6 });
+  const shiftX = useMotionValue(0);
+
   const [offset, setOffset] = useState(0);
+  const [slots, setSlots] = useState<SlotMeasurement[]>([]);
+  const [rowHeight, setRowHeight] = useState(0);
+  const [stepWidth, setStepWidth] = useState(0);
 
   const visibleCount = Math.min(VISIBLE_ICON_COUNT, icons.length);
   const shouldAnimate = icons.length > 1 && !reduceMotion;
+  const visibleIcons = getVisibleIcons(icons, offset, visibleCount);
+  const overlayIcons = shouldAnimate
+    ? [
+        icons[offset % icons.length],
+        icons[(offset + 1) % icons.length],
+        icons[(offset + 2) % icons.length],
+        icons[(offset + 3) % icons.length],
+      ]
+    : [];
 
-  useEffect(() => {
-    if (!shouldAnimate || !isInView) {
+  useLayoutEffect(() => {
+    const row = measureRowRef.current;
+    if (!row) {
       return;
     }
 
-    const interval = window.setInterval(() => {
-      setOffset((currentOffset) => (currentOffset + 1) % icons.length);
+    const measure = () => {
+      const children = Array.from(row.children) as HTMLElement[];
+      if (children.length === 0) {
+        setSlots([]);
+        setRowHeight(0);
+        setStepWidth(0);
+        return;
+      }
+
+      const nextSlots = children.map((child) => ({
+        left: child.offsetLeft,
+        width: child.offsetWidth,
+      }));
+
+      setSlots(nextSlots);
+      setRowHeight(row.offsetHeight);
+
+      if (nextSlots.length > 1) {
+        setStepWidth(nextSlots[1].left - nextSlots[0].left);
+      } else {
+        setStepWidth(nextSlots[0].width);
+      }
+    };
+
+    measure();
+
+    const resizeObserver = new ResizeObserver(() => {
+      measure();
+    });
+
+    resizeObserver.observe(row);
+    Array.from(row.children).forEach((child) => resizeObserver.observe(child));
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [visibleCount, icons.length]);
+
+  useEffect(() => {
+    if (!shouldAnimate || !isInView || stepWidth <= 0 || slots.length < visibleCount) {
+      return;
+    }
+
+    let cancelled = false;
+    let controls: ReturnType<typeof animate> | undefined;
+
+    const timeoutId = window.setTimeout(() => {
+      controls = animate(shiftX, -stepWidth, {
+        duration: STEP_DURATION_S,
+        ease: STEP_EASE,
+      });
+
+      controls.then(() => {
+        if (cancelled) {
+          return;
+        }
+
+        shiftX.set(0);
+        setOffset((currentOffset) => (currentOffset + 1) % icons.length);
+      });
     }, ADVANCE_INTERVAL_MS);
 
     return () => {
-      window.clearInterval(interval);
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+      controls?.stop();
     };
-  }, [icons.length, isInView, shouldAnimate]);
-
-  const visibleIcons = getVisibleIcons(icons, offset, visibleCount);
+  }, [icons.length, isInView, offset, shiftX, shouldAnimate, slots.length, stepWidth, visibleCount]);
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-2 py-2 sm:px-3 sm:py-3 md:px-4 md:py-4 lg:px-5 lg:py-5 gap-2 md:gap-3">
@@ -55,21 +132,64 @@ export function IconCarouselCard({
         ref={viewportRef}
         className="w-full flex flex-row justify-center items-center gap-2 sm:gap-3 md:gap-4 py-1 sm:py-2 md:py-3"
       >
-        {shouldAnimate
-          ? visibleIcons.map((icon, index) => (
-              <AnimatedIconSlot
-                key={index}
-                icon={icon}
-                invertClass={invertClass}
-              />
-            ))
-          : visibleIcons.map((icon, index) => (
-              <IconTile
-                key={`${icon.name}-${index}`}
-                icon={icon}
-                invertClass={invertClass}
-              />
-            ))}
+        {shouldAnimate ? (
+          <div className="relative">
+            <div
+              ref={measureRowRef}
+              aria-hidden="true"
+              className="invisible flex flex-row items-center gap-2 sm:gap-3 md:gap-4"
+            >
+              {visibleIcons.map((icon, index) => (
+                <div
+                  key={`measure-${icon.name}-${index}`}
+                  className="relative"
+                >
+                  <IconTile icon={icon} invertClass={invertClass} />
+                </div>
+              ))}
+            </div>
+
+            {slots.length === visibleCount && rowHeight > 0 && (
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 overflow-x-hidden overflow-y-visible"
+                style={{ height: rowHeight }}
+              >
+                {overlayIcons.map((icon, index) => {
+                  const slotIndex = Math.min(index, visibleCount - 1);
+                  const baseLeft =
+                    index < visibleCount
+                      ? slots[slotIndex]?.left ?? 0
+                      : (slots[visibleCount - 1]?.left ?? 0) + stepWidth;
+
+                  const width = slots[slotIndex]?.width ?? slots[visibleCount - 1]?.width ?? undefined;
+
+                  return (
+                    <motion.div
+                      key={`overlay-${offset}-${icon.name}-${index}`}
+                      className="absolute top-0"
+                      style={{
+                        left: baseLeft,
+                        width,
+                        x: shiftX,
+                      }}
+                    >
+                      <IconTile icon={icon} invertClass={invertClass} />
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ) : (
+          visibleIcons.map((icon, index) => (
+            <IconTile
+              key={`${icon.name}-${index}`}
+              icon={icon}
+              invertClass={invertClass}
+            />
+          ))
+        )}
       </div>
       {(heading || caption) && (
         <div className="font-sora flex flex-col w-full px-2 py-2 sm:px-3 sm:py-3 md:px-4 md:py-4 lg:px-5 lg:py-5 gap-2 md:gap-3 text-sm md:text-base lg:text-lg">
@@ -77,30 +197,6 @@ export function IconCarouselCard({
           {caption && <p className="text-(--token-foreground)">{caption}</p>}
         </div>
       )}
-    </div>
-  );
-}
-
-function AnimatedIconSlot({
-  icon,
-  invertClass,
-}: {
-  icon: Icon;
-  invertClass: string;
-}) {
-  return (
-    <div className="relative min-w-0">
-      <AnimatePresence initial={false} mode="wait">
-        <motion.div
-          key={icon.name}
-          initial={{ x: "22%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "-22%", opacity: 0 }}
-          transition={STEP_TRANSITION}
-        >
-          <IconTile icon={icon} invertClass={invertClass} />
-        </motion.div>
-      </AnimatePresence>
     </div>
   );
 }
