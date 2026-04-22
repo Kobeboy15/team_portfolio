@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import type { NavigationItem } from "@/src/data/navigation";
 
 import { Button } from "./Button";
 import { ThemeToggle } from "./ThemeToggle";
 import { HamburgerIcon } from "./HamburgerIcon";
+import { useSmoothScroll } from "./SmoothScrollProvider";
 
 interface NavigationHeaderProps {
   brandName: string;
@@ -20,23 +21,53 @@ export function NavigationHeader({
   navItems,
 }: NavigationHeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen((prev) => !prev);
   const [visible, setVisible] = useState(true);
   const [isInHero, setIsInHero] = useState(false);
   const [isInContact, setIsInContact] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
 
   const lastScrollY = useRef(0);
   const pathname = usePathname();
+  const { scrollToHash } = useSmoothScroll();
+
+  const closeMobileMenu = useCallback(() => {
+    setIsOpen(false);
+    setVisible(true);
+  }, []);
+
+  const toggle = useCallback(() => {
+    setVisible(true);
+    setIsOpen((prev) => !prev);
+  }, []);
+
+  const handleMobileSamePageNavigation = useCallback(
+    (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+      closeMobileMenu();
+
+      if (!href.startsWith("#")) {
+        return;
+      }
+
+      event.preventDefault();
+      scrollToHash(href, { updateHash: "push" });
+    },
+    [closeMobileMenu, scrollToHash],
+  );
 
   useEffect(() => {
     const handleScroll = () => {
+      if (isOpen && isMobileViewport) {
+        lastScrollY.current = window.scrollY;
+        setVisible(true);
+        return;
+      }
+
       const currentScrollY = window.scrollY;
 
       if (currentScrollY < 10) {
         setVisible(true);
       } else if (currentScrollY > lastScrollY.current && !isInContact) {
         setVisible(false);
-        setIsOpen(false);
       } else {
         setVisible(true);
       }
@@ -44,27 +75,30 @@ export function NavigationHeader({
       lastScrollY.current = currentScrollY;
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isInContact]);
+  }, [isInContact, isMobileViewport, isOpen]);
 
   // Lock body scroll when mobile menu is open (mobile only)
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
     const updateOverflow = () => {
-      document.body.style.overflow = isOpen && mq.matches ? "hidden" : "";
+      const matches = mq.matches;
+      setIsMobileViewport(matches);
+      document.body.style.overflow = isOpen && matches ? "hidden" : "";
     };
     const handleViewportChange = () => {
-      setIsOpen(false);
+      closeMobileMenu();
       updateOverflow();
-    }
+    };
     updateOverflow();
     mq.addEventListener("change", handleViewportChange);
     return () => {
       mq.removeEventListener("change", handleViewportChange);
       document.body.style.overflow = "";
     };
-  }, [isOpen]);
+  }, [closeMobileMenu, isOpen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -157,7 +191,7 @@ export function NavigationHeader({
               <nav
                 className={`flex items-center gap-4 pr-2 whitespace-nowrap transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
               >
-                {navItems.map((item) => (
+              {navItems.map((item) => (
                   <Button key={item.href} href={item.href}>
                     {item.label}
                   </Button>
@@ -196,7 +230,7 @@ export function NavigationHeader({
           ) : (
             <a
               href={brandHref}
-              onClick={() => setIsOpen(false)}
+              onClick={handleMobileSamePageNavigation(brandHref)}
               className="text-sora-24 font-extrabold tracking-tight text-foreground"
             >
               {brandName}
@@ -213,7 +247,7 @@ export function NavigationHeader({
               className={`transition-all duration-500 ease-in-out ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: isOpen ? `${150 + i * 60}ms` : "0ms" }}
             >
-              <Button href={item.href} onClick={() => setIsOpen(false)}>
+              <Button href={item.href} onClick={handleMobileSamePageNavigation(item.href)}>
                 {item.label}
               </Button>
             </div>

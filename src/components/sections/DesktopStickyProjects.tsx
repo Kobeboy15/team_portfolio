@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion, useScroll } from "framer-motion";
 
 import type { Project } from "../../types/projects";
+import { useNativeScrollZone } from "../ui/SmoothScrollProvider";
 
 import { ProjectCardDesktop } from "./ProjectCardDesktop";
 import { projectCardDesktopTransition } from "./projectCardDesktopMotion";
@@ -62,11 +63,37 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
   const n = projects.length;
   const reduceMotion = useReducedMotion();
   const snapEnabled = isDesktop && !reduceMotion;
+  const snapEnabledRef = useRef(snapEnabled);
+  const projectCountRef = useRef(n);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
+
+  useEffect(() => {
+    snapEnabledRef.current = snapEnabled;
+  }, [snapEnabled]);
+
+  useEffect(() => {
+    projectCountRef.current = n;
+  }, [n]);
+
+  const isNativeScrollZoneActive = useCallback(() => {
+    const container = containerRef.current;
+    const projectCount = projectCountRef.current;
+
+    if (!container || !snapEnabledRef.current || projectCount <= 1) {
+      return false;
+    }
+
+    const metrics = getSectionMetrics(container, projectCount);
+    const scrollY = window.scrollY;
+
+    return scrollY >= metrics.sectionStart - 1 && scrollY <= metrics.stickyEnd + 1;
+  }, []);
+
+  useNativeScrollZone("desktop-sticky-projects", isNativeScrollZoneActive);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

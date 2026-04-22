@@ -7,6 +7,10 @@ import { aboutData } from "../../../data/about";
 import { useClientMounted } from "../../../hooks/useClientMounted";
 import { useMediaQuery } from "../../../hooks/useMediaQuery";
 import { isLikelyIosAffectedWebKit } from "../../../lib/isLikelyIosAffectedWebKit";
+import {
+  ANCHOR_OFFSET_ATTRIBUTE,
+  DEFAULT_SECTION_ANCHOR_OFFSET_PX,
+} from "../../../lib/scrollAnchors";
 
 import { ABOUT_SECTION_ANCHOR_ID, ABOUT_SECTION_ROOT_ID } from "../heroAboutConstants";
 import { ImageFrame } from "../../ui/ImageFrame";
@@ -135,7 +139,12 @@ export function AboutSection() {
 
   return (
     <div id={ABOUT_SECTION_ROOT_ID} className="relative w-full">
-      <div id={ABOUT_SECTION_ANCHOR_ID} className="absolute top-0" aria-hidden="true" />
+      <div
+        id={ABOUT_SECTION_ANCHOR_ID}
+        className="absolute top-0"
+        aria-hidden="true"
+        {...{ [ANCHOR_OFFSET_ATTRIBUTE]: DEFAULT_SECTION_ANCHOR_OFFSET_PX }}
+      />
       {content}
     </div>
   );

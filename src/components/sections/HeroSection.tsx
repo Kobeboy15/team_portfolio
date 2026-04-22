@@ -1,4 +1,5 @@
 import { Section } from "../ui/Section";
+import { HERO_SECTION_ANCHOR_OFFSET_PX } from "../../lib/scrollAnchors";
 
 import { Button } from "../ui/Button";
 import { ScrollReveal } from "../ui/ScrollReveal";
@@ -12,7 +13,7 @@ export function HeroSection() {
   return (
     <Section
       id="hero"
-      navHeight="72px"
+      anchorOffsetPx={HERO_SECTION_ANCHOR_OFFSET_PX}
       className="pt-18 2xl:pt-(--token-hero-section-padding-top) w-full min-h-screen flex items-center justify-center"
     >
       <div className="flex flex-col w-full h-full ">
