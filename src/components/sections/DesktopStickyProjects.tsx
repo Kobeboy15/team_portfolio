@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion, useScroll } from "framer-motion";
 
 import type { Project } from "../../types/projects";
@@ -22,6 +22,11 @@ type SectionMetrics = {
   sectionStart: number;
   stickyEnd: number;
   viewportHeight: number;
+};
+
+type NativeScrollZoneRange = {
+  startY: number;
+  endY: number;
 };
 
 function clampIndex(index: number, count: number) {
@@ -93,7 +98,30 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
     return scrollY >= metrics.sectionStart - 1 && scrollY <= metrics.stickyEnd + 1;
   }, []);
 
-  useNativeScrollZone("desktop-sticky-projects", isNativeScrollZoneActive);
+  const getNativeScrollZoneRange = useCallback((): NativeScrollZoneRange | null => {
+    const container = containerRef.current;
+    const projectCount = projectCountRef.current;
+
+    if (!container || !snapEnabledRef.current || projectCount <= 1) {
+      return null;
+    }
+
+    const metrics = getSectionMetrics(container, projectCount);
+    return {
+      startY: metrics.sectionStart,
+      endY: metrics.stickyEnd,
+    };
+  }, []);
+
+  const nativeScrollZoneDefinition = useMemo(
+    () => ({
+      isActive: isNativeScrollZoneActive,
+      getRange: getNativeScrollZoneRange,
+    }),
+    [getNativeScrollZoneRange, isNativeScrollZoneActive],
+  );
+
+  useNativeScrollZone("desktop-sticky-projects", nativeScrollZoneDefinition);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

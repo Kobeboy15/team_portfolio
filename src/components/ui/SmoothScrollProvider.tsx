@@ -17,8 +17,24 @@ import { ANCHOR_OFFSET_ATTRIBUTE, FIXED_HEADER_OFFSET_PX } from "../../lib/scrol
 const LENIS_LERP = 0.085;
 const LENIS_DURATION_S = 0.9;
 const HASH_SCROLL_DURATION_S = 0.9;
+const NATIVE_SCROLL_COMPLETION_THRESHOLD_PX = 2;
+const NATIVE_SCROLL_COMPLETION_STABLE_FRAMES = 2;
 
-type NativeScrollZoneMatcher = () => boolean;
+type NativeScrollZoneRange = {
+  startY: number;
+  endY: number;
+};
+
+type NativeScrollZoneDefinition = {
+  isActive: () => boolean;
+  getRange?: () => NativeScrollZoneRange | null;
+};
+
+type ProgrammaticNavigation = {
+  strategy: "lenis" | "native";
+  targetY: number;
+  rafId: number | null;
+};
 
 type ScrollToHashOptions = {
   immediate?: boolean;
@@ -27,7 +43,7 @@ type ScrollToHashOptions = {
 
 type SmoothScrollContextValue = {
   scrollToHash: (hash: string, options?: ScrollToHashOptions) => boolean;
-  registerNativeScrollZone: (id: string, matcher: NativeScrollZoneMatcher) => () => void;
+  registerNativeScrollZone: (id: string, definition: NativeScrollZoneDefinition) => () => void;
 };
 
 const SmoothScrollContext = createContext<SmoothScrollContextValue | null>(null);
@@ -84,11 +100,31 @@ function getTargetScrollTop(target: HTMLElement) {
   );
 }
 
+function getNormalizedRange(range: NativeScrollZoneRange) {
+  return {
+    startY: Math.min(range.startY, range.endY),
+    endY: Math.max(range.startY, range.endY),
+  };
+}
+
+function doesPathIntersectRange(
+  currentY: number,
+  targetY: number,
+  range: NativeScrollZoneRange,
+) {
+  const pathStart = Math.min(currentY, targetY);
+  const pathEnd = Math.max(currentY, targetY);
+  const normalizedRange = getNormalizedRange(range);
+
+  return normalizedRange.endY >= pathStart && normalizedRange.startY <= pathEnd;
+}
+
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
   const rafRef = useRef<number | null>(null);
-  const nativeZonesRef = useRef(new Map<string, NativeScrollZoneMatcher>());
+  const nativeZonesRef = useRef(new Map<string, NativeScrollZoneDefinition>());
   const activeNativeZoneIdRef = useRef<string | null>(null);
+  const programmaticNavigationRef = useRef<ProgrammaticNavigation | null>(null);
   const initialHashHandledRef = useRef(false);
   const [reduceMotion, setReduceMotion] = useState(() =>
     typeof window === "undefined" ? false : prefersReducedMotion(),
@@ -102,12 +138,26 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const finishProgrammaticNavigation = useCallback(() => {
+    const currentNavigation = programmaticNavigationRef.current;
+    if (currentNavigation && currentNavigation.rafId !== null) {
+      window.cancelAnimationFrame(currentNavigation.rafId);
+    }
+
+    programmaticNavigationRef.current = null;
+    syncLenisToViewport();
+  }, [syncLenisToViewport]);
+
   const evaluateNativeScrollZones = useCallback(() => {
+    if (programmaticNavigationRef.current) {
+      return;
+    }
+
     let nextActiveZoneId: string | null = null;
 
-    for (const [id, matcher] of nativeZonesRef.current) {
+    for (const [id, definition] of nativeZonesRef.current) {
       try {
-        if (matcher()) {
+        if (definition.isActive()) {
           nextActiveZoneId = id;
           break;
         }
@@ -132,6 +182,44 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     lenisRef.current?.resize();
   }, [syncLenisToViewport]);
 
+  const monitorNativeProgrammaticNavigation = useCallback(
+    (targetY: number) => {
+      let stableFrames = 0;
+
+      const tick = () => {
+        const currentNavigation = programmaticNavigationRef.current;
+        if (
+          !currentNavigation ||
+          currentNavigation.strategy !== "native" ||
+          currentNavigation.targetY !== targetY
+        ) {
+          return;
+        }
+
+        const delta = Math.abs(window.scrollY - targetY);
+        if (delta <= NATIVE_SCROLL_COMPLETION_THRESHOLD_PX) {
+          stableFrames += 1;
+
+          if (stableFrames >= NATIVE_SCROLL_COMPLETION_STABLE_FRAMES) {
+            finishProgrammaticNavigation();
+            evaluateNativeScrollZones();
+            return;
+          }
+        } else {
+          stableFrames = 0;
+        }
+
+        currentNavigation.rafId = window.requestAnimationFrame(tick);
+      };
+
+      const currentNavigation = programmaticNavigationRef.current;
+      if (!currentNavigation) return;
+
+      currentNavigation.rafId = window.requestAnimationFrame(tick);
+    },
+    [evaluateNativeScrollZones, finishProgrammaticNavigation],
+  );
+
   const scrollToHash = useCallback(
     (hash: string, options: ScrollToHashOptions = {}) => {
       const normalizedHash = normalizeHash(hash);
@@ -151,31 +239,75 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
         window.history.replaceState(null, "", nextUrl);
       }
 
-      const targetTop = getTargetScrollTop(target);
-      const hasNativeZoneOwner = activeNativeZoneIdRef.current !== null;
+      finishProgrammaticNavigation();
 
-      if (lenisRef.current && !shouldReduceMotion && !hasNativeZoneOwner) {
-        lenisRef.current.scrollTo(targetTop, {
+      const currentY = window.scrollY;
+      const targetY = getTargetScrollTop(target);
+
+      const crossesNativeZone =
+        activeNativeZoneIdRef.current !== null ||
+        Array.from(nativeZonesRef.current.values()).some((definition) => {
+          try {
+            const range = definition.getRange?.();
+            return range ? doesPathIntersectRange(currentY, targetY, range) : false;
+          } catch {
+            return false;
+          }
+        });
+
+      if (lenisRef.current && !shouldReduceMotion && !crossesNativeZone) {
+        programmaticNavigationRef.current = {
+          strategy: "lenis",
+          targetY,
+          rafId: null,
+        };
+
+        lenisRef.current.scrollTo(targetY, {
           duration: immediate ? undefined : HASH_SCROLL_DURATION_S,
           immediate,
           force: true,
           lock: false,
+          onComplete: () => {
+            finishProgrammaticNavigation();
+            evaluateNativeScrollZones();
+          },
         });
         return true;
       }
 
+      programmaticNavigationRef.current = {
+        strategy: "native",
+        targetY,
+        rafId: null,
+      };
+
+      syncLenisToViewport();
+
       window.scrollTo({
-        top: targetTop,
+        top: targetY,
         behavior: shouldReduceMotion || immediate ? "auto" : "smooth",
       });
+
+      if (shouldReduceMotion || immediate) {
+        finishProgrammaticNavigation();
+        evaluateNativeScrollZones();
+        return true;
+      }
+
+      monitorNativeProgrammaticNavigation(targetY);
       return true;
     },
-    [],
+    [
+      evaluateNativeScrollZones,
+      finishProgrammaticNavigation,
+      monitorNativeProgrammaticNavigation,
+      syncLenisToViewport,
+    ],
   );
 
   const registerNativeScrollZone = useCallback(
-    (id: string, matcher: NativeScrollZoneMatcher) => {
-      nativeZonesRef.current.set(id, matcher);
+    (id: string, definition: NativeScrollZoneDefinition) => {
+      nativeZonesRef.current.set(id, definition);
       evaluateNativeScrollZones();
 
       return () => {
@@ -204,6 +336,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof window === "undefined" || reduceMotion) {
+      finishProgrammaticNavigation();
       lenisRef.current?.destroy();
       lenisRef.current = null;
 
@@ -223,13 +356,19 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       smoothWheel: true,
       syncTouch: false,
       stopInertiaOnNavigate: true,
-      virtualScroll: () => activeNativeZoneIdRef.current === null,
+      virtualScroll: () =>
+        activeNativeZoneIdRef.current === null &&
+        programmaticNavigationRef.current?.strategy !== "native",
     });
 
     lenisRef.current = lenis;
 
     const raf = (time: number) => {
-      if (activeNativeZoneIdRef.current === null) {
+      const isNativeZoneActive = activeNativeZoneIdRef.current !== null;
+      const isNativeProgrammaticNavigationActive =
+        programmaticNavigationRef.current?.strategy === "native";
+
+      if (!isNativeZoneActive && !isNativeProgrammaticNavigationActive) {
         lenis.raf(time);
       }
 
@@ -245,11 +384,12 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
         rafRef.current = null;
       }
 
+      finishProgrammaticNavigation();
       lenis.destroy();
       lenisRef.current = null;
       activeNativeZoneIdRef.current = null;
     };
-  }, [evaluateNativeScrollZones, reduceMotion]);
+  }, [evaluateNativeScrollZones, finishProgrammaticNavigation, reduceMotion]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -344,8 +484,14 @@ export function useSmoothScroll() {
   return context;
 }
 
-export function useNativeScrollZone(id: string, matcher: NativeScrollZoneMatcher) {
+export function useNativeScrollZone(
+  id: string,
+  definition: NativeScrollZoneDefinition,
+) {
   const { registerNativeScrollZone } = useSmoothScroll();
 
-  useEffect(() => registerNativeScrollZone(id, matcher), [id, matcher, registerNativeScrollZone]);
+  useEffect(
+    () => registerNativeScrollZone(id, definition),
+    [definition, id, registerNativeScrollZone],
+  );
 }
