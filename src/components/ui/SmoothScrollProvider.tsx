@@ -1,6 +1,6 @@
 "use client";
 
-import Lenis from "lenis";
+import Lenis, { type EasingFunction } from "lenis";
 import {
   createContext,
   useCallback,
@@ -41,8 +41,17 @@ type ScrollToHashOptions = {
   updateHash?: "push" | "replace" | false;
 };
 
+type ScrollToYOptions = {
+  immediate?: boolean;
+  duration?: number;
+  easing?: EasingFunction;
+  lock?: boolean;
+  onComplete?: () => void;
+};
+
 type SmoothScrollContextValue = {
   scrollToHash: (hash: string, options?: ScrollToHashOptions) => boolean;
+  scrollToY: (targetY: number, options?: ScrollToYOptions) => boolean;
   registerNativeScrollZone: (id: string, definition: NativeScrollZoneDefinition) => () => void;
 };
 
@@ -220,6 +229,67 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     [evaluateNativeScrollZones, finishProgrammaticNavigation],
   );
 
+  const scrollToY = useCallback(
+    (targetY: number, options: ScrollToYOptions = {}) => {
+      const shouldReduceMotion = prefersReducedMotion();
+      const immediate = options.immediate ?? shouldReduceMotion;
+      const normalizedTargetY = Math.max(0, targetY);
+
+      finishProgrammaticNavigation();
+
+      if (lenisRef.current && !shouldReduceMotion) {
+        programmaticNavigationRef.current = {
+          strategy: "lenis",
+          targetY: normalizedTargetY,
+          rafId: null,
+        };
+
+        lenisRef.current.scrollTo(normalizedTargetY, {
+          immediate,
+          duration: immediate ? undefined : options.duration,
+          easing: options.easing,
+          lock: options.lock ?? false,
+          force: true,
+          onComplete: () => {
+            finishProgrammaticNavigation();
+            evaluateNativeScrollZones();
+            options.onComplete?.();
+          },
+        });
+        return true;
+      }
+
+      programmaticNavigationRef.current = {
+        strategy: "native",
+        targetY: normalizedTargetY,
+        rafId: null,
+      };
+
+      syncLenisToViewport();
+
+      window.scrollTo({
+        top: normalizedTargetY,
+        behavior: shouldReduceMotion || immediate ? "auto" : "smooth",
+      });
+
+      if (shouldReduceMotion || immediate) {
+        finishProgrammaticNavigation();
+        evaluateNativeScrollZones();
+        options.onComplete?.();
+        return true;
+      }
+
+      monitorNativeProgrammaticNavigation(normalizedTargetY);
+      return true;
+    },
+    [
+      evaluateNativeScrollZones,
+      finishProgrammaticNavigation,
+      monitorNativeProgrammaticNavigation,
+      syncLenisToViewport,
+    ],
+  );
+
   const scrollToHash = useCallback(
     (hash: string, options: ScrollToHashOptions = {}) => {
       const normalizedHash = normalizeHash(hash);
@@ -256,23 +326,14 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
         });
 
       if (lenisRef.current && !shouldReduceMotion && !crossesNativeZone) {
-        programmaticNavigationRef.current = {
-          strategy: "lenis",
-          targetY,
-          rafId: null,
-        };
-
-        lenisRef.current.scrollTo(targetY, {
+        return scrollToY(targetY, {
           duration: immediate ? undefined : HASH_SCROLL_DURATION_S,
           immediate,
-          force: true,
           lock: false,
           onComplete: () => {
-            finishProgrammaticNavigation();
             evaluateNativeScrollZones();
           },
         });
-        return true;
       }
 
       programmaticNavigationRef.current = {
@@ -301,6 +362,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       evaluateNativeScrollZones,
       finishProgrammaticNavigation,
       monitorNativeProgrammaticNavigation,
+      scrollToY,
       syncLenisToViewport,
     ],
   );
@@ -462,9 +524,10 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const value = useMemo<SmoothScrollContextValue>(
     () => ({
       scrollToHash,
+      scrollToY,
       registerNativeScrollZone,
     }),
-    [registerNativeScrollZone, scrollToHash],
+    [registerNativeScrollZone, scrollToHash, scrollToY],
   );
 
   return (

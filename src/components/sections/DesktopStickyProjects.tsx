@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion, useScroll } from "framer-motion";
 
 import type { Project } from "../../types/projects";
-import { useNativeScrollZone } from "../ui/SmoothScrollProvider";
+import { useSmoothScroll } from "../ui/SmoothScrollProvider";
 
 import { ProjectCardDesktop } from "./ProjectCardDesktop";
 import { projectCardDesktopTransition } from "./projectCardDesktopMotion";
@@ -12,7 +12,7 @@ import { projectCardDesktopTransition } from "./projectCardDesktopMotion";
 const NAV_OFFSET_PX = 72;
 const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
 const WHEEL_DELTA_THRESHOLD = 18;
-const SNAP_LOCK_MS = Math.round(projectCardDesktopTransition.duration * 1000) + 120;
+const SNAP_LOCK_FALLBACK_MS = Math.round(projectCardDesktopTransition.duration * 1000) + 500;
 
 export type DesktopStickyProjectsProps = {
   projects: Project[];
@@ -22,11 +22,6 @@ type SectionMetrics = {
   sectionStart: number;
   stickyEnd: number;
   viewportHeight: number;
-};
-
-type NativeScrollZoneRange = {
-  startY: number;
-  endY: number;
 };
 
 function clampIndex(index: number, count: number) {
@@ -58,6 +53,65 @@ function getNearestProjectIndex(scrollY: number, metrics: SectionMetrics, count:
   return clampIndex(rawIndex, count);
 }
 
+function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
+  const cx = 3 * x1;
+  const bx = 3 * (x2 - x1) - cx;
+  const ax = 1 - cx - bx;
+  const cy = 3 * y1;
+  const by = 3 * (y2 - y1) - cy;
+  const ay = 1 - cy - by;
+
+  const sampleCurveX = (t: number) => ((ax * t + bx) * t + cx) * t;
+  const sampleCurveY = (t: number) => ((ay * t + by) * t + cy) * t;
+  const sampleCurveDerivativeX = (t: number) => (3 * ax * t + 2 * bx) * t + cx;
+
+  return (x: number) => {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+
+    let t = x;
+    for (let i = 0; i < 8; i += 1) {
+      const currentX = sampleCurveX(t) - x;
+      if (Math.abs(currentX) < 1e-6) {
+        return sampleCurveY(t);
+      }
+
+      const derivative = sampleCurveDerivativeX(t);
+      if (Math.abs(derivative) < 1e-6) {
+        break;
+      }
+
+      t -= currentX / derivative;
+    }
+
+    let lower = 0;
+    let upper = 1;
+    t = x;
+
+    while (lower < upper) {
+      const currentX = sampleCurveX(t);
+      if (Math.abs(currentX - x) < 1e-6) {
+        return sampleCurveY(t);
+      }
+
+      if (x > currentX) {
+        lower = t;
+      } else {
+        upper = t;
+      }
+
+      t = (upper - lower) * 0.5 + lower;
+      if (Math.abs(upper - lower) < 1e-6) {
+        break;
+      }
+    }
+
+    return sampleCurveY(t);
+  };
+}
+
+const projectSnapEasing = cubicBezier(...projectCardDesktopTransition.ease);
+
 export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -67,61 +121,13 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
   const snapTargetIndexRef = useRef<number | null>(null);
   const n = projects.length;
   const reduceMotion = useReducedMotion();
+  const { scrollToY } = useSmoothScroll();
   const snapEnabled = isDesktop && !reduceMotion;
-  const snapEnabledRef = useRef(snapEnabled);
-  const projectCountRef = useRef(n);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
-
-  useEffect(() => {
-    snapEnabledRef.current = snapEnabled;
-  }, [snapEnabled]);
-
-  useEffect(() => {
-    projectCountRef.current = n;
-  }, [n]);
-
-  const isNativeScrollZoneActive = useCallback(() => {
-    const container = containerRef.current;
-    const projectCount = projectCountRef.current;
-
-    if (!container || !snapEnabledRef.current || projectCount <= 1) {
-      return false;
-    }
-
-    const metrics = getSectionMetrics(container, projectCount);
-    const scrollY = window.scrollY;
-
-    return scrollY >= metrics.sectionStart - 1 && scrollY <= metrics.stickyEnd + 1;
-  }, []);
-
-  const getNativeScrollZoneRange = useCallback((): NativeScrollZoneRange | null => {
-    const container = containerRef.current;
-    const projectCount = projectCountRef.current;
-
-    if (!container || !snapEnabledRef.current || projectCount <= 1) {
-      return null;
-    }
-
-    const metrics = getSectionMetrics(container, projectCount);
-    return {
-      startY: metrics.sectionStart,
-      endY: metrics.stickyEnd,
-    };
-  }, []);
-
-  const nativeScrollZoneDefinition = useMemo(
-    () => ({
-      isActive: isNativeScrollZoneActive,
-      getRange: getNativeScrollZoneRange,
-    }),
-    [getNativeScrollZoneRange, isNativeScrollZoneActive],
-  );
-
-  useNativeScrollZone("desktop-sticky-projects", nativeScrollZoneDefinition);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -147,6 +153,36 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
       mediaQuery.removeListener(syncDesktopMode);
     };
   }, []);
+
+  const syncActiveIndexFromViewport = useCallback(() => {
+    const container = containerRef.current;
+    if (!container || n <= 0) return;
+
+    if (!snapEnabled) {
+      setActiveIndex(getProgressIndex(scrollYProgress.get(), n));
+      return;
+    }
+
+    const metrics = getSectionMetrics(container, n);
+    setActiveIndex(getNearestProjectIndex(window.scrollY, metrics, n));
+  }, [n, scrollYProgress, snapEnabled]);
+
+  const clearSnapState = useCallback(
+    (options?: { syncIndex?: boolean }) => {
+      if (snapLockTimeoutRef.current !== null) {
+        window.clearTimeout(snapLockTimeoutRef.current);
+        snapLockTimeoutRef.current = null;
+      }
+
+      snapLockedRef.current = false;
+      snapTargetIndexRef.current = null;
+
+      if (options?.syncIndex) {
+        syncActiveIndexFromViewport();
+      }
+    },
+    [syncActiveIndexFromViewport],
+  );
 
   useEffect(() => {
     if (snapEnabled) return;
@@ -176,21 +212,12 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
     if (n <= 0) return;
 
     const syncFromViewport = () => {
-      const container = containerRef.current;
-      if (!container) return;
-
       if (snapTargetIndexRef.current !== null) {
         setActiveIndex(snapTargetIndexRef.current);
         return;
       }
 
-      if (!snapEnabled) {
-        setActiveIndex(getProgressIndex(scrollYProgress.get(), n));
-        return;
-      }
-
-      const metrics = getSectionMetrics(container, n);
-      setActiveIndex(getNearestProjectIndex(window.scrollY, metrics, n));
+      syncActiveIndexFromViewport();
     };
 
     syncFromViewport();
@@ -207,7 +234,7 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
         window.removeEventListener("scroll", syncFromViewport);
       }
     };
-  }, [scrollYProgress, snapEnabled, n]);
+  }, [n, snapEnabled, syncActiveIndexFromViewport]);
 
   useEffect(() => {
     if (!snapEnabled || n <= 1) return;
@@ -241,7 +268,7 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
       const isLeavingDownFromLast = direction > 0 && currentIndex === n - 1;
 
       if (isLeavingUpFromFirst || isLeavingDownFromLast) {
-        snapTargetIndexRef.current = null;
+        clearSnapState({ syncIndex: true });
         return;
       }
 
@@ -260,22 +287,18 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
       snapTargetIndexRef.current = nextIndex;
       setActiveIndex(nextIndex);
 
-      window.scrollTo({
-        top: getTargetScrollY(metrics, nextIndex),
-        behavior: "smooth",
+      scrollToY(getTargetScrollY(metrics, nextIndex), {
+        duration: projectCardDesktopTransition.duration,
+        easing: projectSnapEasing,
+        lock: true,
+        onComplete: () => {
+          clearSnapState({ syncIndex: true });
+        },
       });
 
       snapLockTimeoutRef.current = window.setTimeout(() => {
-        snapLockedRef.current = false;
-        snapTargetIndexRef.current = null;
-        snapLockTimeoutRef.current = null;
-
-        const nextContainer = containerRef.current;
-        if (!nextContainer) return;
-
-        const nextMetrics = getSectionMetrics(nextContainer, n);
-        setActiveIndex(getNearestProjectIndex(window.scrollY, nextMetrics, n));
-      }, SNAP_LOCK_MS);
+        clearSnapState({ syncIndex: true });
+      }, SNAP_LOCK_FALLBACK_MS);
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
@@ -291,7 +314,7 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
       snapLockedRef.current = false;
       snapTargetIndexRef.current = null;
     };
-  }, [snapEnabled, n]);
+  }, [clearSnapState, n, scrollToY, snapEnabled]);
 
   if (n === 0) {
     return null;
