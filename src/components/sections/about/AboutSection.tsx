@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useSyncExternalStore, useCallback, type ReactNode } from "react";
+import { useRef, useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 
 import { aboutData } from "../../../data/about";
@@ -105,27 +105,10 @@ function DesktopAboutSection() {
 
 function MobileAboutSection() {
   const useStableMobileMediaHeight = useStableMobileMediaHeightForIos();
-  const readiness = useOptionalHomepageReadiness();
-  const hasReportedMobileImageReady = useRef(false);
 
   const mobileImageHeightClass = useStableMobileMediaHeight
     ? "relative h-[clamp(320px,70svh,960px)] w-full overflow-hidden"
     : "relative h-[clamp(320px,70dvh,960px)] w-full overflow-hidden";
-
-  const reportMobileImageReady = useCallback(() => {
-    if (hasReportedMobileImageReady.current) return;
-    hasReportedMobileImageReady.current = true;
-    readiness?.markReady("mobile-about-image-ready");
-  }, [readiness]);
-
-  const setMobileImageRef = useCallback(
-    (node: HTMLImageElement | null) => {
-      if (node?.complete && node.naturalWidth > 0) {
-        reportMobileImageReady();
-      }
-    },
-    [reportMobileImageReady],
-  );
 
   return (
     <Section className="block w-full max-w-none overflow-hidden pt-0!">
@@ -136,8 +119,6 @@ function MobileAboutSection() {
             placement="about-gallery-hero"
             src={aboutData.pointsImage}
             alt={aboutData.pointsImageAlt}
-            imageRef={setMobileImageRef}
-            onLoad={reportMobileImageReady}
           />
         </div>
       </section>
@@ -160,16 +141,6 @@ export function AboutSection() {
     if (!isClientMounted || !readiness) return;
 
     readiness.markReady("layout-mode-ready", isDesktop ? "desktop" : "mobile");
-
-    if (isDesktop) {
-      return;
-    }
-
-    readiness.registerMilestone("mobile-about-image-ready", {
-      blocking: true,
-      targetCount: 1,
-      weight: 3,
-    });
   }, [isClientMounted, isDesktop, readiness]);
 
   let content: ReactNode = <AboutSectionShell />;
