@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 import { ImageFrame } from "../ui/ImageFrame";
@@ -14,6 +14,7 @@ export type HeroScrollImageProps = {
   alt: string;
   className?: string;
   priority?: boolean;
+  onReady?: () => void;
 };
 
 export function HeroScrollImage({
@@ -21,9 +22,17 @@ export function HeroScrollImage({
   alt,
   className,
   priority = true,
+  onReady,
 }: HeroScrollImageProps) {
   const [isLgUp, setIsLgUp] = useState(false);
   const heroAbout = useHeroAboutImage();
+  const hasReportedReady = useRef(false);
+
+  const reportReady = useCallback(() => {
+    if (hasReportedReady.current) return;
+    hasReportedReady.current = true;
+    onReady?.();
+  }, [onReady]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -48,18 +57,19 @@ export function HeroScrollImage({
         alt={alt}
         className={className}
         priority={priority}
+        onReady={reportReady}
         registerHeroSlot={heroAbout.registerHeroSlot}
       />
     );
   }
 
   return (
-    <ImageFrame
-      placement="hero"
+    <HeroStaticImage
       src={src}
       alt={alt}
       className={className}
       priority={priority}
+      onReady={reportReady}
     />
   );
 }
@@ -73,6 +83,7 @@ function HeroScrollImageFlightSlot({
   alt,
   className,
   priority,
+  onReady,
   registerHeroSlot,
 }: HeroScrollImageProps & {
   registerHeroSlot: (el: HTMLElement | null) => void;
@@ -80,8 +91,12 @@ function HeroScrollImageFlightSlot({
   const setImageSlot = useCallback(
     (node: HTMLImageElement | null) => {
       registerHeroSlot(node);
+
+      if (node?.complete && node.naturalWidth > 0) {
+        onReady?.();
+      }
     },
-    [registerHeroSlot]
+    [onReady, registerHeroSlot]
   );
 
   return (
@@ -94,9 +109,39 @@ function HeroScrollImageFlightSlot({
         src={src}
         alt={alt}
         imageRef={setImageSlot}
+        onLoad={onReady}
         className={[className, "opacity-0"].filter(Boolean).join(" ")}
         priority={priority}
       />
     </motion.div>
+  );
+}
+
+function HeroStaticImage({
+  src,
+  alt,
+  className,
+  priority,
+  onReady,
+}: HeroScrollImageProps) {
+  const setImageSlot = useCallback(
+    (node: HTMLImageElement | null) => {
+      if (node?.complete && node.naturalWidth > 0) {
+        onReady?.();
+      }
+    },
+    [onReady]
+  );
+
+  return (
+    <ImageFrame
+      placement="hero"
+      src={src}
+      alt={alt}
+      imageRef={setImageSlot}
+      onLoad={onReady}
+      className={className}
+      priority={priority}
+    />
   );
 }

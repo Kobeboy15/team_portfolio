@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useRef, useEffect, useState, useSyncExternalStore, useCallback, type ReactNode } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 
 import { aboutData } from "../../../data/about";
@@ -16,6 +16,7 @@ import { ABOUT_SECTION_ANCHOR_ID, ABOUT_SECTION_ROOT_ID } from "../heroAboutCons
 import { ImageFrame } from "../../ui/ImageFrame";
 import { ScrollProgressBar } from "../../ui/ScrollProgressBar";
 import { Section } from "../../ui/Section";
+import { useOptionalHomepageReadiness } from "../../homepage/HomepageReadinessProvider";
 
 import { AboutBio } from "./AboutBio";
 import { AboutGallery } from "./AboutGallery";
@@ -104,17 +105,40 @@ function DesktopAboutSection() {
 
 function MobileAboutSection() {
   const useStableMobileMediaHeight = useStableMobileMediaHeightForIos();
+  const readiness = useOptionalHomepageReadiness();
+  const hasReportedMobileImageReady = useRef(false);
 
   const mobileImageHeightClass = useStableMobileMediaHeight
     ? "relative h-[clamp(320px,70svh,960px)] w-full overflow-hidden"
     : "relative h-[clamp(320px,70dvh,960px)] w-full overflow-hidden";
+
+  const reportMobileImageReady = useCallback(() => {
+    if (hasReportedMobileImageReady.current) return;
+    hasReportedMobileImageReady.current = true;
+    readiness?.markReady("mobile-about-image-ready");
+  }, [readiness]);
+
+  const setMobileImageRef = useCallback(
+    (node: HTMLImageElement | null) => {
+      if (node?.complete && node.naturalWidth > 0) {
+        reportMobileImageReady();
+      }
+    },
+    [reportMobileImageReady],
+  );
 
   return (
     <Section className="block w-full max-w-none overflow-hidden pt-0!">
       <AboutBio />
       <section className={mobileImageHeightClass} aria-label={aboutData.pointsImageAlt}>
         <div className="relative h-full w-full overflow-hidden">
-          <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
+          <ImageFrame
+            placement="about-gallery-hero"
+            src={aboutData.pointsImage}
+            alt={aboutData.pointsImageAlt}
+            imageRef={setMobileImageRef}
+            onLoad={reportMobileImageReady}
+          />
         </div>
       </section>
       <AboutPoints />
@@ -130,12 +154,34 @@ function MobileAboutSection() {
 export function AboutSection() {
   const isClientMounted = useClientMounted();
   const isDesktop = useMediaQuery(ABOUT_DESKTOP_MEDIA_QUERY);
+  const readiness = useOptionalHomepageReadiness();
+
+  useEffect(() => {
+    if (!isClientMounted || !readiness) return;
+
+    readiness.markReady("layout-mode-ready", isDesktop ? "desktop" : "mobile");
+
+    if (isDesktop) {
+      return;
+    }
+
+    readiness.registerMilestone("mobile-about-image-ready", {
+      blocking: true,
+      targetCount: 1,
+      weight: 3,
+    });
+  }, [isClientMounted, isDesktop, readiness]);
 
   let content: ReactNode = <AboutSectionShell />;
 
   if (isClientMounted) {
     content = isDesktop ? <DesktopAboutSection /> : <MobileAboutSection />;
   }
+
+  useEffect(() => {
+    if (!isClientMounted) return;
+    readiness?.markReady("about-mounted");
+  }, [isClientMounted, readiness]);
 
   return (
     <div id={ABOUT_SECTION_ROOT_ID} className="relative w-full">

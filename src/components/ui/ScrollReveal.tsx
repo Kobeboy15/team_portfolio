@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
+
+import { useOptionalHomepageReadiness } from "../homepage/HomepageReadinessProvider";
 
 const scrollRevealEase = [0.22, 1, 0.36, 1] as const;
 
@@ -15,6 +18,7 @@ export type ScrollRevealProps = {
   delay?: number;
   /** Opacity-only: use inside nested motion (e.g. RollingTextSlot) to avoid stacked vertical offset. */
   variant?: "default" | "opacity";
+  startupReadyKey?: string;
 };
 
 export function ScrollReveal({
@@ -22,8 +26,11 @@ export function ScrollReveal({
   className,
   delay = 0,
   variant = "default",
+  startupReadyKey,
 }: ScrollRevealProps) {
   const reduceMotion = useReducedMotion();
+  const readiness = useOptionalHomepageReadiness();
+  const hasMarkedStartupReady = useRef(false);
   const opacityOnly = variant === "opacity" || reduceMotion;
 
   const transition = {
@@ -31,6 +38,13 @@ export function ScrollReveal({
     ease: scrollRevealEase,
     delay: reduceMotion ? 0 : delay,
   };
+
+  useEffect(() => {
+    if (!startupReadyKey || hasMarkedStartupReady.current || !readiness) return;
+
+    hasMarkedStartupReady.current = true;
+    readiness.markReady("scroll-reveal-ready", startupReadyKey);
+  }, [readiness, startupReadyKey]);
 
   return (
     <motion.div

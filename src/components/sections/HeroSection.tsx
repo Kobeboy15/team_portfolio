@@ -3,6 +3,7 @@ import { HERO_SECTION_ANCHOR_OFFSET_PX } from "../../lib/scrollAnchors";
 
 import { Button } from "../ui/Button";
 import { ScrollReveal } from "../ui/ScrollReveal";
+import { useOptionalHomepageReadiness } from "../homepage/HomepageReadinessProvider";
 import { HeroImageColumn } from "./HeroImageColumn";
 import { HeroScrollImage } from "./HeroScrollImage";
 import { RotatingRolePhrases } from "./RotatingRolePhrases";
@@ -10,6 +11,8 @@ import { RotatingRolePhrases } from "./RotatingRolePhrases";
 import { heroData } from "../../data/hero";
 
 export function HeroSection() {
+  const readiness = useOptionalHomepageReadiness();
+
   return (
     <Section
       id="hero"
@@ -30,7 +33,10 @@ export function HeroSection() {
 
         {/* Hero Bio and CTA */}
         <div className="flex flex-col sm:flex-row sm:flex-1 xl:justify-between">
-          <ScrollReveal className="flex flex-col items-end sm:items-start justify-start max-w-[800px] px-3 pt-20 sm:pl-3 md:pl-4 lg:pl-9 sm:pr-2 md:pr-3 lg:pr-5 xl:pr-7 gap-y-2 sm:gap-y-4">
+          <ScrollReveal
+            className="flex flex-col items-end sm:items-start justify-start max-w-[800px] px-3 pt-20 sm:pl-3 md:pl-4 lg:pl-9 sm:pr-2 md:pr-3 lg:pr-5 xl:pr-7 gap-y-2 sm:gap-y-4"
+            startupReadyKey="hero-bio"
+          >
             <p className="text-sora-18">{heroData.bio}</p>
             <Button
               href="#contact"
@@ -63,6 +69,7 @@ export function HeroSection() {
               alt={heroData.heroImageAlt}
               className="h-full w-auto object-cover sm:relative sm:bottom-5 lg:bottom-6 xl:bottom-8 2xl:bottom-(--token-hero-image-frame-bottom)"
               priority={true}
+              onReady={() => readiness?.markReady("hero-image-ready")}
             />
           </HeroImageColumn>
         </div>
