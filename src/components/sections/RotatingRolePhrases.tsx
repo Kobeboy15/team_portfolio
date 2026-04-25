@@ -79,7 +79,7 @@ export function RotatingRolePhrases({
       </span>
       <span
         aria-hidden
-        className="relative mt-0 block w-full overflow-hidden py-1.5 min-h-[calc(1lh+0.5rem)] 2xl:py-[0.08em] 2xl:min-h-[calc(1lh+0.12em)]"
+        className="relative mt-0 block w-full overflow-hidden pt-1.5 pb-2.5 min-h-[calc(1lh+0.75rem)] sm:py-1.5 sm:min-h-[calc(1lh+0.5rem)] 2xl:py-[0.08em] 2xl:min-h-[calc(1lh+0.12em)]"
       >
         <AnimatePresence
           initial={false}
@@ -92,7 +92,7 @@ export function RotatingRolePhrases({
         >
           <motion.span
             key={index}
-            className="absolute inset-x-0 top-2.5 block w-full will-change-transform 2xl:top-[0.08em]"
+            className="absolute inset-x-0 top-[0.625rem] block w-full will-change-transform sm:top-2.5 2xl:top-[0.08em]"
             initial={{ y: "120%" }}
             animate={{ y: 0 }}
             exit={{ y: "-120%" }}

@@ -1,11 +1,14 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useSyncExternalStore, type ReactNode } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 
 import { aboutData } from "../../../data/about";
+import { useClientMounted } from "../../../hooks/useClientMounted";
+import { useMediaQuery } from "../../../hooks/useMediaQuery";
+import { isLikelyIosAffectedWebKit } from "../../../lib/isLikelyIosAffectedWebKit";
 
-import { ABOUT_SECTION_ROOT_ID } from "../heroAboutConstants";
+import { ABOUT_SECTION_ANCHOR_ID, ABOUT_SECTION_ROOT_ID } from "../heroAboutConstants";
 import { ImageFrame } from "../../ui/ImageFrame";
 import { ScrollProgressBar } from "../../ui/ScrollProgressBar";
 import { Section } from "../../ui/Section";
@@ -14,7 +17,23 @@ import { AboutBio } from "./AboutBio";
 import { AboutGallery } from "./AboutGallery";
 import { AboutPoints } from "./AboutPoints";
 
-export function AboutSection() {
+const DESKTOP_ABOUT_SCROLL_ID = "about-desktop-scroll-area";
+const ABOUT_DESKTOP_MEDIA_QUERY = "(min-width: 640px)";
+const subscribeToPlatformSnapshot = () => () => {};
+
+function useStableMobileMediaHeightForIos() {
+  return useSyncExternalStore(
+    subscribeToPlatformSnapshot,
+    isLikelyIosAffectedWebKit,
+    () => false,
+  );
+}
+
+function AboutSectionShell() {
+  return <div aria-hidden="true" className="min-h-screen w-full pt-18" />;
+}
+
+function DesktopAboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [translateX, setTranslateX] = useState("0%");
@@ -37,8 +56,7 @@ export function AboutSection() {
       const percentage = totalWidth > 0 ? (scrollDistance / totalWidth) * 100 : 0;
       setTranslateX(`-${percentage}%`);
 
-      const isMobile = window.innerWidth < 768;
-      const speedMod = isMobile ? 0.75 : 1;
+      const speedMod = window.innerWidth < 640 ? 0.75 : 1;
       setScrollHeight(`${(scrollDistance * speedMod) + window.innerHeight}px`);
     };
 
@@ -59,28 +77,66 @@ export function AboutSection() {
   return (
     <div
       ref={sectionRef}
-      id={ABOUT_SECTION_ROOT_ID}
+      id={DESKTOP_ABOUT_SCROLL_ID}
       className="relative w-full"
       style={{ height: scrollHeight }}
     >
-      <Section id="about" className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
+      <Section className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
         <motion.div ref={contentRef} data-scroll-container style={{ x }} className="flex flex-nowrap w-max max-h-full">
-          {/* Heading + Bio */}
           <AboutBio />
-
-          {/* Points */}
           <section className="relative h-dvh w-[70vw] shrink-0 overflow-hidden" aria-label={aboutData.pointsImageAlt}>
             <div className="relative h-full w-full overflow-hidden">
               <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
             </div>
           </section>
           <AboutPoints />
-
-          {/* Gallery */}
-          <AboutGallery scrollYProgress={scrollYProgress} totalScrollWidth={totalScrollPx} />
+          <AboutGallery idNamespace="desktop" scrollYProgress={scrollYProgress} totalScrollWidth={totalScrollPx} />
         </motion.div>
       </Section>
-      <ScrollProgressBar scrollYProgress={scrollYProgress} targetId="about" />
+      <ScrollProgressBar scrollYProgress={scrollYProgress} targetId={DESKTOP_ABOUT_SCROLL_ID} />
+    </div>
+  );
+}
+
+function MobileAboutSection() {
+  const useStableMobileMediaHeight = useStableMobileMediaHeightForIos();
+
+  const mobileImageHeightClass = useStableMobileMediaHeight
+    ? "relative h-[clamp(320px,70svh,960px)] w-full overflow-hidden"
+    : "relative h-[clamp(320px,70dvh,960px)] w-full overflow-hidden";
+
+  return (
+    <Section className="block w-full max-w-none overflow-hidden pt-0!">
+      <AboutBio />
+      <section className={mobileImageHeightClass} aria-label={aboutData.pointsImageAlt}>
+        <div className="relative h-full w-full overflow-hidden">
+          <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
+        </div>
+      </section>
+      <AboutPoints />
+      <AboutGallery
+        idNamespace="mobile"
+        orientation="vertical"
+        useStableMobileMediaHeight={useStableMobileMediaHeight}
+      />
+    </Section>
+  );
+}
+
+export function AboutSection() {
+  const isClientMounted = useClientMounted();
+  const isDesktop = useMediaQuery(ABOUT_DESKTOP_MEDIA_QUERY);
+
+  let content: ReactNode = <AboutSectionShell />;
+
+  if (isClientMounted) {
+    content = isDesktop ? <DesktopAboutSection /> : <MobileAboutSection />;
+  }
+
+  return (
+    <div id={ABOUT_SECTION_ROOT_ID} className="relative w-full">
+      <div id={ABOUT_SECTION_ANCHOR_ID} className="absolute top-0" aria-hidden="true" />
+      {content}
     </div>
   );
 }

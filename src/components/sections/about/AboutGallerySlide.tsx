@@ -44,12 +44,25 @@ function cn(...classes: (string | undefined)[]): string {
 
 export type AboutGallerySlideProps = AboutSlide & {
   className?: string;
+  orientation?: "horizontal" | "vertical";
+  useStableMobileMediaHeight?: boolean;
 };
 
-export function AboutGallerySlide({ title, description, image, imageAlt, className }: AboutGallerySlideProps) {
+export function AboutGallerySlide({
+  title,
+  description,
+  image,
+  imageAlt,
+  className,
+  orientation = "horizontal",
+  useStableMobileMediaHeight = false,
+}: AboutGallerySlideProps) {
   const topSpacerPx = hashImageToTopSpacerPx(image);
   const articleAlign = hashImageToArticleAlign(image);
   const spacerOnBottom = articleAlign === "end";
+  const verticalImageClass = useStableMobileMediaHeight
+    ? "h-auto max-h-[70svh] w-full shrink-0 object-cover shadow-xl"
+    : "h-auto max-h-[70dvh] w-full shrink-0 object-cover shadow-xl";
 
   const copyBlock = (
     <div className="flex shrink-0 flex-col gap-2">
@@ -61,6 +74,22 @@ export function AboutGallerySlide({ title, description, image, imageAlt, classNa
       </ScrollReveal>
     </div>
   );
+
+  if (orientation === "vertical") {
+    return (
+      <article className={cn("flex w-full flex-col gap-4 px-5 pb-8", className)}>
+        <ImageFrame
+          placement="timeline"
+          src={image}
+          alt={imageAlt}
+          className={verticalImageClass}
+        />
+        <div className="flex w-full flex-col gap-2">
+          {copyBlock}
+        </div>
+      </article>
+    );
+  }
 
   return (
     <article className={cn("flex flex-col gap-3 sm:flex-row items-center sm:gap-4 max-w-[90vw]", ARTICLE_ALIGN_CLASS[articleAlign], className)}>
