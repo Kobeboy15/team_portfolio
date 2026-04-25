@@ -11,9 +11,11 @@ export const projectCardDesktopTransition = {
   duration: 0.42,
   ease: [0.22, 1, 0.36, 1] as const,
 };
+export const PROJECT_CARD_DESKTOP_TRANSITION_SETTLE_MS =
+  Math.round(projectCardDesktopTransition.duration * 1000) + 80;
 
 export type RollingTextSlotProps = {
-  projectId: string;
+  transitionKey: string;
   slotId: string;
   className?: string;
   style?: CSSProperties;
@@ -21,14 +23,14 @@ export type RollingTextSlotProps = {
 };
 
 export function RollingTextSlot({
-  projectId,
+  transitionKey,
   slotId,
   className,
   style,
   children,
 }: RollingTextSlotProps) {
   const reduceMotion = useReducedMotion();
-  const key = `${projectId}-${slotId}`;
+  const key = `${transitionKey}-${slotId}`;
 
   const transition = {
     duration: reduceMotion ? 0.14 : projectCardDesktopTransition.duration,
@@ -63,14 +65,14 @@ export function RollingTextSlot({
 }
 
 export type ProjectImageTransitionProps = {
-  projectId: string;
+  transitionKey: string;
   src: string;
   alt: string;
   className: string;
 };
 
 export function ProjectImageTransition({
-  projectId,
+  transitionKey,
   src,
   alt,
   className,
@@ -78,7 +80,7 @@ export function ProjectImageTransition({
   const reduceMotion = useReducedMotion();
 
   const transition = {
-    duration: reduceMotion ? 0.16 : 0.45,
+    duration: reduceMotion ? 0.14 : projectCardDesktopTransition.duration,
     ease: projectCardDesktopTransition.ease,
   };
 
@@ -86,7 +88,7 @@ export function ProjectImageTransition({
     <div className={cn("relative w-full overflow-hidden", className)}>
       <AnimatePresence mode="wait">
         <motion.div
-          key={projectId}
+          key={transitionKey}
           initial={
             reduceMotion
               ? { opacity: 0 }

@@ -24,6 +24,7 @@ export type ProjectCardDesktopProps = {
   project: Project;
   activeIndex: number;
   projectCount: number;
+  transitionKey: string;
   className?: string;
 };
 
@@ -37,6 +38,7 @@ export function ProjectCardDesktop({
   project,
   activeIndex,
   projectCount,
+  transitionKey,
   className,
 }: ProjectCardDesktopProps) {
   const currentProjectNumber = formatProjectCounter(activeIndex + 1);
@@ -52,7 +54,7 @@ export function ProjectCardDesktop({
           <div className="flex min-h-0 min-w-0 flex-col gap-8 lg:h-full lg:justify-center lg:gap-10">
             <header aria-hidden className="shrink-0">
               <RollingTextSlot
-                projectId={project.id}
+                transitionKey={transitionKey}
                 slotId="title"
                 className="flex flex-col justify-end"
                 style={contentHeightStyle(H.title)}
@@ -68,7 +70,7 @@ export function ProjectCardDesktop({
                 </div>
               </RollingTextSlot>
               <RollingTextSlot
-                projectId={project.id}
+                transitionKey={transitionKey}
                 slotId="year"
                 className="flex items-end"
                 style={contentHeightStyle(H.year)}
@@ -87,7 +89,7 @@ export function ProjectCardDesktop({
             <div className="flex min-h-0 flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">Description</p>
               <RollingTextSlot
-                projectId={project.id}
+                transitionKey={transitionKey}
                 slotId="description"
                 className="min-w-0 max-w-[34ch] font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.description)}
@@ -105,7 +107,7 @@ export function ProjectCardDesktop({
                 Role/Project Type
               </p>
               <RollingTextSlot
-                projectId={project.id}
+                transitionKey={transitionKey}
                 slotId="role"
                 className="min-w-0 font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.role)}
@@ -119,7 +121,7 @@ export function ProjectCardDesktop({
 
           <div className="flex h-full min-h-0 min-w-0 items-center justify-center">
             <ProjectImageTransition
-              projectId={project.id}
+              transitionKey={transitionKey}
               src={project.image}
               alt={project.imageAlt}
               className={PROJECT_IMAGE_LAYOUT.frameClassName}
@@ -130,7 +132,7 @@ export function ProjectCardDesktop({
             <div className="flex min-h-0 flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">Tech Stack</p>
               <RollingTextSlot
-                projectId={project.id}
+                transitionKey={transitionKey}
                 slotId="tech"
                 className="min-w-0 font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.techStack)}
@@ -152,7 +154,7 @@ export function ProjectCardDesktop({
             <div className="flex min-h-0 flex-col gap-3">
               <p className="font-sans text-sora-14 font-light text-accent">Outcomes</p>
               <RollingTextSlot
-                projectId={project.id}
+                transitionKey={transitionKey}
                 slotId="outcomes"
                 className="min-w-0 font-sans text-sora-14 font-light leading-6 text-foreground"
                 style={contentHeightStyle(H.outcomes)}
@@ -188,7 +190,11 @@ export function ProjectCardDesktop({
                     minHeight: PROJECT_CARD_DESKTOP_LINK_ROW_MIN_HEIGHT_PX,
                   }}
                 >
-                  <RollingTextSlot projectId={project.id} slotId="cta-live" className="min-w-0">
+                  <RollingTextSlot
+                    transitionKey={transitionKey}
+                    slotId="cta-live"
+                    className="min-w-0"
+                  >
                     <ScrollReveal variant="opacity" className="w-full min-w-0">
                       {project.liveUrl ? (
                         <a
@@ -216,7 +222,11 @@ export function ProjectCardDesktop({
                     minHeight: PROJECT_CARD_DESKTOP_LINK_ROW_MIN_HEIGHT_PX,
                   }}
                 >
-                  <RollingTextSlot projectId={project.id} slotId="cta-github" className="min-w-0">
+                  <RollingTextSlot
+                    transitionKey={transitionKey}
+                    slotId="cta-github"
+                    className="min-w-0"
+                  >
                     <ScrollReveal variant="opacity" className="w-full min-w-0">
                       {project.githubUrl ? (
                         <a
@@ -242,7 +252,7 @@ export function ProjectCardDesktop({
               >
                 <div className="flex items-baseline justify-end text-right">
                   <RollingTextSlot
-                    projectId={project.id}
+                    transitionKey={transitionKey}
                     slotId="project-progress-current"
                     className="flex justify-end"
                     style={contentHeightStyle(H.year)}
