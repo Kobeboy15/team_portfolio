@@ -32,6 +32,17 @@ function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
   );
 }
 
+function isDesktopViewport() {
+  return window.matchMedia("(min-width: 768px)").matches;
+}
+
+function isElementVisible(element: HTMLElement | null) {
+  if (!element) return false;
+
+  const style = window.getComputedStyle(element);
+  return style.display !== "none" && style.visibility !== "hidden";
+}
+
 export function NavigationHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const [visible, setVisible] = useState(true);
@@ -39,7 +50,10 @@ export function NavigationHeader() {
   const [isInContact, setIsInContact] = useState(false);
 
   const lastScrollY = useRef(0);
+  const desktopNavRef = useRef<HTMLElement>(null);
+  const desktopTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileNavRef = useRef<HTMLElement>(null);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
   const mobileCloseButtonRef = useRef<HTMLButtonElement>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
@@ -55,7 +69,7 @@ export function NavigationHeader() {
     if (!isOpen) {
       restoreFocusRef.current = document.activeElement instanceof HTMLElement
         ? document.activeElement
-        : mobileTriggerRef.current;
+        : (isDesktopViewport() ? desktopTriggerRef.current : mobileTriggerRef.current);
       shouldRestoreFocusRef.current = true;
       setIsOpen(true);
       return;
@@ -94,7 +108,7 @@ export function NavigationHeader() {
     };
     const handleViewportChange = () => {
       if (isOpen) {
-        closeMobileMenu(false);
+        closeMobileMenu(true);
       }
       updateOverflow();
     };
@@ -110,8 +124,12 @@ export function NavigationHeader() {
     if (!isOpen) {
       if (shouldRestoreFocusRef.current) {
         const target = restoreFocusRef.current;
-        if (target && document.contains(target)) {
-          target.focus();
+        const fallbackTarget = isDesktopViewport()
+          ? desktopTriggerRef.current
+          : mobileTriggerRef.current;
+        const restoreTarget = target && isElementVisible(target) ? target : fallbackTarget;
+        if (restoreTarget && document.contains(restoreTarget)) {
+          restoreTarget.focus();
         }
       }
 
@@ -120,8 +138,12 @@ export function NavigationHeader() {
     }
 
     const frame = window.requestAnimationFrame(() => {
-      const focusable = getFocusableElements(mobileMenuRef.current);
-      const firstTarget = focusable[0] ?? mobileCloseButtonRef.current;
+      const focusable = isDesktopViewport()
+        ? getFocusableElements(desktopNavRef.current)
+        : getFocusableElements(mobileNavRef.current);
+      const firstTarget = focusable[0] ?? (isDesktopViewport()
+        ? desktopTriggerRef.current
+        : mobileCloseButtonRef.current);
       firstTarget?.focus();
     });
 
@@ -130,6 +152,7 @@ export function NavigationHeader() {
 
   useEffect(() => {
     if (!isOpen) return;
+    if (isDesktopViewport()) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -140,7 +163,12 @@ export function NavigationHeader() {
 
       if (event.key !== "Tab") return;
 
-      const focusable = getFocusableElements(mobileMenuRef.current);
+      const focusable = getFocusableElements(mobileNavRef.current);
+      const closeButton = mobileCloseButtonRef.current;
+      if (closeButton && isElementVisible(closeButton) && !focusable.includes(closeButton)) {
+        focusable.push(closeButton);
+      }
+
       if (focusable.length === 0) {
         event.preventDefault();
         mobileCloseButtonRef.current?.focus();
@@ -150,19 +178,40 @@ export function NavigationHeader() {
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
       const activeElement = document.activeElement;
+      const currentIndex = focusable.findIndex((element) => element === activeElement);
 
       if (event.shiftKey) {
-        if (activeElement === first || !mobileMenuRef.current?.contains(activeElement)) {
+        if (currentIndex === -1) {
           event.preventDefault();
           last.focus();
+          return;
         }
+
+        if (currentIndex === 0) {
+          event.preventDefault();
+          last.focus();
+          return;
+        }
+
+        event.preventDefault();
+        focusable[currentIndex - 1]?.focus();
         return;
       }
 
-      if (activeElement === last) {
+      if (currentIndex === -1) {
         event.preventDefault();
         first.focus();
+        return;
       }
+
+      if (currentIndex === focusable.length - 1) {
+        event.preventDefault();
+        first.focus();
+        return;
+      }
+
+      event.preventDefault();
+      focusable[currentIndex + 1]?.focus();
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -257,6 +306,7 @@ export function NavigationHeader() {
               className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-w-[700px]" : "max-w-0"}`}
             >
               <nav
+                ref={desktopNavRef}
                 className={`flex items-center gap-4 whitespace-nowrap pr-2 transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
               >
                 {navItems.map((item) => (
@@ -267,7 +317,7 @@ export function NavigationHeader() {
                 <ThemeToggle />
               </nav>
             </div>
-            <HamburgerIcon isOpen={isOpen} onToggle={toggleMobileMenu} />
+            <HamburgerIcon isOpen={isOpen} onToggle={toggleMobileMenu} buttonRef={desktopTriggerRef} />
           </div>
 
           <div className="flex md:hidden">
@@ -302,20 +352,18 @@ export function NavigationHeader() {
             <a
               href="#hero"
               onClick={() => closeMobileMenu(true)}
+              tabIndex={-1}
               className="text-sora-24 font-extrabold tracking-tight text-foreground"
             >
               Kobe
             </a>
           )}
-          <HamburgerIcon
-            isOpen={isOpen}
-            onToggle={toggleMobileMenu}
-            controlsId={MOBILE_MENU_ID}
-            buttonRef={mobileCloseButtonRef}
-          />
         </div>
 
-        <nav className="flex flex-1 flex-col items-start justify-center gap-6 px-6 pb-16">
+        <nav
+          ref={mobileNavRef}
+          className="flex flex-1 flex-col items-start justify-center gap-6 px-6 pb-16"
+        >
           {navItems.map((item, i) => (
             <div
               key={item}
@@ -335,6 +383,17 @@ export function NavigationHeader() {
             <ThemeToggle />
           </div>
         </nav>
+
+        <div className="pointer-events-none absolute top-0 right-0 flex h-18 items-center px-6 py-4">
+          <div className="pointer-events-auto">
+            <HamburgerIcon
+              isOpen={isOpen}
+              onToggle={toggleMobileMenu}
+              controlsId={MOBILE_MENU_ID}
+              buttonRef={mobileCloseButtonRef}
+            />
+          </div>
+        </div>
       </div>
     </>
   );
