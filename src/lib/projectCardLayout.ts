@@ -17,10 +17,13 @@ export const PROJECT_CARD_DESKTOP_CONTENT_HEIGHT_PX = {
   /** ~4 lines incl. gaps between list items */
   techStack: 108,
   /** ~4 outcomes × ~3 lines each incl. gaps */
-  outcomes: 304,
+  outcomes: 256,
 } as const;
 
 /** Reserved height per link row (View more / GitHub) in the desktop skeleton. */
 export const PROJECT_CARD_DESKTOP_LINK_ROW_MIN_HEIGHT_PX = 24;
+/** Total reserved height for the combined links + progress skeleton block. */
+export const PROJECT_CARD_DESKTOP_LINK_BLOCK_MIN_HEIGHT_PX =
+  PROJECT_CARD_DESKTOP_LINK_ROW_MIN_HEIGHT_PX * 2 + 12;
 
 export type ProjectCardDesktopContentRegion = keyof typeof PROJECT_CARD_DESKTOP_CONTENT_HEIGHT_PX;

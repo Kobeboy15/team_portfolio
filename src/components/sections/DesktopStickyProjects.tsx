@@ -335,7 +335,12 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
           height: `calc(100dvh - ${NAV_OFFSET_PX}px)`,
         }}
       >
-        <ProjectCardDesktop project={activeProject} className="w-full" />
+        <ProjectCardDesktop
+          project={activeProject}
+          activeIndex={activeIndex}
+          projectCount={n}
+          className="w-full"
+        />
       </div>
     </div>
   );
