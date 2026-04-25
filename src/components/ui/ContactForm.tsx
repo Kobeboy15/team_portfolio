@@ -98,7 +98,7 @@ export default function ContactForm() {
               value={formData.name}
               onChange={handleChange}
               required
-              className="h-14 w-full border border-foreground/60 bg-transparent px-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:bg-background"
+              className="h-14 w-full border border-foreground/60 bg-transparent px-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             />
           </div>
 
@@ -116,7 +116,7 @@ export default function ContactForm() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="h-14 w-full border border-foreground/60 bg-transparent px-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:bg-background"
+              className="h-14 w-full border border-foreground/60 bg-transparent px-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             />
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function ContactForm() {
             onChange={handleChange}
             required
             rows={7}
-            className="min-h-[60px] w-full resize-y border border-foreground/60 bg-transparent px-4 py-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:bg-background"
+            className="min-h-[60px] w-full resize-y border border-foreground/60 bg-transparent px-4 py-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           />
         </div>
       </div>
@@ -172,7 +172,7 @@ export default function ContactForm() {
             role="status"
             aria-live="polite"
             aria-atomic="true"
-            className="text-sm text-green-700"
+            className="text-sm text-green-800 dark:text-green-300"
           >
             Your message was sent successfully.
           </p>
@@ -183,7 +183,7 @@ export default function ContactForm() {
             id={formStatusId}
             role="alert"
             aria-atomic="true"
-            className="text-sm text-red-700"
+            className="text-sm text-red-800 dark:text-red-300"
           >
             {errorMessage}
           </p>

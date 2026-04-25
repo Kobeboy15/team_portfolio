@@ -104,7 +104,7 @@ export function NavigationHeader({
         setVisible(true);
       } else if (currentScrollY > lastScrollY.current && !isInContact) {
         setVisible(false);
-        closeNav();
+        closeNav({ restoreFocus: false });
       } else {
         setVisible(true);
       }
