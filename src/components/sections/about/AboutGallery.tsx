@@ -43,6 +43,8 @@ export function AboutGallery({
             alt={hall.separator.alt}
             orientation={orientation}
             useStableMobileMediaHeight={useStableMobileMediaHeight}
+            scrollYProgress={scrollYProgress}
+            totalScrollWidth={totalScrollWidth}
           />
           <AboutGalleryWall
             idNamespace={idNamespace}

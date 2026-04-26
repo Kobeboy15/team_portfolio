@@ -13,7 +13,6 @@ import {
 } from "../../../lib/scrollAnchors";
 
 import { ABOUT_SECTION_ANCHOR_ID, ABOUT_SECTION_ROOT_ID } from "../heroAboutConstants";
-import { ImageFrame } from "../../ui/ImageFrame";
 import { ScrollProgressBar } from "../../ui/ScrollProgressBar";
 import { Section } from "../../ui/Section";
 import { useOptionalHomepageReadiness } from "../../homepage/HomepageReadinessProvider";
@@ -21,6 +20,7 @@ import { useOptionalHomepageReadiness } from "../../homepage/HomepageReadinessPr
 import { AboutBio } from "./AboutBio";
 import { AboutGallery } from "./AboutGallery";
 import { AboutPoints } from "./AboutPoints";
+import { AboutSeparatorParallax } from "./AboutSeparatorParallax";
 
 const DESKTOP_ABOUT_SCROLL_ID = "about-desktop-scroll-area";
 const ABOUT_DESKTOP_MEDIA_QUERY = "(min-width: 640px)";
@@ -41,9 +41,14 @@ function AboutSectionShell() {
 function DesktopAboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const uniqueSeparatorRef = useRef<HTMLElement>(null);
   const [translateX, setTranslateX] = useState("0%");
   const [scrollHeight, setScrollHeight] = useState("300vh");
   const [totalScrollPx, setTotalScrollPx] = useState(0);
+  const [uniqueSeparatorMetrics, setUniqueSeparatorMetrics] = useState({
+    offsetLeft: 0,
+    width: 0,
+  });
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -77,6 +82,30 @@ function DesktopAboutSection() {
     };
   }, []);
 
+  useEffect(() => {
+    const measure = () => {
+      if (!uniqueSeparatorRef.current) return;
+
+      setUniqueSeparatorMetrics({
+        offsetLeft: uniqueSeparatorRef.current.offsetLeft,
+        width: uniqueSeparatorRef.current.offsetWidth,
+      });
+    };
+
+    measure();
+
+    const resizeObserver = new ResizeObserver(measure);
+    const scrollContainer = uniqueSeparatorRef.current?.closest<HTMLElement>("[data-scroll-container]");
+    if (scrollContainer) resizeObserver.observe(scrollContainer);
+    if (uniqueSeparatorRef.current) resizeObserver.observe(uniqueSeparatorRef.current);
+
+    window.addEventListener("resize", measure);
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
   const x = useTransform(scrollYProgress, [0, 1], ["0%", translateX]);
 
   return (
@@ -89,10 +118,19 @@ function DesktopAboutSection() {
       <Section className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
         <motion.div ref={contentRef} data-scroll-container style={{ x }} className="flex flex-nowrap w-max max-h-full">
           <AboutBio />
-          <section className="relative h-dvh w-[70vw] shrink-0 overflow-hidden" aria-label={aboutData.pointsImageAlt}>
-            <div className="relative h-full w-full overflow-hidden">
-              <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
-            </div>
+          <section
+            ref={uniqueSeparatorRef}
+            className="relative h-dvh w-[70vw] shrink-0 overflow-hidden"
+            aria-label={aboutData.pointsImageAlt}
+          >
+            <AboutSeparatorParallax
+              src={aboutData.pointsImage}
+              alt={aboutData.pointsImageAlt}
+              orientation="horizontal"
+              scrollYProgress={scrollYProgress}
+              totalScrollWidth={totalScrollPx}
+              desktopTrackMetrics={uniqueSeparatorMetrics}
+            />
           </section>
           <AboutPoints />
           <AboutGallery idNamespace="desktop" scrollYProgress={scrollYProgress} totalScrollWidth={totalScrollPx} />
@@ -114,13 +152,11 @@ function MobileAboutSection() {
     <Section className="block w-full max-w-none overflow-hidden pt-0!">
       <AboutBio />
       <section className={mobileImageHeightClass} aria-label={aboutData.pointsImageAlt}>
-        <div className="relative h-full w-full overflow-hidden">
-          <ImageFrame
-            placement="about-gallery-hero"
-            src={aboutData.pointsImage}
-            alt={aboutData.pointsImageAlt}
-          />
-        </div>
+        <AboutSeparatorParallax
+          src={aboutData.pointsImage}
+          alt={aboutData.pointsImageAlt}
+          orientation="vertical"
+        />
       </section>
       <AboutPoints />
       <AboutGallery
