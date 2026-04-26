@@ -18,8 +18,8 @@ export function ContactSection() {
     const invertClass = mounted && resolvedTheme === "dark" ? "invert" : "";
 
   return (
-    <Section id="contact" className="bg-background-2 w-full flex flex-col">
-        <div className="flex flex-col md:flex-row w-full flex-1 border-t border-current/20">
+    <Section id="contact" className="bg-background-2 w-full flex flex-col md:h-dvh">
+        <div className="flex flex-col md:flex-row w-full flex-1 border-t border-current/20 md:min-h-0">
             <div className="flex flex-col w-full md:w-2/5 border-b md:border-b-0 md:border-r border-current/20 p-7 items-end">
                 <ScrollReveal className="w-full">
                     <h1 className="w-full text-header-1 tracking-display font-bebas whitespace-nowrap">{contactData.slogan}</h1>
@@ -50,7 +50,7 @@ export function ContactSection() {
                 </ScrollReveal>
             </div>
 
-            <div className="w-full md:w-3/5 flex flex-col py-3 px-7 md:px-15 gap-3 2xl:gap-5">
+            <div className="w-full md:w-3/5 flex flex-col py-3 px-7 md:px-15 gap-3 2xl:gap-5 md:flex-1 md:min-h-0 md:overflow-y-auto">
                 {/* Socials */}
                 <div className="py-5 flex flex-col gap-5">
                     <h2 className="font-sora text-sora-18 opacity-70">Socials</h2>
@@ -66,11 +66,13 @@ export function ContactSection() {
                 </div>
 
                 {/* Contact Form */}
-                <div className="py-5 flex flex-col gap-5">
+                <div className="py-5 flex flex-col gap-5 md:flex-1 md:min-h-0">
                     <h2 className="font-sora text-sora-18 opacity-70">Contact</h2>
-                    <ScrollReveal>
-                        <ContactForm />
-                    </ScrollReveal>
+                    <div className="md:flex-1 md:min-h-0">
+                        <ScrollReveal>
+                            <ContactForm />
+                        </ScrollReveal>
+                    </div>
                 </div>
             </div>
         </div>

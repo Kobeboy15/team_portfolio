@@ -128,7 +128,7 @@ export default function ContactForm() {
             value={formData.message}
             onChange={handleChange}
             required
-            rows={7}
+            rows={4}
             className="min-h-[60px] w-full resize-y border border-black/20 bg-transparent px-4 py-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-black focus:bg-black/[0.02]"
           />
         </div>
