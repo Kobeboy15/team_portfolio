@@ -21,6 +21,7 @@ import { AboutBio } from "./AboutBio";
 import { AboutGallery } from "./AboutGallery";
 import { AboutPoints } from "./AboutPoints";
 import { AboutSeparatorParallax } from "./AboutSeparatorParallax";
+import { useDesktopSeparatorTrackMetrics } from "./useDesktopSeparatorTrackMetrics";
 
 const DESKTOP_ABOUT_SCROLL_ID = "about-desktop-scroll-area";
 const ABOUT_DESKTOP_MEDIA_QUERY = "(min-width: 640px)";
@@ -45,10 +46,7 @@ function DesktopAboutSection() {
   const [translateX, setTranslateX] = useState("0%");
   const [scrollHeight, setScrollHeight] = useState("300vh");
   const [totalScrollPx, setTotalScrollPx] = useState(0);
-  const [uniqueSeparatorMetrics, setUniqueSeparatorMetrics] = useState({
-    offsetLeft: 0,
-    width: 0,
-  });
+  const uniqueSeparatorMetrics = useDesktopSeparatorTrackMetrics(uniqueSeparatorRef, true);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -79,30 +77,6 @@ function DesktopAboutSection() {
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener("resize", calculateTranslate);
-    };
-  }, []);
-
-  useEffect(() => {
-    const measure = () => {
-      if (!uniqueSeparatorRef.current) return;
-
-      setUniqueSeparatorMetrics({
-        offsetLeft: uniqueSeparatorRef.current.offsetLeft,
-        width: uniqueSeparatorRef.current.offsetWidth,
-      });
-    };
-
-    measure();
-
-    const resizeObserver = new ResizeObserver(measure);
-    const scrollContainer = uniqueSeparatorRef.current?.closest<HTMLElement>("[data-scroll-container]");
-    if (scrollContainer) resizeObserver.observe(scrollContainer);
-    if (uniqueSeparatorRef.current) resizeObserver.observe(uniqueSeparatorRef.current);
-
-    window.addEventListener("resize", measure);
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", measure);
     };
   }, []);
 
