@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { NavigationItem } from "@/src/data/navigation";
 
 import { Button } from "./Button";
+import { HoverRoll } from "./HoverRoll";
 import { ThemeToggle } from "./ThemeToggle";
 import { HamburgerIcon } from "./HamburgerIcon";
 import { useSmoothScroll } from "./SmoothScrollProvider";
@@ -176,8 +177,13 @@ export function NavigationHeader({
               {brandName}
             </span>
           ) : (
-            <a href={brandHref} className="text-sora-24 font-extrabold tracking-tight text-foreground">
-              {brandName}
+            <a
+              href={brandHref}
+              className="hoverRoll-group text-sora-24 font-extrabold tracking-tight text-foreground"
+            >
+              <HoverRoll>
+                <span className="block">{brandName}</span>
+              </HoverRoll>
             </a>
           )}
 
@@ -231,9 +237,11 @@ export function NavigationHeader({
             <a
               href={brandHref}
               onClick={handleMobileSamePageNavigation(brandHref)}
-              className="text-sora-24 font-extrabold tracking-tight text-foreground"
+              className="hoverRoll-group text-sora-24 font-extrabold tracking-tight text-foreground"
             >
-              {brandName}
+              <HoverRoll>
+                <span className="block">{brandName}</span>
+              </HoverRoll>
             </a>
           )}
           <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
