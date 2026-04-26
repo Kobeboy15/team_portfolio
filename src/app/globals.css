@@ -14,12 +14,12 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
   .hoverRoll-group:hover .hoverRoll-track {
-    transform: translate3d(0, -1em, 0);
+    transform: translate3d(0, calc(-1 * var(--hover-roll-size, 1em)), 0);
   }
 }
 
 .hoverRoll-group:focus-visible .hoverRoll-track {
-  transform: translate3d(0, -1em, 0);
+  transform: translate3d(0, calc(-1 * var(--hover-roll-size, 1em)), 0);
 }
 
 @media (prefers-reduced-motion: reduce) {

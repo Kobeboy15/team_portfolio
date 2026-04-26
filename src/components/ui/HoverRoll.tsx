@@ -10,6 +10,8 @@ type HoverRollProps = {
   wrapperClassName?: string;
   /** Extra classes for the animated track. */
   trackClassName?: string;
+  /** Extra classes for each row. */
+  rowClassName?: string;
   /**
    * Classes applied to the "accent" duplicate copy.
    * Defaults to `text-accent`.
@@ -36,13 +38,14 @@ export function HoverRoll({
   className,
   wrapperClassName,
   trackClassName,
+  rowClassName,
   accentClassName = "text-accent",
 }: HoverRollProps) {
   return (
     <span
       className={cn(
         // Single-row viewport: ensures only one copy is visible at a time.
-        "hoverRoll inline-block overflow-hidden align-baseline leading-none h-[1em]",
+        "hoverRoll inline-block overflow-hidden align-baseline leading-none h-[var(--hover-roll-size,1em)]",
         wrapperClassName,
         className,
       )}
@@ -53,12 +56,18 @@ export function HoverRoll({
           trackClassName,
         )}
       >
-        <span className="hoverRoll-row pointer-events-none flex items-center leading-none h-[1em]">
+        <span
+          className={cn(
+            "hoverRoll-row pointer-events-none flex items-center leading-none h-[var(--hover-roll-size,1em)]",
+            rowClassName,
+          )}
+        >
           {children}
         </span>
         <span
           className={cn(
-            "hoverRoll-row pointer-events-none flex items-center leading-none h-[1em]",
+            "hoverRoll-row pointer-events-none flex items-center leading-none h-[var(--hover-roll-size,1em)]",
+            rowClassName,
             accentClassName,
           )}
         >

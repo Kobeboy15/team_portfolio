@@ -58,8 +58,12 @@ export function ThemeToggle() {
       aria-pressed={isDark}
       className="hoverRoll-group rounded-full p-2 transition-colors cursor-pointer"
     >
-      <HoverRoll className="align-middle" wrapperClassName="block">
-        <span className="inline-flex">
+      <HoverRoll
+        className="align-middle [--hover-roll-size:1.25rem]"
+        wrapperClassName="block"
+        rowClassName="justify-center"
+      >
+        <span className="inline-flex h-5 w-5 items-center justify-center">
           {isDark ? <MoonIcon /> : <SunIcon />}
         </span>
       </HoverRoll>
