@@ -49,6 +49,7 @@ export function ThemeToggle() {
   // Resolve the "effective" theme when using "system"
   const currentTheme = theme === "system" ? systemTheme : theme;
   const isDark = currentTheme === "dark";
+  const iconRollSize = "1.25rem";
 
   return (
     <button
@@ -59,11 +60,14 @@ export function ThemeToggle() {
       className="hoverRoll-group rounded-full p-2 transition-colors cursor-pointer"
     >
       <HoverRoll
-        className="align-middle [--hover-roll-size:1.25rem]"
+        className="align-middle leading-none [--hover-roll-size:1.25rem] [--hover-roll-translate-y:1.2rem]"
         wrapperClassName="block"
         rowClassName="justify-center"
       >
-        <span className="inline-flex h-5 w-5 items-center justify-center">
+        <span
+          className="inline-flex shrink-0 items-center justify-center leading-none"
+          style={{ width: iconRollSize, height: iconRollSize }}
+        >
           {isDark ? <MoonIcon /> : <SunIcon />}
         </span>
       </HoverRoll>
