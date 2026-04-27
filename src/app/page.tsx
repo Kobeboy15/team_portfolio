@@ -1,8 +1,12 @@
 import { NavigationHeader } from "../components/ui/NavigationHeader";
+import { navigationData } from "@/src/data/navigation";
 
+import { HeroAboutImageCoordinator } from "../components/sections/HeroAboutImageCoordinator";
 import { HeroSection } from "../components/sections/HeroSection";
-import { AboutSection } from "../components/sections/AboutSection";
+import { AboutSection } from "../components/sections/about/AboutSection";
 import { SkillsSection } from "../components/sections/SkillsSection";
+import { ProjectsSection } from "../components/sections/ProjectsSection";
+import { ContactSection } from "../components/sections/ContactSection";
 
 import {
   ButtonTestSection,
@@ -14,17 +18,19 @@ import {
 export default function Home() {
   return (
     <div className="min-h-screen bg-background font-sans">
-      <NavigationHeader />
+      <NavigationHeader
+        brandName={navigationData.brandName}
+        brandHref={navigationData.brandHref}
+        navItems={navigationData.navItems}
+      />
       <main className="flex min-h-screen w-full flex-col items-center justify-between">
-        <HeroSection />
-
-        {/* Test sections for development purposes */}
-        {/* <ButtonTestSection />
-        <HeadingTestSection />
-        <CardTestSection />
-        <ImageFrameTestSection /> */}
-        <AboutSection />
+        <HeroAboutImageCoordinator>
+          <HeroSection />
+          <AboutSection />
+        </HeroAboutImageCoordinator>
         <SkillsSection />
+        <ProjectsSection />
+        <ContactSection />
       </main>
     </div>
   );

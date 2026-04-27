@@ -3,6 +3,8 @@ export type HeadingSize =
   | "hero-2" // 172px, tracking +2%
   | "display-128" // 128px
   | "display-96" // 96px
+  | "display-80" // 80px / 5rem — project card title (xl); local to Heading, not global tokens
+  | "display-64" // 64px / 4rem — project card title (lg); local to Heading, not global tokens
   | "display-48" // 48px
   | "years"; // 218px, tracking -5%
 
@@ -45,6 +47,8 @@ const sizeClassName: Record<HeadingSize, string> = {
   years: "text-years leading-[var(--text-years--line-height)] tracking-years",
   "display-128": "text-display-128",
   "display-96": "text-display-96",
+  "display-80": "text-[5rem] leading-[0.8]",
+  "display-64": "text-[4rem] leading-[0.8]",
   "display-48": "text-display-48",
 };
 

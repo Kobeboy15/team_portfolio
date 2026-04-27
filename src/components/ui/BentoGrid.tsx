@@ -1,51 +1,100 @@
-import { BentoContent } from "@/src/types/skills";
+import { BentoItem } from "@/src/types/skills";
+import { GridVariants, CardSlot } from "@/src/types/skills";
 
 import { Card } from "./Card";
+import { CardContent } from "./CardContent";
+import { CardDecor } from "./CardDecor";
+import { ScrollReveal } from "./ScrollReveal";
+
+import { desktopGridVariants, mobileGridVariants } from "@/src/data/skills";
 
 const COLS = 3;
 const ROWS = 11;
 
-const VARIANTS = {
-    card1: { gridColumn: "1 / span 2", gridRow: "1 / span 4" },
-    card2: { gridColumn: "3 / span 1", gridRow: "1 / span 4" },
-    card3: { gridColumn: "1 / span 1", gridRow: "5 / span 5" },
-    card4: { gridColumn: "2 / span 1", gridRow: "5 / span 3" },
-    card5: { gridColumn: "3 / span 1", gridRow: "5 / span 7" },
-    card6: { gridColumn: "1 / span 1", gridRow: "10 / span 2" },
-    card7: { gridColumn: "2 / span 1", gridRow: "8 / span 4" },
+const MOBILE_COLS = 2;
+const MOBILE_ROWS = 7;
 
-};
+export function BentoGrid({ items, variant }: { items: BentoItem[]; variant?: number }) {
+    const variantIndex = Math.min(
+        Math.max((variant ?? 1) - 1, 0),
+        desktopGridVariants.length - 1
+    );
+ 
+    const desktopCards = fillGrid(items, desktopGridVariants[variantIndex]);
+    const mobileCards = fillGrid(
+        items,
+        mobileGridVariants[Math.min(variantIndex, mobileGridVariants.length - 1)]
+    );
 
-export function BentoGrid({ content }: { content: BentoContent[] }) {
-    const cards = fillGrid(content);
+    return (
+        <div className="flex justify-center items-center">
+            {/* Desktop grid */}
+            <div
+                className="hidden desktop-grid gap-3"
+                style={{
+                    gridTemplateColumns: `repeat(${COLS}, auto)`,
+                    gridTemplateRows: `repeat(${ROWS}, auto)`,
+                }}
+            >
+                {desktopCards}
+            </div>
 
-  return (
-    <div className="w-full h-full flex justify-center items-center">
-        <div 
-            className="gap-1 md:gap-3 h-full w-full"
-            style={{
-                display: "grid",
-                gridTemplateColumns: `repeat(${COLS}, 1fr)`,
-                gridTemplateRows: `repeat(${ROWS}, 1fr)`,
-            }}
-        >
-            {cards}
+            {/* Mobile grid */}
+            <div
+                className="grid mobile-display gap-1"
+                style={{
+                    gridTemplateColumns: `repeat(${MOBILE_COLS}, auto)`,
+                    gridTemplateRows: `repeat(${MOBILE_ROWS}, auto)`,
+                }}
+            >
+                {mobileCards}
+            </div>
         </div>
-    </div>
-  );
+    );
 }
 
-function fillGrid(content: BentoContent[]): React.ReactElement[] {
-    const cards: React.ReactElement[] = [];
+const STAGGER_STEP_S = 0.05;
 
-    // TODO: placeholders, will replace with content in a later ticket
-    cards.push(<div key={1} style={VARIANTS.card1}><Card className="flex justify-center items-center">Card 1</Card></div>);
-    cards.push(<div key={2} style={VARIANTS.card2}><Card variant="accent" className="flex justify-center items-center">Card 2</Card></div>);
-    cards.push(<div key={3} style={VARIANTS.card3}><Card variant="gradient" className="flex justify-center items-center">Card 3</Card></div>);
-    cards.push(<div key={4} style={VARIANTS.card4}><Card className="flex justify-center items-center">Card 4</Card></div>);
-    cards.push(<div key={5} style={VARIANTS.card5}><Card className="flex justify-center items-center">Card 5</Card></div>);
-    cards.push(<div key={6} style={VARIANTS.card6}><Card className="flex justify-center items-center">Card 6</Card></div>);
-    cards.push(<div key={7} style={VARIANTS.card7}><Card variant="accent" className="flex justify-center items-center">Card 7</Card></div>);
+function fillGrid(
+    items: BentoItem[],
+    variants: GridVariants
+): React.ReactElement[] {
+    const cards: React.ReactElement[] = [];
+    const usedSlots = new Set<CardSlot>(items.map((item) => item.slot));
+    const allSlots = Object.keys(variants) as CardSlot[];
+    let index = 0;
+
+    for (const item of items) {
+        const delay = index * STAGGER_STEP_S;
+        index += 1;
+
+        cards.push(
+            <div key={item.slot} style={variants[item.slot]}>
+                <ScrollReveal className="h-full w-full min-h-0" delay={delay}>
+                    <Card variant={item.cardVariant ?? "background2"} size={item.slot}>
+                        <CardContent content={item.content} />
+                    </Card>
+                </ScrollReveal>
+            </div>
+        );
+    }
+
+    for (const slot of allSlots) {
+        if (!usedSlots.has(slot)) {
+            const delay = index * STAGGER_STEP_S;
+            index += 1;
+
+            cards.push(
+                <div key={slot} style={variants[slot]}>
+                    <ScrollReveal className="h-full w-full min-h-0" delay={delay}>
+                        <Card variant="accent" size={slot}>
+                            <CardDecor slot={slot} />
+                        </Card>
+                    </ScrollReveal>
+                </div>
+            );
+        }
+    }
 
     return cards;
 }

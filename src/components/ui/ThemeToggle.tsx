@@ -1,7 +1,8 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useState, useEffect } from "react";
+
+import { useClientMounted } from "@/src/hooks/useClientMounted";
 
 function MoonIcon() {
   return (
@@ -39,10 +40,9 @@ function SunIcon() {
 
 export function ThemeToggle() {
   const { theme, systemTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useClientMounted();
 
   // Avoid hydration mismatch — only render after mount
-  useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
   // Resolve the "effective" theme when using "system"

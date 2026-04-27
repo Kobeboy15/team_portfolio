@@ -1,83 +1,230 @@
-import type { Skill } from "../types/skills";
+import type { Skill, GridVariants } from "../types/skills";
 
-// PLACEHOLDER DATA
 export const skills: Skill[] = [
   { 
     order: 1,
     name: "Design", 
     bento: [
       {
-        type: "heading",
-        value: "Crafting Intuitive and Impactful Digital Experiences",
+        slot: "1",
+        content: 
+        {
+          type: "heading",
+          value: "Translating Complex Ideas into Intuitive User Experiences",
+        }
       },
       {
-        type: "paragraph",
-        value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum purus turpis, a dignissim tortor blandit sit amet. Aliquam consectetur tempor nisi et commodo. Cras auctor diam purus,",
-        heading: "Lorem Ipsum",
+        slot: "3",
+        cardVariant: "gradient",
+        content: 
+        {
+          type: "paragraph",
+          heading: "Responsive UI/UX Design",
+          value: "Specializing in UI/UX design with a focus on responsive, mobile-first interfaces and reusable design systems. Collaborating closely with product teams to deliver user-friendly solutions.",
+        }
       },
       {
-        type: "icon",
-        name: "Figma",
+        slot: "4",
+        content: 
+        {
+          type: "icon",
+          icon: {
+            name: "Figma",
+            path: "/images/icons/figma.svg",
+          },
+        }
       },
       {
-        type: "image",
-        src: "/images/skills/photoshop-logo.webp",
-        alt: "Image of Photoshop logo amongst other illustrative app logos",
-        heading: "Lorem Ipsum",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        slot: "5",
+        content: 
+        {
+          type: "icon-carousel",
+          heading: "Framer, Photoshop, Wireframing",
+          caption: "Designing and prototyping interfaces with modern tools to rapidly iterate, refine user flows, and deliver polished visual experiences.",
+          icons: [
+            {
+              name: "Framer",
+              path: "/images/icons/framer.svg",
+            },
+            {
+              name: "Photoshop",
+              path: "/images/icons/photoshop.svg",
+            },
+            {
+              name: "Figma",
+              path: "/images/icons/figma.svg",
+            },
+          ]
+        }
+      },
+      {
+        slot: "6",
+        content: 
+        {
+          type: "sub-heading",
+          value: "Design systems · Reusable UI components · Responsive design",
+        }
       },
     ],
   },
   { 
     order: 2,
     name: "Development", 
+    gridVariant: 3,
     bento: [
       {
-        type: "heading",
-        value: "Crafting Intuitive and Impactful Digital Experiences",
+        slot: "1",
+        content: 
+        {
+          type: "heading",
+          value: "Building Scalable, High-Performance Web Applications",
+        }
       },
       {
-        type: "paragraph",
-        value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum purus turpis, a dignissim tortor blandit sit amet. Aliquam consectetur tempor nisi et commodo. Cras auctor diam purus,",
-        heading: "Lorem Ipsum",
+        slot: "5",
+        cardVariant: "gradient",
+        content: 
+        {
+          type: "paragraph",
+          heading: "Frontend Engineering Expertise",
+          value: "8+ years building modern frontend systems using React, Next.js, and TypeScript. Focused on performance, accessibility, and component-driven architecture, with an emphasis on scalable, maintainable UI patterns.",
+        }
       },
       {
-        type: "icon",
-        name: "Figma",
+        slot: "4",
+        content: 
+        {
+          type: "sub-heading",
+          value: "Web3 · REST APIs · PostgreSQL · SEO",
+        }
       },
       {
-        type: "image",
-        src: "/images/skills/photoshop-logo.webp",
-        alt: "Image of Photoshop logo amongst other illustrative app logos",
-        heading: "Lorem Ipsum",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        slot: "6",
+        content: 
+        {
+          type: "sub-heading",
+          value: "React.js, Next.js, TypeScript, GraphQL",
+        }
+      },
+      {
+        slot: "2",
+        content: 
+        {
+          type: "icon-carousel",
+          icons: [
+            {
+              name: "React",
+              path: "/images/icons/react.svg",
+            },
+            {
+              name: "NextJS",
+              path: "/images/icons/nextdotjs.svg",
+            },
+            {
+              name: "GraphQL",
+              path: "/images/icons/graphql.svg",
+            },
+          ]
+        }
       },
     ],
   },
   { 
     order: 3,
     name: "Operations", 
+    gridVariant: 2,
     bento: [
       {
-        type: "heading",
-        value: "Crafting Intuitive and Impactful Digital Experiences",
+        slot: "1",
+        content: 
+        {
+          type: "heading",
+          value: "Delivering Reliable Systems Across Teams and Platforms",
+        }
       },
       {
-        type: "paragraph",
-        value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum purus turpis, a dignissim tortor blandit sit amet. Aliquam consectetur tempor nisi et commodo. Cras auctor diam purus,",
-        heading: "Lorem Ipsum",
+        slot: "3",
+        cardVariant: "gradient",
+        content: 
+        {
+          type: "paragraph",
+          heading: "Performance & Collaboration",
+          value: "Experienced in cross-functional collaboration with designers, backend engineers, and product teams. Driving performance optimization and maintainable code standards at scale.",
+        }
       },
       {
-        type: "icon",
-        name: "Figma",
+        slot: "6",
+        content: 
+        {
+          type: "sub-heading",
+          value: "Performance optimization · Accessibility · CMS integration",
+        }
       },
       {
-        type: "image",
-        src: "/images/skills/photoshop-logo.webp",
-        alt: "Image of Photoshop logo amongst other illustrative app logos",
-        heading: "Lorem Ipsum",
-        caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        slot: "5",
+        content: 
+        {
+          type: "icon-carousel",
+          heading: "Vue.js, Tailwind CSS, JavaScript, REST APIs",
+          caption: "Building and integrating scalable frontends with modern frameworks and APIs to ensure performance, consistency, and maintainability.",
+          icons: [
+            {
+              name: "Vue",
+              path: "/images/icons/vuedotjs.svg",
+            },
+            {
+              name: "Tailwind",
+              path: "/images/icons/tailwindcss.svg",
+            },
+            {
+              name: "Javascript",
+              path: "/images/icons/javascript.svg",
+            },
+          ]
+        }
       },
     ],
+  },
+];
+
+export const desktopGridVariants : GridVariants[] = [
+  {
+    1: { gridColumn: "1 / span 2", gridRow: "1 / span 4" },
+    2: { gridColumn: "3 / span 1", gridRow: "1 / span 4" },
+    3: { gridColumn: "1 / span 1", gridRow: "5 / span 5" },
+    4: { gridColumn: "2 / span 1", gridRow: "5 / span 3" },
+    5: { gridColumn: "3 / span 1", gridRow: "5 / span 7" },
+    6: { gridColumn: "1 / span 1", gridRow: "10 / span 2" },
+    7: { gridColumn: "2 / span 1", gridRow: "8 / span 4" },
+  },
+  {
+    1: { gridColumn: "2 / span 2", gridRow: "8 / span 4" },
+    2: { gridColumn: "1 / span 1", gridRow: "1 / span 4" },
+    3: { gridColumn: "3 / span 1", gridRow: "3 / span 5" },
+    4: { gridColumn: "1 / span 1", gridRow: "5 / span 3" },
+    5: { gridColumn: "2 / span 1", gridRow: "1 / span 7" },
+    6: { gridColumn: "3 / span 1", gridRow: "1 / span 2" },
+    7: { gridColumn: "1 / span 1", gridRow: "8 / span 4" },
+  },
+  {
+    1: { gridColumn: "2 / span 2", gridRow: "1 / span 4" },
+    2: { gridColumn: "1 / span 1", gridRow: "8 / span 4" },
+    3: { gridColumn: "1 / span 1", gridRow: "3 / span 5" },
+    4: { gridColumn: "3 / span 1", gridRow: "5 / span 3" },
+    5: { gridColumn: "2 / span 1", gridRow: "5 / span 7" },
+    6: { gridColumn: "1 / span 1", gridRow: "1 / span 2" },
+    7: { gridColumn: "3 / span 1", gridRow: "8 / span 4" },
+  },
+];
+
+export const mobileGridVariants: GridVariants[] = [
+  {
+    1: { gridColumn: "1 / span 2", gridRow: "1 / span 1" },
+    2: { gridColumn: "1 / span 1", gridRow: "2 / span 1" },
+    3: { gridColumn: "1 / span 2", gridRow: "3 / span 1" },
+    4: { gridColumn: "2 / span 1", gridRow: "2 / span 1" },
+    5: { gridColumn: "1 / span 2", gridRow: "5 / span 1" },
+    6: { gridColumn: "1 / span 1", gridRow: "4 / span 1" },
+    7: { gridColumn: "2 / span 1", gridRow: "4 / span 1" },
   },
 ];

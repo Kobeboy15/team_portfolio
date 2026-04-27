@@ -1,4 +1,7 @@
-import Image, { ImageProps } from "next/image";
+import Image, { type ImageProps } from "next/image";
+import type { Ref } from "react";
+
+import { PROJECT_IMAGE_LAYOUT } from "../../lib/projectImageLayout";
 
 /**
  * Placement presets from Figma (display size). Export assets at 2x for retina.
@@ -9,18 +12,15 @@ export type ImageFramePlacement =
   | "about" // 594×640
   | "about-points" // 594×700
   | "about-separator" // 996×700
+  | "about-gallery-hero" // full-viewport parent + fill + object-cover (width/height ignored)
   | "timeline" // various — override with width/height/sizes
   | "projects"; // 443×591
 
-const placementConfig: Record<
-  ImageFramePlacement,
-  { width: number; height: number; sizes: string }
-> = {
+const placementConfig: Record<Exclude<ImageFramePlacement, "about-gallery-hero">, { width: number; height: number; sizes: string }> = {
   hero: {
     width: 773,
     height: 580,
-    sizes:
-      "(min-width: 1536px) min(100vw, 2400px), (min-width: 768px) 773px, 100vw",
+    sizes: "(min-width: 1536px) min(100vw, 2400px), (min-width: 768px) 773px, 100vw",
   },
   about: {
     width: 594,
@@ -40,24 +40,23 @@ const placementConfig: Record<
   timeline: {
     width: 600,
     height: 400,
-    sizes: "(min-width: 768px) 600px, 100vw",
+    sizes: "(min-width: 1536px) min(50vw, 2400px), (min-width: 768px) 600px, 90vw",
   },
   projects: {
-    width: 443,
-    height: 591,
-    sizes: "(min-width: 768px) 443px, 100vw",
+    width: PROJECT_IMAGE_LAYOUT.intrinsicWidth,
+    height: PROJECT_IMAGE_LAYOUT.intrinsicHeight,
+    sizes: PROJECT_IMAGE_LAYOUT.sizes,
   },
 };
 
-export type ImageFrameProps = Omit<
-  ImageProps,
-  "width" | "height" | "sizes" | "priority" | "fill"
-> & {
+export type ImageFrameProps = Omit<ImageProps, "width" | "height" | "sizes" | "priority" | "fill"> & {
+  /** For scroll/layout measurement (e.g. hero flight); forwarded to the rendered `<img>`. */
+  imageRef?: Ref<HTMLImageElement | null>;
   /** Preset from Figma; determines display size and responsive sizes. */
   placement: ImageFramePlacement;
-  /** Override placement width (e.g. for timeline "various"). */
+  /** Override placement width (e.g. for timeline "various"). Ignored for about-gallery-hero. */
   width?: number;
-  /** Override placement height. */
+  /** Override placement height. Ignored for about-gallery-hero. */
   height?: number;
   /** Override placement sizes. */
   sizes?: string;
@@ -75,6 +74,7 @@ export function ImageFrame({
   height: heightOverride,
   sizes: sizesOverride,
   priority: priorityProp,
+  imageRef,
   src,
   alt,
   className,
@@ -82,14 +82,75 @@ export function ImageFrame({
   blurDataURL,
   ...rest
 }: ImageFrameProps) {
+  if (placement === "about-gallery-hero") {
+    const sizes = sizesOverride ?? "100vw";
+    // const priority = priorityProp ?? false; * This is in case we want to go back to lazy loading
+    const priority = priorityProp;
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        priority={priority}
+        placeholder={placeholder}
+        blurDataURL={blurDataURL}
+        className={cn("object-cover h-full w-full", className)}
+        {...rest}
+      />
+    );
+  }
+
   const config = placementConfig[placement];
   const width = widthOverride ?? config.width;
   const height = heightOverride ?? config.height;
   const sizes = sizesOverride ?? config.sizes;
-  const priority = priorityProp ?? placement === "hero";
+  // const priority = priorityProp ?? placement === "hero"; * This is in case we want to go back to lazy loading
+  const priority = true;
+
+  if (placement === "projects") {
+    return (
+      <>
+        <div className={cn("lg:hidden", className)}>
+          <Image
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            sizes={sizes}
+            priority={priority}
+            placeholder={placeholder}
+            blurDataURL={blurDataURL}
+            className="h-auto w-full"
+            quality={70}
+            {...rest}
+          />
+        </div>
+
+        <div
+          className={cn("hidden lg:block", className)}
+          style={{ aspectRatio: `${width} / ${height}` }}
+        >
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            sizes={sizes}
+            priority={priority}
+            placeholder={placeholder}
+            blurDataURL={blurDataURL}
+            className="object-contain h-full w-full"
+            quality={70}
+            {...rest}
+          />
+        </div>
+      </>
+    );
+  }
 
   return (
     <Image
+      ref={imageRef}
       src={src}
       alt={alt}
       width={width}
@@ -99,6 +160,7 @@ export function ImageFrame({
       placeholder={placeholder}
       blurDataURL={blurDataURL}
       className={cn(className)}
+      quality={70}
       {...rest}
     />
   );
