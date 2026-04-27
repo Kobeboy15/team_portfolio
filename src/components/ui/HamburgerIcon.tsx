@@ -1,15 +1,26 @@
+import type { Ref } from "react";
+
 type HamburgerIconProps = {
   isOpen: boolean;
   onToggle: () => void;
+  controlsId?: string;
+  buttonRef?: Ref<HTMLButtonElement>;
 };
 
-export function HamburgerIcon({ isOpen, onToggle }: HamburgerIconProps) {
+export function HamburgerIcon({
+  isOpen,
+  onToggle,
+  controlsId,
+  buttonRef,
+}: HamburgerIconProps) {
   return (
     <button
+      ref={buttonRef}
       type="button"
       onClick={onToggle}
       aria-label={isOpen ? "Close menu" : "Open menu"}
       aria-expanded={isOpen}
+      aria-controls={controlsId}
       className="relative flex items-center justify-center w-9 h-9 cursor-pointer transition-all duration-200"
     >
       <div className="flex flex-col justify-between w-5 h-5 overflow-hidden relative">
@@ -49,4 +60,3 @@ export function HamburgerIcon({ isOpen, onToggle }: HamburgerIconProps) {
     </button>
   );
 }
-

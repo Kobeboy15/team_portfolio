@@ -8,17 +8,23 @@ import { ScrollReveal } from "../ui/ScrollReveal";
 export function SkillsSection() {
   return (
     <Section id="expertise" spacing="sm" className="bg-(--token-background)">
-        <Heading size="display-48" as="h1" className="mx-5 md:mx-7 text-display-48! md:text-display-96!">Expertise/Skills</Heading>
+        <Heading size="display-48" as="h2" className="mx-5 md:mx-7 text-display-48! md:text-display-96!">Expertise/Skills</Heading>
         {
             skills.map((skill) => (
-                <div key={skill.order} className="w-full mb-7 pr-2 flex justify-end items-start desktop-skill-container">
+                <section
+                    key={skill.order}
+                    aria-labelledby={`skill-heading-${skill.order}`}
+                    className="w-full mb-7 pr-2 flex justify-end items-start desktop-skill-container"
+                >
                     <div className="relative w-full desktop-skill">
-                        { /* TODO: style proplerly during mobile responsiveness ticket*/}
+                        <h3 id={`skill-heading-${skill.order}`} className="sr-only">
+                            {skill.name}
+                        </h3>
                         <ScrollReveal
                             className="flex md:hidden flex-row items-baseline gap-1 mb-3 font-bebas text-display-48 leading-none mt-10 mx-5"
                         >
                             <span>{String(skill.order).padStart(2, '0')}</span>
-                            <span className="text-(--token-accent)">{skill.name.toUpperCase()}</span>
+                            <span aria-hidden="true" className="text-(--token-accent)">{skill.name.toUpperCase()}</span>
                         </ScrollReveal>
 
                         <div className="flex justify-center items-center w-full h-full p-2 md:px-0">
@@ -28,7 +34,7 @@ export function SkillsSection() {
                                     delay={0.08}
                                 >
                                     <span>{String(skill.order).padStart(2, '0')}</span>
-                                    <span className="text-(--token-accent) [writing-mode:vertical-rl] rotate-180">
+                                    <span aria-hidden="true" className="text-(--token-accent) [writing-mode:vertical-rl] rotate-180">
                                         {skill.name.toUpperCase()}
                                     </span>
                                 </ScrollReveal>
@@ -37,7 +43,7 @@ export function SkillsSection() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
             ))
         }
     </Section>
