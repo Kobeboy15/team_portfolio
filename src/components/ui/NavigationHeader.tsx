@@ -50,8 +50,10 @@ export function NavigationHeader({
         return;
       }
 
-      event.preventDefault();
-      scrollToHash(href, { updateHash: "push" });
+      const handled = scrollToHash(href, { updateHash: "push" });
+      if (handled) {
+        event.preventDefault();
+      }
     },
     [closeMobileMenu, scrollToHash],
   );

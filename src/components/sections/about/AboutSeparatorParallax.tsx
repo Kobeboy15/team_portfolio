@@ -10,6 +10,7 @@ import {
 } from "framer-motion";
 
 import { ImageFrame } from "../../ui/ImageFrame";
+import type { DesktopSeparatorTrackMetrics } from "./useDesktopSeparatorTrackMetrics";
 
 type AboutSeparatorParallaxProps = {
   src: string;
@@ -24,10 +25,7 @@ type AboutSeparatorParallaxProps = {
    */
   scrollYProgress?: MotionValue<number>;
   totalScrollWidth?: number;
-  desktopTrackMetrics?: {
-    offsetLeft: number;
-    width: number;
-  };
+  desktopTrackMetrics?: DesktopSeparatorTrackMetrics;
 };
 
 const MAX_TRAVEL_PX = 132;
@@ -66,9 +64,18 @@ export function AboutSeparatorParallax({
     const measure = () => {
       if (!containerRef.current) return;
 
-      setContainerMetrics({
-        height: containerRef.current.offsetHeight,
-        viewportWidth: window.innerWidth,
+      const nextHeight = containerRef.current.offsetHeight;
+      const nextViewportWidth = window.innerWidth;
+
+      setContainerMetrics((current) => {
+        if (current.height === nextHeight && current.viewportWidth === nextViewportWidth) {
+          return current;
+        }
+
+        return {
+          height: nextHeight,
+          viewportWidth: nextViewportWidth,
+        };
       });
     };
 

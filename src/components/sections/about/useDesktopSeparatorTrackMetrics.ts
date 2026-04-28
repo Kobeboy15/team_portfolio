@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type RefObject } from "react";
 
-type DesktopSeparatorTrackMetrics = {
+export type DesktopSeparatorTrackMetrics = {
   offsetLeft: number;
   width: number;
 };

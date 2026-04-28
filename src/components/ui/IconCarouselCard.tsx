@@ -122,6 +122,7 @@ export function IconCarouselCard({
     return () => {
       cancelled = true;
       window.clearTimeout(timeoutId);
+      shiftX.set(0);
       controls?.stop();
     };
   }, [icons.length, isInView, offset, shiftX, shouldAnimate, slots.length, stepWidth, visibleCount]);
