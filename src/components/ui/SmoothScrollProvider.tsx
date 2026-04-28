@@ -98,15 +98,23 @@ function getAnchorOffsetPx(target: HTMLElement) {
   return FIXED_HEADER_OFFSET_PX;
 }
 
+function getMaxScrollY() {
+  return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+}
+
+function clampScrollY(value: number) {
+  return Math.min(Math.max(value, 0), getMaxScrollY());
+}
+
 function getTargetScrollTop(target: HTMLElement) {
   if (target === document.documentElement) {
     return 0;
   }
 
-  return Math.max(
-    0,
-    window.scrollY + target.getBoundingClientRect().top - getAnchorOffsetPx(target),
-  );
+  const rawTargetY =
+    window.scrollY + target.getBoundingClientRect().top - getAnchorOffsetPx(target);
+
+  return clampScrollY(rawTargetY);
 }
 
 function getNormalizedRange(range: NativeScrollZoneRange) {
@@ -234,7 +242,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     (targetY: number, options: ScrollToYOptions = {}) => {
       const shouldReduceMotion = prefersReducedMotion();
       const immediate = options.immediate ?? shouldReduceMotion;
-      const normalizedTargetY = Math.max(0, targetY);
+      const normalizedTargetY = clampScrollY(targetY);
 
       finishProgrammaticNavigation();
 
@@ -313,7 +321,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       finishProgrammaticNavigation();
 
       const currentY = window.scrollY;
-      const targetY = getTargetScrollTop(target);
+      const targetY = clampScrollY(getTargetScrollTop(target));
 
       const crossesNativeZone =
         activeNativeZoneIdRef.current !== null ||
@@ -567,7 +575,9 @@ export function useNativeScrollZone(
   const { registerNativeScrollZone } = useSmoothScroll();
 
   const definitionRef = useRef(definition);
-  definitionRef.current = definition;
+  useEffect(() => {
+    definitionRef.current = definition;
+  }, [definition]);
 
   const stableDefinition = useMemo<NativeScrollZoneDefinition>(
     () => ({

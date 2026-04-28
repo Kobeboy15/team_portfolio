@@ -151,7 +151,6 @@ export function IconCarouselCard({
 
             {slots.length === visibleCount && rowHeight > 0 && (
               <div
-                aria-hidden="true"
                 className="absolute inset-x-0 top-0 overflow-x-hidden overflow-y-visible"
                 style={{ height: rowHeight }}
               >

@@ -17,6 +17,10 @@ const EXIT_PROGRESS_THRESHOLD = 0.995;
 
 type LoaderPhase = "loading" | "finishing-bar" | "exiting";
 
+function clamp01(value: number) {
+  return Math.min(1, Math.max(0, value));
+}
+
 export function InitialPageLoader({
   isBlocking,
   isReady,
@@ -29,12 +33,15 @@ export function InitialPageLoader({
   progress: number;
 }) {
   const reduceMotion = useReducedMotion();
+  const initialPercent = Math.round(clamp01(isReady ? 1 : progress) * 100);
   const hasDismissed = useRef(false);
   const hasStartedExit = useRef(false);
   const previousIsReady = useRef(isReady);
   const latestVisualTarget = useRef(progress);
   const progressValue = useMotionValue(progress);
   const [phase, setPhase] = useState<LoaderPhase>("loading");
+  const [announcedPercent, setAnnouncedPercent] = useState(() => initialPercent);
+  const lastAnnouncedPercentRef = useRef(initialPercent);
   const progressSpring = useSpring(progressValue, {
     stiffness: 90,
     damping: 22,
@@ -45,8 +52,9 @@ export function InitialPageLoader({
 
   useEffect(() => {
     if (reduceMotion) {
-      progressValue.set(isReady ? 1 : progress);
-      latestVisualTarget.current = isReady ? 1 : progress;
+      const nextTarget = isReady ? 1 : progress;
+      progressValue.set(nextTarget);
+      latestVisualTarget.current = nextTarget;
       return;
     }
 
@@ -79,6 +87,18 @@ export function InitialPageLoader({
 
   useMotionValueEvent(progressSpring, "change", (value) => {
     if (reduceMotion) return;
+    if (!isBlocking) return;
+
+    const nextPercent = Math.round(clamp01(value) * 100);
+    const monotonicPercent = Math.max(lastAnnouncedPercentRef.current, nextPercent);
+    if (monotonicPercent === lastAnnouncedPercentRef.current) return;
+
+    lastAnnouncedPercentRef.current = monotonicPercent;
+    setAnnouncedPercent(monotonicPercent);
+  });
+
+  useMotionValueEvent(progressSpring, "change", (value) => {
+    if (reduceMotion) return;
     if (phase !== "finishing-bar") return;
     if (hasStartedExit.current) return;
     if (value < EXIT_PROGRESS_THRESHOLD) return;
@@ -98,10 +118,14 @@ export function InitialPageLoader({
 
   if (!isBlocking) return null;
 
+  const visiblePercent = reduceMotion ? initialPercent : announcedPercent;
+
   return (
     <motion.div
-      aria-hidden="true"
-      className="fixed inset-0 z-[70] flex items-end bg-background-2"
+      role="status"
+      aria-live={phase === "exiting" ? "off" : "polite"}
+      aria-atomic="true"
+      className="fixed inset-0 z-70 flex items-end bg-background-2"
       initial={{ opacity: 1, y: 0 }}
       animate={
         phase === "exiting"
@@ -120,6 +144,9 @@ export function InitialPageLoader({
         onDismiss();
       }}
     >
+      <span className="sr-only">
+        {phase === "exiting" ? "Loading complete." : `Loading ${visiblePercent}%`}
+      </span>
       <div className="relative flex h-full w-full items-end overflow-hidden">
         <div className="pointer-events-none absolute right-0 bottom-0 left-0 border-t border-black/20 bg-foreground/10">
           <motion.div

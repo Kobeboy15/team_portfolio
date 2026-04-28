@@ -25,7 +25,12 @@ function HomePageContent() {
       />
 
       <div className="min-h-screen bg-background font-sans">
-        <div inert={isBlocking} className={isBlocking ? "pointer-events-none" : undefined}>
+        <div
+          inert={isBlocking}
+          aria-busy={isBlocking}
+          aria-hidden={isBlocking}
+          className={isBlocking ? "pointer-events-none" : undefined}
+        >
           <NavigationHeader
             brandName={navigationData.brandName}
             brandHref={navigationData.brandHref}
