@@ -108,6 +108,21 @@ export function InitialPageLoader({
   });
 
   useEffect(() => {
+    if (reduceMotion) return;
+    if (!isBlocking) return;
+    if (phase !== "finishing-bar") return;
+    if (hasStartedExit.current) return;
+
+    const currentProgress = progressSpring.get();
+    if (currentProgress < EXIT_PROGRESS_THRESHOLD) return;
+
+    hasStartedExit.current = true;
+    queueMicrotask(() => {
+      setPhase("exiting");
+    });
+  }, [isBlocking, phase, progressSpring, reduceMotion]);
+
+  useEffect(() => {
     if (!isBlocking) return;
 
     lockScroll();
