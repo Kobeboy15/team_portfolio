@@ -40,6 +40,48 @@ function clampTravel(size: number, minTravel: number, ratio: number) {
   return Math.min(MAX_TRAVEL_PX, Math.max(minTravel, size * ratio));
 }
 
+type DesktopRange = { enter: number; midpoint: number; exit: number };
+
+function clamp01(value: number) {
+  return Math.min(1, Math.max(0, value));
+}
+
+function sanitizeDesktopRange(range: DesktopRange, eps: number): DesktopRange {
+  const safeEps = Number.isFinite(eps) ? Math.max(1e-6, eps) : 1e-4;
+  // Reserve headroom so the final `1` breakpoint stays strictly greater.
+  const maxEnter = 1 - 3 * safeEps;
+  const maxMidpoint = 1 - 2 * safeEps;
+  const maxExit = 1 - safeEps;
+
+  let enter = Math.min(clamp01(range.enter), maxEnter);
+  enter = Math.max(enter, safeEps);
+  let midpoint = Math.min(clamp01(range.midpoint), maxMidpoint);
+  let exit = Math.min(clamp01(range.exit), maxExit);
+
+  midpoint = Math.max(midpoint, enter + safeEps);
+  exit = Math.max(exit, midpoint + safeEps);
+
+  if (!(0 <= enter && enter < midpoint && midpoint < exit && exit < 1)) {
+    // Fallback to evenly spaced values if the range collapses.
+    enter = 0.25;
+    midpoint = 0.5;
+    exit = 0.75;
+
+    enter = Math.min(clamp01(enter), maxEnter);
+    midpoint = Math.min(clamp01(midpoint), maxMidpoint);
+    exit = Math.min(clamp01(exit), maxExit);
+    midpoint = Math.max(midpoint, enter + safeEps);
+    exit = Math.max(exit, midpoint + safeEps);
+  }
+
+  // Final guard: never return non-monotonic values.
+  if (!(0 <= enter && enter < midpoint && midpoint < exit && exit < 1)) {
+    return { enter: 0.25, midpoint: 0.5, exit: 0.75 };
+  }
+
+  return { enter, midpoint, exit };
+}
+
 export function AboutSeparatorParallax({
   src,
   alt,
@@ -49,6 +91,7 @@ export function AboutSeparatorParallax({
   desktopTrackMetrics,
 }: AboutSeparatorParallaxProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const didWarnNonMonotonicDesktopRangeRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
   const [containerMetrics, setContainerMetrics] = useState({
     height: 0,
@@ -107,23 +150,40 @@ export function AboutSeparatorParallax({
     const offsetLeft = desktopTrackMetrics?.offsetLeft ?? 0;
     const width = desktopTrackMetrics?.width ?? 0;
     if (totalScrollWidth <= 0 || width <= 0 || viewportWidth <= 0) {
-      return { enter: 0, midpoint: 0.5, exit: 1 };
+      return sanitizeDesktopRange({ enter: 0, midpoint: 0.5, exit: 1 }, 1e-4);
     }
 
     const enterScrollPx = offsetLeft - viewportWidth;
     const midpointScrollPx = offsetLeft + (width / 2) - (viewportWidth / 2);
     const exitScrollPx = offsetLeft + width;
 
-    const enter = Math.min(1, Math.max(0, enterScrollPx / totalScrollWidth));
-    const midpoint = Math.min(1, Math.max(enter, midpointScrollPx / totalScrollWidth));
-    const exit = Math.min(1, Math.max(midpoint, exitScrollPx / totalScrollWidth));
+    const enter = clamp01(enterScrollPx / totalScrollWidth);
+    const midpoint = Math.max(enter, clamp01(midpointScrollPx / totalScrollWidth));
+    const exit = Math.max(midpoint, clamp01(exitScrollPx / totalScrollWidth));
+
+    const eps = Math.max(1e-4, 1 / (totalScrollWidth + 1));
+    const sanitized = sanitizeDesktopRange({ enter, midpoint, exit }, eps);
 
     return {
-      enter,
-      midpoint,
-      exit,
+      ...sanitized,
     };
   }, [containerMetrics, desktopTrackMetrics, totalScrollWidth]);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    if (didWarnNonMonotonicDesktopRangeRef.current) return;
+
+    const inputs = [0, desktopRange.enter, desktopRange.midpoint, desktopRange.exit, 1];
+    const isStrict = inputs.every((value, index) => index === 0 || value > inputs[index - 1]);
+    if (isStrict) return;
+
+    didWarnNonMonotonicDesktopRangeRef.current = true;
+    console.warn("[AboutSeparatorParallax] Non-monotonic desktopRange breakpoints", {
+      totalScrollWidth,
+      desktopRange,
+      inputs,
+    });
+  }, [desktopRange, totalScrollWidth]);
 
   const desktopX = useTransform(
     scrollYProgress ?? localScrollYProgress,

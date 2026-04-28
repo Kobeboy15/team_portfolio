@@ -29,6 +29,7 @@ export function IconCarouselCard({
   invertClass = "",
 }: IconCarouselCardProps) {
   const reduceMotion = useReducedMotion();
+  const isReduced = !!reduceMotion;
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const measureRowRef = useRef<HTMLDivElement | null>(null);
   const isInView = useInView(viewportRef, { amount: 0.6 });
@@ -39,9 +40,9 @@ export function IconCarouselCard({
   const [rowHeight, setRowHeight] = useState(0);
   const [stepWidth, setStepWidth] = useState(0);
 
-  const visibleCount = Math.min(VISIBLE_ICON_COUNT, icons.length);
-  const shouldAnimate = icons.length > 1 && !reduceMotion;
-  const visibleIcons = getVisibleIcons(icons, offset, visibleCount);
+  const shouldAnimate = icons.length > 1 && !isReduced;
+  const visibleCount = isReduced ? icons.length : Math.min(VISIBLE_ICON_COUNT, icons.length);
+  const visibleIcons = isReduced ? icons : getVisibleIcons(icons, offset, visibleCount);
   const overlayIcons = shouldAnimate
     ? [
         icons[offset % icons.length],
@@ -182,13 +183,25 @@ export function IconCarouselCard({
             )}
           </div>
         ) : (
-          visibleIcons.map((icon, index) => (
-            <IconTile
-              key={`${icon.name}-${index}`}
-              icon={icon}
-              invertClass={invertClass}
-            />
-          ))
+          isReduced ? (
+            <div className="w-full overflow-x-auto overflow-y-hidden [-webkit-overflow-scrolling:touch]">
+              <div className="flex flex-row items-center justify-start gap-2 sm:gap-3 md:gap-4 w-max pr-2">
+                {visibleIcons.map((icon, index) => (
+                  <div key={`${icon.name}-${index}`} className="shrink-0">
+                    <IconTile icon={icon} invertClass={invertClass} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            visibleIcons.map((icon, index) => (
+              <IconTile
+                key={`${icon.name}-${index}`}
+                icon={icon}
+                invertClass={invertClass}
+              />
+            ))
+          )
         )}
       </div>
       {(heading || caption) && (

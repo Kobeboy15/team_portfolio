@@ -72,7 +72,12 @@ function getElementForHash(hash: string) {
   if (!rawId) return null;
   if (rawId === "top") return document.documentElement;
 
-  const decodedId = decodeURIComponent(rawId);
+  let decodedId: string;
+  try {
+    decodedId = decodeURIComponent(rawId);
+  } catch {
+    return null;
+  }
 
   return (
     document.getElementById(decodedId) ??
