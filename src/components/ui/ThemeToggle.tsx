@@ -49,7 +49,6 @@ export function ThemeToggle() {
   // Resolve the "effective" theme when using "system"
   const currentTheme = theme === "system" ? systemTheme : theme;
   const isDark = currentTheme === "dark";
-  const iconRollSize = "1.25rem";
 
   return (
     <button
@@ -66,7 +65,7 @@ export function ThemeToggle() {
       >
         <span
           className="inline-flex shrink-0 items-center justify-center leading-none"
-          style={{ width: iconRollSize, height: iconRollSize }}
+          style={{ width: "var(--hover-roll-size)", height: "var(--hover-roll-size)" }}
         >
           {isDark ? <MoonIcon /> : <SunIcon />}
         </span>

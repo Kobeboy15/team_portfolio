@@ -131,6 +131,7 @@ function doesPathIntersectRange(
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
   const rafRef = useRef<number | null>(null);
+  const viewportRafRef = useRef<number | null>(null);
   const nativeZonesRef = useRef(new Map<string, NativeScrollZoneDefinition>());
   const activeNativeZoneIdRef = useRef<string | null>(null);
   const programmaticNavigationRef = useRef<ProgrammaticNavigation | null>(null);
@@ -457,13 +458,25 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined") return;
 
     const onViewportChange = () => {
-      evaluateNativeScrollZones();
+      if (viewportRafRef.current !== null) {
+        return;
+      }
+
+      viewportRafRef.current = window.requestAnimationFrame(() => {
+        viewportRafRef.current = null;
+        evaluateNativeScrollZones();
+      });
     };
 
     window.addEventListener("scroll", onViewportChange, { passive: true });
     window.addEventListener("resize", onViewportChange);
 
     return () => {
+      if (viewportRafRef.current !== null) {
+        window.cancelAnimationFrame(viewportRafRef.current);
+        viewportRafRef.current = null;
+      }
+
       window.removeEventListener("scroll", onViewportChange);
       window.removeEventListener("resize", onViewportChange);
     };

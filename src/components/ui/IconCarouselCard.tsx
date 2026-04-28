@@ -141,7 +141,7 @@ export function IconCarouselCard({
             >
               {visibleIcons.map((icon, index) => (
                 <div
-                  key={`measure-${icon.name}-${index}`}
+                  key={`measure-${index}`}
                   className="relative"
                 >
                   <IconTile icon={icon} invertClass={invertClass} />

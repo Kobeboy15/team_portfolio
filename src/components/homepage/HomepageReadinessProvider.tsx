@@ -142,10 +142,11 @@ export function HomepageReadinessProvider({
     setMilestones((current) => {
       const milestone = current[id];
 
+      // Unknown ids first seen via markReady are non-blocking until DEFAULT_MILESTONES or registerMilestone defines them.
       if (!milestone) {
         return {
           ...current,
-          [id]: createMilestoneState({}, new Set<string>([key])),
+          [id]: createMilestoneState({ blocking: false }, new Set<string>([key])),
         };
       }
 

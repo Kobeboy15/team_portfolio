@@ -431,11 +431,6 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
         snapLockTimeoutRef.current = null;
       }
 
-      if (cardTransitionTimeoutRef.current !== null) {
-        window.clearTimeout(cardTransitionTimeoutRef.current);
-        cardTransitionTimeoutRef.current = null;
-      }
-
       snapLockedRef.current = false;
       snapTargetIndexRef.current = null;
     };

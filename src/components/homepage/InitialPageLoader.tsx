@@ -10,6 +10,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 import { heroData } from "../../data/hero";
+import { lockScroll, unlockScroll } from "../../lib/scrollLock";
 
 const loaderEase = [0.22, 1, 0.36, 1] as const;
 const EXIT_PROGRESS_THRESHOLD = 0.995;
@@ -89,15 +90,9 @@ export function InitialPageLoader({
   useEffect(() => {
     if (!isBlocking) return;
 
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    const previousBodyOverflow = document.body.style.overflow;
-
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
-
+    lockScroll();
     return () => {
-      document.documentElement.style.overflow = previousHtmlOverflow;
-      document.body.style.overflow = previousBodyOverflow;
+      unlockScroll();
     };
   }, [isBlocking]);
 

@@ -15,6 +15,13 @@ type AboutSeparatorParallaxProps = {
   src: string;
   alt: string;
   orientation: "horizontal" | "vertical";
+  /**
+   * Optional scroll progress shared with a parent horizontal scroll section.
+   * Only consumed when `orientation === "horizontal"` (horizontal parallax uses this value,
+   * falling back to local progress from `useScroll` on `containerRef` when omitted).
+   * When `orientation === "vertical"`, vertical parallax always uses that local progress only;
+   * passing this prop has no effect.
+   */
   scrollYProgress?: MotionValue<number>;
   totalScrollWidth?: number;
   desktopTrackMetrics?: {

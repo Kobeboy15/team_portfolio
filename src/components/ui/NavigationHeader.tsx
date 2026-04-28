@@ -8,6 +8,7 @@ import { Button } from "./Button";
 import { HoverRoll } from "./HoverRoll";
 import { ThemeToggle } from "./ThemeToggle";
 import { HamburgerIcon } from "./HamburgerIcon";
+import { lockScroll, unlockScroll } from "../../lib/scrollLock";
 import { useSmoothScroll } from "./SmoothScrollProvider";
 
 interface NavigationHeaderProps {
@@ -81,23 +82,38 @@ export function NavigationHeader({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isInContact, isMobileViewport, isOpen]);
 
-  // Lock body scroll when mobile menu is open (mobile only)
+  // Lock scroll when mobile menu is open (mobile only); delegates to cooperative scrollLock
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
-    const updateOverflow = () => {
+    let navHoldsScrollLock = false;
+
+    const syncScrollLock = () => {
       const matches = mq.matches;
       setIsMobileViewport(matches);
-      document.body.style.overflow = isOpen && matches ? "hidden" : "";
+      const shouldLock = isOpen && matches;
+
+      if (shouldLock && !navHoldsScrollLock) {
+        lockScroll();
+        navHoldsScrollLock = true;
+      } else if (!shouldLock && navHoldsScrollLock) {
+        unlockScroll();
+        navHoldsScrollLock = false;
+      }
     };
+
     const handleViewportChange = () => {
       closeMobileMenu();
-      updateOverflow();
+      syncScrollLock();
     };
-    updateOverflow();
+
+    syncScrollLock();
     mq.addEventListener("change", handleViewportChange);
     return () => {
       mq.removeEventListener("change", handleViewportChange);
-      document.body.style.overflow = "";
+      if (navHoldsScrollLock) {
+        unlockScroll();
+        navHoldsScrollLock = false;
+      }
     };
   }, [closeMobileMenu, isOpen]);
 
