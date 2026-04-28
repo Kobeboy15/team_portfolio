@@ -33,13 +33,12 @@ export function InitialPageLoader({
   progress: number;
 }) {
   const reduceMotion = useReducedMotion();
-  const clampedProgress = clamp01(progress);
-  const initialPercent = Math.round(clamp01(isReady ? 1 : clampedProgress) * 100);
+  const initialPercent = Math.round(clamp01(isReady ? 1 : progress) * 100);
   const hasDismissed = useRef(false);
   const hasStartedExit = useRef(false);
   const previousIsReady = useRef(isReady);
-  const latestVisualTarget = useRef(clampedProgress);
-  const progressValue = useMotionValue(clampedProgress);
+  const latestVisualTarget = useRef(progress);
+  const progressValue = useMotionValue(progress);
   const [phase, setPhase] = useState<LoaderPhase>("loading");
   const [announcedPercent, setAnnouncedPercent] = useState(() => initialPercent);
   const lastAnnouncedPercentRef = useRef(initialPercent);
@@ -53,16 +52,16 @@ export function InitialPageLoader({
 
   useEffect(() => {
     if (reduceMotion) {
-      const nextTarget = clamp01(isReady ? 1 : clampedProgress);
+      const nextTarget = isReady ? 1 : progress;
       progressValue.set(nextTarget);
       latestVisualTarget.current = nextTarget;
       return;
     }
 
-    const nextTarget = clamp01(isReady ? 1 : Math.max(clampedProgress, latestVisualTarget.current));
+    const nextTarget = isReady ? 1 : Math.max(progress, latestVisualTarget.current);
     latestVisualTarget.current = nextTarget;
     progressValue.set(nextTarget);
-  }, [clampedProgress, isReady, progressValue, reduceMotion]);
+  }, [isReady, progress, progressValue, reduceMotion]);
 
   useEffect(() => {
     const becameReady = !previousIsReady.current && isReady;
@@ -153,7 +152,7 @@ export function InitialPageLoader({
           <motion.div
             className="h-[clamp(4px,0.3vw,12px)] w-full origin-left bg-foreground/80"
             style={{
-              scaleX: reduceMotion ? (isReady ? 1 : clampedProgress) : progressSpring,
+              scaleX: reduceMotion ? (isReady ? 1 : progress) : progressSpring,
               boxShadow:
                 "0 0 10px color-mix(in oklab, var(--color-foreground) 45%, transparent), 0 0 20px color-mix(in oklab, var(--color-foreground) 20%, transparent)",
             }}

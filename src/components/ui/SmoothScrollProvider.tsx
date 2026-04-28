@@ -19,6 +19,8 @@ const LENIS_DURATION_S = 0.9;
 const HASH_SCROLL_DURATION_S = 0.9;
 const NATIVE_SCROLL_COMPLETION_THRESHOLD_PX = 2;
 const NATIVE_SCROLL_COMPLETION_STABLE_FRAMES = 2;
+const MAX_NATIVE_PROGRAMMATIC_MS = 1500;
+const MAX_NATIVE_PROGRAMMATIC_FRAMES = 120;
 
 type NativeScrollZoneRange = {
   startY: number;
@@ -208,6 +210,8 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const monitorNativeProgrammaticNavigation = useCallback(
     (targetY: number) => {
       let stableFrames = 0;
+      let elapsedFrames = 0;
+      const startMs = performance.now();
 
       const tick = () => {
         const currentNavigation = programmaticNavigationRef.current;
@@ -216,6 +220,18 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
           currentNavigation.strategy !== "native" ||
           currentNavigation.targetY !== targetY
         ) {
+          return;
+        }
+
+        elapsedFrames += 1;
+        const elapsedMs = performance.now() - startMs;
+        if (elapsedMs >= MAX_NATIVE_PROGRAMMATIC_MS || elapsedFrames >= MAX_NATIVE_PROGRAMMATIC_FRAMES) {
+          if (currentNavigation.rafId !== null) {
+            window.cancelAnimationFrame(currentNavigation.rafId);
+          }
+          programmaticNavigationRef.current = null;
+          finishProgrammaticNavigation();
+          evaluateNativeScrollZones();
           return;
         }
 
