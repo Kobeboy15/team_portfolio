@@ -36,6 +36,7 @@ type ProgrammaticNavigation = {
   strategy: "lenis" | "native";
   targetY: number;
   rafId: number | null;
+  onComplete?: () => void;
 };
 
 type ScrollToHashOptions = {
@@ -226,9 +227,11 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
         elapsedFrames += 1;
         const elapsedMs = performance.now() - startMs;
         if (elapsedMs >= MAX_NATIVE_PROGRAMMATIC_MS || elapsedFrames >= MAX_NATIVE_PROGRAMMATIC_FRAMES) {
+          const onComplete = currentNavigation.onComplete;
           if (currentNavigation.rafId !== null) {
             window.cancelAnimationFrame(currentNavigation.rafId);
           }
+          onComplete?.();
           programmaticNavigationRef.current = null;
           finishProgrammaticNavigation();
           evaluateNativeScrollZones();
@@ -240,6 +243,8 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
           stableFrames += 1;
 
           if (stableFrames >= NATIVE_SCROLL_COMPLETION_STABLE_FRAMES) {
+            const onComplete = currentNavigation.onComplete;
+            onComplete?.();
             finishProgrammaticNavigation();
             evaluateNativeScrollZones();
             return;
@@ -293,6 +298,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
         strategy: "native",
         targetY: normalizedTargetY,
         rafId: null,
+        onComplete: options.onComplete,
       };
 
       syncLenisToViewport();
@@ -596,9 +602,6 @@ export function useNativeScrollZone(
   const { registerNativeScrollZone } = useSmoothScroll();
 
   const definitionRef = useRef(definition);
-  useEffect(() => {
-    definitionRef.current = definition;
-  }, [definition]);
 
   const stableDefinition = useMemo<NativeScrollZoneDefinition>(
     () => ({
@@ -608,8 +611,13 @@ export function useNativeScrollZone(
     [],
   );
 
+  useEffect(() => {
+    definitionRef.current = definition;
+    registerNativeScrollZone(id, stableDefinition);
+  }, [definition, id, registerNativeScrollZone, stableDefinition]);
+
   useEffect(
     () => registerNativeScrollZone(id, stableDefinition),
-    [id, registerNativeScrollZone],
+    [id, registerNativeScrollZone, stableDefinition],
   );
 }
