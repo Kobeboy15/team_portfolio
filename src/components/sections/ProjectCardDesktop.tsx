@@ -246,10 +246,7 @@ export function ProjectCardDesktop({
                 </div>
               </div>
 
-              <div
-                className="flex min-w-0 items-center justify-end"
-                aria-label={`Project ${currentProjectNumber} of ${totalProjectCount}`}
-              >
+              <div className="flex min-w-0 items-center justify-end">
                 <div className="flex items-baseline justify-end text-right">
                   <RollingTextSlot
                     transitionKey={transitionKey}
@@ -260,6 +257,7 @@ export function ProjectCardDesktop({
                     <Heading
                       size="display-48"
                       as="p"
+                      aria-hidden
                       className="line-clamp-1 text-display-36! leading-none text-foreground sm:text-display-48!"
                     >
                       {currentProjectNumber}

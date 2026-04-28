@@ -30,6 +30,7 @@ function cn(...classes: Array<string | undefined>) {
  * - Hit area must remain stable: inner content uses pointer-events: none.
  * - Efficient: transform-only animation on the track.
  * - Reduced motion: handled via global CSS + Tailwind motion-reduce utilities.
+ * - Accent duplicate row is aria-hidden so assistive tech does not hear the label twice.
  *
  * Triggered by a parent element with class `hoverRoll-group`.
  */
@@ -65,6 +66,7 @@ export function HoverRoll({
           {children}
         </span>
         <span
+          aria-hidden
           className={cn(
             "hoverRoll-row pointer-events-none flex items-center leading-none h-[var(--hover-roll-size,1em)]",
             rowClassName,

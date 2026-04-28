@@ -31,7 +31,7 @@ function HomePageContent() {
             brandHref={navigationData.brandHref}
             navItems={navigationData.navItems}
           />
-          <main className="flex min-h-screen w-full flex-col items-center justify-between pointer-events-auto">
+          <main className="flex min-h-screen w-full flex-col items-center justify-between">
             <HeroAboutImageCoordinator>
               <HeroSection />
               <AboutSection />

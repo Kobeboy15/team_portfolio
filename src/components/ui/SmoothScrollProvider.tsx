@@ -553,8 +553,19 @@ export function useNativeScrollZone(
 ) {
   const { registerNativeScrollZone } = useSmoothScroll();
 
+  const definitionRef = useRef(definition);
+  definitionRef.current = definition;
+
+  const stableDefinition = useMemo<NativeScrollZoneDefinition>(
+    () => ({
+      isActive: () => definitionRef.current.isActive(),
+      getRange: () => definitionRef.current.getRange?.() ?? null,
+    }),
+    [],
+  );
+
   useEffect(
-    () => registerNativeScrollZone(id, definition),
-    [definition, id, registerNativeScrollZone],
+    () => registerNativeScrollZone(id, stableDefinition),
+    [id, registerNativeScrollZone],
   );
 }
