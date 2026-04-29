@@ -52,7 +52,7 @@ export function ProjectCardDesktop({
       <div className="w-full">
         <div className="mx-auto grid w-full max-w-[min(100%,90rem)] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)_minmax(0,1fr)] lg:items-stretch lg:gap-y-10 lg:gap-x-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,443px)_minmax(0,1fr)] xl:gap-x-10 2xl:max-w-[min(100%,160rem)] 2xl:grid-cols-[minmax(0,1fr)_minmax(443px,var(--token-project-image-width))_minmax(0,1fr)] 2xl:gap-x-[clamp(32px,6vw,123px)]">
           <div className="flex min-h-0 min-w-0 flex-col gap-8 lg:h-full lg:justify-center lg:gap-10">
-            <header aria-hidden className="shrink-0">
+            <header className="shrink-0">
               <RollingTextSlot
                 transitionKey={transitionKey}
                 slotId="title"

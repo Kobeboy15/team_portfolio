@@ -11,6 +11,7 @@ type FormData = {
 };
 
 export default function ContactForm() {
+  const formStatusId = "contact-form-status";
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -75,7 +76,12 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full md:w-[80%] space-y-2">
+    <form
+      onSubmit={handleSubmit}
+      aria-busy={status === "loading"}
+      aria-describedby={status === "success" || status === "error" ? formStatusId : undefined}
+      className="w-full md:w-[80%] space-y-2"
+    >
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
@@ -92,7 +98,7 @@ export default function ContactForm() {
               value={formData.name}
               onChange={handleChange}
               required
-              className="h-14 w-full border border-black/20 bg-transparent px-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-black focus:bg-black/[0.02]"
+              className="h-14 w-full border border-foreground/60 bg-transparent px-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             />
           </div>
 
@@ -110,7 +116,7 @@ export default function ContactForm() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="h-14 w-full border border-black/20 bg-transparent px-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-black focus:bg-black/[0.02]"
+              className="h-14 w-full border border-foreground/60 bg-transparent px-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             />
           </div>
         </div>
@@ -129,7 +135,7 @@ export default function ContactForm() {
             onChange={handleChange}
             required
             rows={4}
-            className="min-h-[60px] w-full resize-y border border-black/20 bg-transparent px-4 py-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-black focus:bg-black/[0.02]"
+            className="min-h-[60px] w-full resize-y border border-foreground/60 bg-transparent px-4 py-4 text-base text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-ring focus:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           />
         </div>
       </div>
@@ -161,13 +167,26 @@ export default function ContactForm() {
         </Button>
 
         {status === "success" && (
-          <p className="text-sm text-green-700">
+          <p
+            id={formStatusId}
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className="text-sm text-green-800 dark:text-green-300"
+          >
             Your message was sent successfully.
           </p>
         )}
 
         {status === "error" && (
-          <p className="text-sm text-red-700">{errorMessage}</p>
+          <p
+            id={formStatusId}
+            role="alert"
+            aria-atomic="true"
+            className="text-sm text-red-800 dark:text-red-300"
+          >
+            {errorMessage}
+          </p>
         )}
       </div>
     </form>

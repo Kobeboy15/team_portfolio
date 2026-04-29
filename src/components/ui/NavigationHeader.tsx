@@ -17,6 +17,9 @@ interface NavigationHeaderProps {
   navItems: NavigationItem[];
 }
 
+const FOCUSABLE_SELECTOR =
+  'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
+
 export function NavigationHeader({
   brandName,
   brandHref,
@@ -30,32 +33,86 @@ export function NavigationHeader({
 
   const lastScrollY = useRef(0);
   const pathname = usePathname();
+  const desktopNavRef = useRef<HTMLElement | null>(null);
+  const mobileNavRef = useRef<HTMLElement | null>(null);
+  const desktopHamburgerRef = useRef<HTMLButtonElement | null>(null);
+  const mobileHamburgerRef = useRef<HTMLButtonElement | null>(null);
+  const mobileCloseButtonRef = useRef<HTMLButtonElement | null>(null);
+  const pendingOpenFocusRef = useRef<"desktop" | "mobile" | null>(null);
+  const pendingRestoreFocusRef = useRef<HTMLElement | null>(null);
+  const lastOpenerRef = useRef<"desktop" | "mobile" | null>(null);
+
+  const getFirstFocusable = useCallback(
+    (container: HTMLElement | null) =>
+      container?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR) ?? null,
+    []
+  );
+
+  const getRestoreTarget = useCallback((opener: "desktop" | "mobile" | null) => {
+    if (opener === "mobile") return mobileHamburgerRef.current;
+    if (opener === "desktop") return desktopHamburgerRef.current;
+    return null;
+  }, []);
+
+  const openDesktopNav = useCallback(() => {
+    lastOpenerRef.current = "desktop";
+    pendingRestoreFocusRef.current = null;
+    pendingOpenFocusRef.current = "desktop";
+    setIsOpen(true);
+  }, []);
+
+  const openMobileNav = useCallback(() => {
+    lastOpenerRef.current = "mobile";
+    pendingRestoreFocusRef.current = null;
+    pendingOpenFocusRef.current = "mobile";
+    setIsOpen(true);
+  }, []);
+
+  const closeNav = useCallback(
+    ({
+      restoreFocus = true,
+      restoreTarget,
+    }: {
+      restoreFocus?: boolean;
+      restoreTarget?: HTMLElement | null;
+    } = {}) => {
+      pendingOpenFocusRef.current = null;
+      pendingRestoreFocusRef.current = restoreFocus
+        ? restoreTarget ?? getRestoreTarget(lastOpenerRef.current)
+        : null;
+      setIsOpen(false);
+    },
+    [getRestoreTarget]
+  );
+
+  const toggleDesktopNav = useCallback(() => {
+    if (isOpen) {
+      closeNav({ restoreTarget: desktopHamburgerRef.current });
+      return;
+    }
+
+    openDesktopNav();
+  }, [closeNav, isOpen, openDesktopNav]);
+
+  const toggleMobileNav = useCallback(() => {
+    if (isOpen) {
+      closeNav({ restoreTarget: mobileHamburgerRef.current });
+      return;
+    }
+
+    openMobileNav();
+  }, [closeNav, isOpen, openMobileNav]);
+
   const { scrollToHash } = useSmoothScroll();
-
-  const closeMobileMenu = useCallback(() => {
-    setIsOpen(false);
-    setVisible(true);
-  }, []);
-
-  const toggle = useCallback(() => {
-    setVisible(true);
-    setIsOpen((prev) => !prev);
-  }, []);
 
   const handleMobileSamePageNavigation = useCallback(
     (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
-      closeMobileMenu();
-
-      if (!href.startsWith("#")) {
-        return;
-      }
-
+      closeNav({ restoreFocus: false });
+      if (!href.startsWith("#")) return;
       const handled = scrollToHash(href, { updateHash: "push" });
-      if (handled) {
-        event.preventDefault();
-      }
+      if (handled) event.preventDefault();
     },
-    [closeMobileMenu, scrollToHash],
+    [closeNav, scrollToHash]
   );
 
   useEffect(() => {
@@ -72,6 +129,7 @@ export function NavigationHeader({
         setVisible(true);
       } else if (currentScrollY > lastScrollY.current && !isInContact) {
         setVisible(false);
+        closeNav({ restoreFocus: false });
       } else {
         setVisible(true);
       }
@@ -82,7 +140,7 @@ export function NavigationHeader({
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isInContact, isMobileViewport, isOpen]);
+  }, [closeNav, isInContact, isMobileViewport, isOpen]);
 
   // Lock scroll when mobile menu is open (mobile only); delegates to cooperative scrollLock
   useEffect(() => {
@@ -104,7 +162,11 @@ export function NavigationHeader({
     };
 
     const handleViewportChange = () => {
-      closeMobileMenu();
+      const restoreTarget = mq.matches
+        ? mobileHamburgerRef.current
+        : desktopHamburgerRef.current;
+
+      closeNav({ restoreTarget });
       syncScrollLock();
     };
 
@@ -117,7 +179,7 @@ export function NavigationHeader({
         navHoldsScrollLock = false;
       }
     };
-  }, [closeMobileMenu, isOpen]);
+  }, [closeNav, isOpen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -159,7 +221,9 @@ export function NavigationHeader({
       Promise.resolve().then(() => {
         if (!cancelled) setIsInContact(false);
       });
-      return () => { cancelled = true; };
+      return () => {
+        cancelled = true;
+      };
     }
 
     const observer = new IntersectionObserver(
@@ -176,10 +240,76 @@ export function NavigationHeader({
     };
   }, [pathname]);
 
+  useEffect(() => {
+    if (isOpen) {
+      const focusTarget =
+        pendingOpenFocusRef.current === "mobile"
+          ? getFirstFocusable(mobileNavRef.current)
+          : pendingOpenFocusRef.current === "desktop"
+            ? getFirstFocusable(desktopNavRef.current)
+            : null;
+
+      if (!focusTarget) return;
+
+      const frame = window.requestAnimationFrame(() => {
+        focusTarget.focus();
+        pendingOpenFocusRef.current = null;
+      });
+
+      return () => window.cancelAnimationFrame(frame);
+    }
+
+    const restoreTarget = pendingRestoreFocusRef.current;
+    if (!restoreTarget) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      restoreTarget.focus();
+      pendingRestoreFocusRef.current = null;
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [getFirstFocusable, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const mq = window.matchMedia("(max-width: 767px)");
+    if (!mq.matches) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeNav({ restoreTarget: mobileHamburgerRef.current });
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const firstFocusable = getFirstFocusable(mobileNavRef.current);
+      const lastFocusable = mobileCloseButtonRef.current;
+
+      if (!firstFocusable || !lastFocusable) return;
+
+      if (event.shiftKey && document.activeElement === firstFocusable) {
+        event.preventDefault();
+        lastFocusable.focus();
+        return;
+      }
+
+      if (!event.shiftKey && document.activeElement === lastFocusable) {
+        event.preventDefault();
+        firstFocusable.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [closeNav, getFirstFocusable, isOpen]);
+
   return (
     <>
       <header
-        className={`${isInContact? "bg-transparent" : "bg-background"} fixed top-0 left-0 z-50 h-18 w-screen
+        className={`${isInContact ? "bg-transparent" : "bg-background"} fixed top-0 left-0 z-50 h-18 w-screen
           transition-transform duration-300 ease-in-out
           ${visible ? "translate-y-0" : "-translate-y-full"}
           ${isInContact ? "max-md:opacity-0 max-md:pointer-events-none" : ""}`}
@@ -205,17 +335,19 @@ export function NavigationHeader({
             </a>
           )}
 
-          {/* ── Desktop nav ── */}
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center">
             <div
+              id="desktop-navigation"
               aria-hidden={!isOpen}
               inert={!isOpen}
               className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-w-[700px]" : "max-w-0"}`}
             >
               <nav
+                ref={desktopNavRef}
                 className={`flex items-center gap-4 pr-2 whitespace-nowrap transition-transform duration-500 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
               >
-              {navItems.map((item) => (
+                {navItems.map((item) => (
                   <Button key={item.href} href={item.href}>
                     {item.label}
                   </Button>
@@ -223,17 +355,27 @@ export function NavigationHeader({
                 <ThemeToggle />
               </nav>
             </div>
-            <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
+            <HamburgerIcon
+              isOpen={isOpen}
+              onToggle={toggleDesktopNav}
+              controlsId="desktop-navigation"
+              buttonRef={desktopHamburgerRef}
+            />
           </div>
 
-          {/* ── Mobile: only hamburger ── */}
+          {/* Mobile: only hamburger */}
           <div className="flex md:hidden">
-            <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
+            <HamburgerIcon
+              isOpen={isOpen}
+              onToggle={toggleMobileNav}
+              controlsId="mobile-navigation"
+              buttonRef={mobileHamburgerRef}
+            />
           </div>
         </div>
       </header>
 
-      {/* ── Mobile full-screen slide-down menu ── */}
+      {/* Mobile full-screen slide-down menu */}
       <div
         aria-hidden={!isOpen || !visible}
         inert={!isOpen || !visible}
@@ -241,7 +383,7 @@ export function NavigationHeader({
           transition-transform duration-500 ease-in-out
           ${isOpen && visible ? "translate-y-0 pointer-events-auto" : "-translate-y-full pointer-events-none"}`}
       >
-        {/* Top row — mirrors the header so brand + X stay in place */}
+        {/* Top row mirrors the header while the close button stays last in tab order */}
         <div className="flex items-center justify-between h-18 px-6 py-4 shrink-0">
           {isInHero ? (
             <span
@@ -255,6 +397,7 @@ export function NavigationHeader({
             <a
               href={brandHref}
               onClick={handleMobileSamePageNavigation(brandHref)}
+              tabIndex={-1}
               className="hoverRoll-group text-sora-24 font-extrabold tracking-tight text-foreground"
             >
               <HoverRoll>
@@ -262,18 +405,24 @@ export function NavigationHeader({
               </HoverRoll>
             </a>
           )}
-          <HamburgerIcon isOpen={isOpen} onToggle={toggle} />
         </div>
 
-        {/* Nav links — vertical, staggered fade-in */}
-        <nav className="flex flex-col items-start justify-center flex-1 gap-6 px-6 pb-16">
+        {/* Nav links - vertical, staggered fade-in */}
+        <nav
+          id="mobile-navigation"
+          ref={mobileNavRef}
+          className="flex flex-col items-start justify-center flex-1 gap-6 px-6 pb-16"
+        >
           {navItems.map((item, i) => (
             <div
               key={item.href}
               className={`transition-all duration-500 ease-in-out ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: isOpen ? `${150 + i * 60}ms` : "0ms" }}
             >
-              <Button href={item.href} onClick={handleMobileSamePageNavigation(item.href)}>
+              <Button
+                href={item.href}
+                onClick={handleMobileSamePageNavigation(item.href)}
+              >
                 {item.label}
               </Button>
             </div>
@@ -286,6 +435,15 @@ export function NavigationHeader({
             <ThemeToggle />
           </div>
         </nav>
+
+        <div className="absolute top-4 right-6">
+          <HamburgerIcon
+            isOpen={isOpen}
+            onToggle={toggleMobileNav}
+            controlsId="mobile-navigation"
+            buttonRef={mobileCloseButtonRef}
+          />
+        </div>
       </div>
     </>
   );

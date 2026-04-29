@@ -86,11 +86,13 @@ function fillGrid(
 
             cards.push(
                 <div key={slot} style={variants[slot]}>
-                    <ScrollReveal className="h-full w-full min-h-0" delay={delay}>
-                        <Card variant="accent" size={slot}>
-                            <CardDecor slot={slot} />
-                        </Card>
-                    </ScrollReveal>
+                    <div aria-hidden="true">
+                        <ScrollReveal className="h-full w-full min-h-0" delay={delay}>
+                            <Card variant="accent" size={slot}>
+                                <CardDecor slot={slot} />
+                            </Card>
+                        </ScrollReveal>
+                    </div>
                 </div>
             );
         }

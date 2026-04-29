@@ -113,7 +113,7 @@ export function AboutBio() {
             `}
       >
         <ScrollReveal startupReadyKey="about-heading">
-          <Heading size="display-96" as="h1" className="text-display-48! md:text-display-96! lg:text-display-48! xl:text-display-128! text-bio-text! pt-18">
+          <Heading size="display-96" as="h2" className="text-display-48! md:text-display-96! lg:text-display-48! xl:text-display-128! text-bio-text! pt-18">
             About Me
           </Heading>
         </ScrollReveal>
