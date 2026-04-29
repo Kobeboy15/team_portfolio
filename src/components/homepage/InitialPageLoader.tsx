@@ -140,7 +140,7 @@ export function InitialPageLoader({
       role="status"
       aria-live={phase === "exiting" ? "off" : "polite"}
       aria-atomic="true"
-      className="fixed inset-0 z-70 flex items-end bg-background-2"
+      className="fixed inset-0 z-[70] flex items-end bg-background-2"
       initial={{ opacity: 1, y: 0 }}
       animate={
         phase === "exiting"

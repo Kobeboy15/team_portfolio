@@ -166,7 +166,9 @@ export function NavigationHeader({
         ? mobileHamburgerRef.current
         : desktopHamburgerRef.current;
 
-      closeNav({ restoreTarget });
+      if (isOpen) {
+        closeNav({ restoreTarget });
+      }
       syncScrollLock();
     };
 
