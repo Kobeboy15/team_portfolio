@@ -1,5 +1,10 @@
 import React from "react";
 
+import {
+  ANCHOR_OFFSET_ATTRIBUTE,
+  DEFAULT_SECTION_ANCHOR_OFFSET_PX,
+} from "../../lib/scrollAnchors";
+
 type SectionSpacing = "none" | "sm" | "md" | "lg";
 
 const spacingClassName: Record<SectionSpacing, string> = {
@@ -31,6 +36,13 @@ export type SectionProps = React.PropsWithChildren<{
   navHeight?: React.CSSProperties["scrollMarginTop"];
 
   /**
+   * Programmatic anchor offset used by the smooth-scroll layer.
+   * Defaults to 0 so standard sections land with their built-in `pt-18`
+   * visible below the fixed header.
+   */
+  anchorOffsetPx?: number;
+
+  /**
    * Adds a responsive section-to-section gap (margin-bottom).
    */
   withSectionGap?: boolean;
@@ -52,17 +64,20 @@ export function Section({
   className,
   spacing = "none",
   navHeight,
+  anchorOffsetPx = DEFAULT_SECTION_ANCHOR_OFFSET_PX,
   withSectionGap = false,
   sectionGap = "clamp(48px, 6vw, 140px)",
 }: SectionProps) {
   const style: React.CSSProperties = {
-    scrollMarginTop: navHeight,
+    scrollMarginTop:
+      navHeight ?? (anchorOffsetPx !== undefined ? `${anchorOffsetPx}px` : undefined),
     marginBottom: withSectionGap ? sectionGap : undefined,
   };
 
   return (
     <section
       id={id}
+      {...{ [ANCHOR_OFFSET_ATTRIBUTE]: anchorOffsetPx }}
       style={style}
       className={cx(spacingClassName[spacing], "pt-18 min-h-screen", className)}
     >

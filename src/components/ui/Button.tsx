@@ -2,8 +2,10 @@
 import React from "react";
 import Link from "next/link";
 
+import { HoverRoll } from "./HoverRoll";
+
 const baseClassName =
-  "inline-flex h-9 min-h-9 items-center gap-2 font-sans font-light text-sora-18 text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  "hoverRoll-group inline-flex h-9 min-h-9 items-center gap-2 font-sans font-light text-sora-18 text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 type BaseProps = {
   children: React.ReactNode;
@@ -40,7 +42,9 @@ export function Button({
 }: ButtonProps) {
   const content = (
     <>
-      {children}
+      <HoverRoll className="shrink-0">
+        <span className="block">{children}</span>
+      </HoverRoll>
       {icon ? (
         <span className="inline-flex shrink-0" aria-hidden>
           {icon}

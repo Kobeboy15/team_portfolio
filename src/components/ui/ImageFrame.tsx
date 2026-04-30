@@ -88,6 +88,7 @@ export function ImageFrame({
     const priority = priorityProp;
     return (
       <Image
+        ref={imageRef}
         src={src}
         alt={alt}
         fill

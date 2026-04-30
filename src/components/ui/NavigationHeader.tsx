@@ -5,8 +5,11 @@ import { usePathname } from "next/navigation";
 import type { NavigationItem } from "@/src/data/navigation";
 
 import { Button } from "./Button";
+import { HoverRoll } from "./HoverRoll";
 import { ThemeToggle } from "./ThemeToggle";
 import { HamburgerIcon } from "./HamburgerIcon";
+import { lockScroll, unlockScroll } from "../../lib/scrollLock";
+import { useSmoothScroll } from "./SmoothScrollProvider";
 
 interface NavigationHeaderProps {
   brandName: string;
@@ -26,6 +29,7 @@ export function NavigationHeader({
   const [visible, setVisible] = useState(true);
   const [isInHero, setIsInHero] = useState(false);
   const [isInContact, setIsInContact] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
 
   const lastScrollY = useRef(0);
   const pathname = usePathname();
@@ -64,19 +68,22 @@ export function NavigationHeader({
     setIsOpen(true);
   }, []);
 
-  const closeNav = useCallback(({
-    restoreFocus = true,
-    restoreTarget,
-  }: {
-    restoreFocus?: boolean;
-    restoreTarget?: HTMLElement | null;
-  } = {}) => {
-    pendingOpenFocusRef.current = null;
-    pendingRestoreFocusRef.current = restoreFocus
-      ? restoreTarget ?? getRestoreTarget(lastOpenerRef.current)
-      : null;
-    setIsOpen(false);
-  }, [getRestoreTarget]);
+  const closeNav = useCallback(
+    ({
+      restoreFocus = true,
+      restoreTarget,
+    }: {
+      restoreFocus?: boolean;
+      restoreTarget?: HTMLElement | null;
+    } = {}) => {
+      pendingOpenFocusRef.current = null;
+      pendingRestoreFocusRef.current = restoreFocus
+        ? restoreTarget ?? getRestoreTarget(lastOpenerRef.current)
+        : null;
+      setIsOpen(false);
+    },
+    [getRestoreTarget]
+  );
 
   const toggleDesktopNav = useCallback(() => {
     if (isOpen) {
@@ -96,8 +103,26 @@ export function NavigationHeader({
     openMobileNav();
   }, [closeNav, isOpen, openMobileNav]);
 
+  const { scrollToHash } = useSmoothScroll();
+
+  const handleMobileSamePageNavigation = useCallback(
+    (href: string) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+      closeNav({ restoreFocus: false });
+      if (!href.startsWith("#")) return;
+      const handled = scrollToHash(href, { updateHash: "push" });
+      if (handled) event.preventDefault();
+    },
+    [closeNav, scrollToHash]
+  );
+
   useEffect(() => {
     const handleScroll = () => {
+      if (isOpen && isMobileViewport) {
+        lastScrollY.current = window.scrollY;
+        setVisible(true);
+        return;
+      }
+
       const currentScrollY = window.scrollY;
 
       if (currentScrollY < 10) {
@@ -112,30 +137,49 @@ export function NavigationHeader({
       lastScrollY.current = currentScrollY;
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [closeNav, isInContact]);
+  }, [closeNav, isInContact, isMobileViewport, isOpen]);
 
-  // Lock body scroll when mobile menu is open (mobile only)
+  // Lock scroll when mobile menu is open (mobile only); delegates to cooperative scrollLock
   useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
-    const updateOverflow = () => {
-      document.body.style.overflow = isOpen && mq.matches ? "hidden" : "";
+    let navHoldsScrollLock = false;
+
+    const syncScrollLock = () => {
+      const matches = mq.matches;
+      setIsMobileViewport(matches);
+      const shouldLock = isOpen && matches;
+
+      if (shouldLock && !navHoldsScrollLock) {
+        lockScroll();
+        navHoldsScrollLock = true;
+      } else if (!shouldLock && navHoldsScrollLock) {
+        unlockScroll();
+        navHoldsScrollLock = false;
+      }
     };
+
     const handleViewportChange = () => {
       const restoreTarget = mq.matches
         ? mobileHamburgerRef.current
         : desktopHamburgerRef.current;
 
-      closeNav({ restoreTarget });
-      updateOverflow();
+      if (isOpen) {
+        closeNav({ restoreTarget });
+      }
+      syncScrollLock();
     };
 
-    updateOverflow();
+    syncScrollLock();
     mq.addEventListener("change", handleViewportChange);
     return () => {
       mq.removeEventListener("change", handleViewportChange);
-      document.body.style.overflow = "";
+      if (navHoldsScrollLock) {
+        unlockScroll();
+        navHoldsScrollLock = false;
+      }
     };
   }, [closeNav, isOpen]);
 
@@ -285,9 +329,11 @@ export function NavigationHeader({
           ) : (
             <a
               href={brandHref}
-              className="text-sora-24 font-extrabold tracking-tight text-foreground"
+              className="hoverRoll-group text-sora-24 font-extrabold tracking-tight text-foreground"
             >
-              {brandName}
+              <HoverRoll>
+                <span className="block">{brandName}</span>
+              </HoverRoll>
             </a>
           )}
 
@@ -352,11 +398,13 @@ export function NavigationHeader({
           ) : (
             <a
               href={brandHref}
-              onClick={() => closeNav({ restoreFocus: false })}
+              onClick={handleMobileSamePageNavigation(brandHref)}
               tabIndex={-1}
-              className="text-sora-24 font-extrabold tracking-tight text-foreground"
+              className="hoverRoll-group text-sora-24 font-extrabold tracking-tight text-foreground"
             >
-              {brandName}
+              <HoverRoll>
+                <span className="block">{brandName}</span>
+              </HoverRoll>
             </a>
           )}
         </div>
@@ -373,7 +421,10 @@ export function NavigationHeader({
               className={`transition-all duration-500 ease-in-out ${isOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: isOpen ? `${150 + i * 60}ms` : "0ms" }}
             >
-              <Button href={item.href} onClick={() => closeNav({ restoreFocus: false })}>
+              <Button
+                href={item.href}
+                onClick={handleMobileSamePageNavigation(item.href)}
+              >
                 {item.label}
               </Button>
             </div>

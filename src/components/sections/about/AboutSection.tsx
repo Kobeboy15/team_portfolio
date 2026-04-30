@@ -7,15 +7,21 @@ import { aboutData } from "../../../data/about";
 import { useClientMounted } from "../../../hooks/useClientMounted";
 import { useMediaQuery } from "../../../hooks/useMediaQuery";
 import { isLikelyIosAffectedWebKit } from "../../../lib/isLikelyIosAffectedWebKit";
+import {
+  ANCHOR_OFFSET_ATTRIBUTE,
+  DEFAULT_SECTION_ANCHOR_OFFSET_PX,
+} from "../../../lib/scrollAnchors";
 
 import { ABOUT_SECTION_ANCHOR_ID, ABOUT_SECTION_ROOT_ID } from "../heroAboutConstants";
-import { ImageFrame } from "../../ui/ImageFrame";
 import { ScrollProgressBar } from "../../ui/ScrollProgressBar";
 import { Section } from "../../ui/Section";
+import { useOptionalHomepageReadiness } from "../../homepage/HomepageReadinessProvider";
 
 import { AboutBio } from "./AboutBio";
 import { AboutGallery } from "./AboutGallery";
 import { AboutPoints } from "./AboutPoints";
+import { AboutSeparatorParallax } from "./AboutSeparatorParallax";
+import { useDesktopSeparatorTrackMetrics } from "./useDesktopSeparatorTrackMetrics";
 
 const DESKTOP_ABOUT_SCROLL_ID = "about-desktop-scroll-area";
 const ABOUT_DESKTOP_MEDIA_QUERY = "(min-width: 640px)";
@@ -36,9 +42,11 @@ function AboutSectionShell() {
 function DesktopAboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const uniqueSeparatorRef = useRef<HTMLElement>(null);
   const [translateX, setTranslateX] = useState("0%");
   const [scrollHeight, setScrollHeight] = useState("300vh");
   const [totalScrollPx, setTotalScrollPx] = useState(0);
+  const uniqueSeparatorMetrics = useDesktopSeparatorTrackMetrics(uniqueSeparatorRef, true);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -84,10 +92,19 @@ function DesktopAboutSection() {
       <Section className="sticky top-0 w-full max-w-none max-h-dvh overflow-hidden pt-0!">
         <motion.div ref={contentRef} data-scroll-container style={{ x }} className="flex flex-nowrap w-max max-h-full">
           <AboutBio />
-          <section className="relative h-dvh w-[70vw] shrink-0 overflow-hidden" aria-label={aboutData.pointsImageAlt}>
-            <div className="relative h-full w-full overflow-hidden">
-              <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
-            </div>
+          <section
+            ref={uniqueSeparatorRef}
+            className="relative h-dvh w-[70vw] shrink-0 overflow-hidden"
+            aria-label={aboutData.pointsImageAlt}
+          >
+            <AboutSeparatorParallax
+              src={aboutData.pointsImage}
+              alt={aboutData.pointsImageAlt}
+              orientation="horizontal"
+              scrollYProgress={scrollYProgress}
+              totalScrollWidth={totalScrollPx}
+              desktopTrackMetrics={uniqueSeparatorMetrics}
+            />
           </section>
           <AboutPoints />
           <AboutGallery idNamespace="desktop" scrollYProgress={scrollYProgress} totalScrollWidth={totalScrollPx} />
@@ -109,9 +126,11 @@ function MobileAboutSection() {
     <Section className="block w-full max-w-none overflow-hidden pt-0!">
       <AboutBio />
       <section className={mobileImageHeightClass} aria-label={aboutData.pointsImageAlt}>
-        <div className="relative h-full w-full overflow-hidden">
-          <ImageFrame placement="about-gallery-hero" src={aboutData.pointsImage} alt={aboutData.pointsImageAlt} />
-        </div>
+        <AboutSeparatorParallax
+          src={aboutData.pointsImage}
+          alt={aboutData.pointsImageAlt}
+          orientation="vertical"
+        />
       </section>
       <AboutPoints />
       <AboutGallery
@@ -126,6 +145,13 @@ function MobileAboutSection() {
 export function AboutSection() {
   const isClientMounted = useClientMounted();
   const isDesktop = useMediaQuery(ABOUT_DESKTOP_MEDIA_QUERY);
+  const readiness = useOptionalHomepageReadiness();
+
+  useEffect(() => {
+    if (!isClientMounted || !readiness) return;
+
+    readiness.markReady("layout-mode-ready", isDesktop ? "desktop" : "mobile");
+  }, [isClientMounted, isDesktop, readiness]);
 
   let content: ReactNode = <AboutSectionShell />;
 
@@ -133,9 +159,19 @@ export function AboutSection() {
     content = isDesktop ? <DesktopAboutSection /> : <MobileAboutSection />;
   }
 
+  useEffect(() => {
+    if (!isClientMounted) return;
+    readiness?.markReady("about-mounted");
+  }, [isClientMounted, readiness]);
+
   return (
     <div id={ABOUT_SECTION_ROOT_ID} className="relative w-full">
-      <div id={ABOUT_SECTION_ANCHOR_ID} className="absolute top-0" aria-hidden="true" />
+      <div
+        id={ABOUT_SECTION_ANCHOR_ID}
+        className="absolute top-0"
+        aria-hidden="true"
+        {...{ [ANCHOR_OFFSET_ATTRIBUTE]: DEFAULT_SECTION_ANCHOR_OFFSET_PX }}
+      />
       {content}
     </div>
   );

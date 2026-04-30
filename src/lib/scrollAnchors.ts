@@ -1,0 +1,4 @@
+export const FIXED_HEADER_OFFSET_PX = 72;
+export const DEFAULT_SECTION_ANCHOR_OFFSET_PX = 0;
+export const HERO_SECTION_ANCHOR_OFFSET_PX = FIXED_HEADER_OFFSET_PX;
+export const ANCHOR_OFFSET_ATTRIBUTE = "data-anchor-offset";

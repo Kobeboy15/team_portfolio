@@ -17,10 +17,15 @@ export const PROJECT_CARD_DESKTOP_CONTENT_HEIGHT_PX = {
   /** ~4 lines incl. gaps between list items */
   techStack: 108,
   /** ~4 outcomes × ~3 lines each incl. gaps */
-  outcomes: 304,
+  outcomes: 256,
 } as const;
 
 /** Reserved height per link row (View more / GitHub) in the desktop skeleton. */
 export const PROJECT_CARD_DESKTOP_LINK_ROW_MIN_HEIGHT_PX = 24;
+/** Vertical gap between the two stacked link rows; matches Tailwind `gap-3` on that stack in `ProjectCardDesktop`. */
+export const PROJECT_CARD_DESKTOP_LINK_ROWS_GAP_PX = 12;
+/** Total reserved height for the combined links + progress skeleton block. */
+export const PROJECT_CARD_DESKTOP_LINK_BLOCK_MIN_HEIGHT_PX =
+  PROJECT_CARD_DESKTOP_LINK_ROW_MIN_HEIGHT_PX * 2 + PROJECT_CARD_DESKTOP_LINK_ROWS_GAP_PX;
 
 export type ProjectCardDesktopContentRegion = keyof typeof PROJECT_CARD_DESKTOP_CONTENT_HEIGHT_PX;

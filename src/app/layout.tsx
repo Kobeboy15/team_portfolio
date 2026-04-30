@@ -1,6 +1,7 @@
 import { Sora, Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "../components/theme-provider";
+import { SmoothScrollProvider } from "../components/ui/SmoothScrollProvider";
 export { metadata } from "../data/metadata";
 
 const sora = Sora({
@@ -37,7 +38,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <SmoothScrollProvider>{children}</SmoothScrollProvider>
         </ThemeProvider>
       </body>
     </html>

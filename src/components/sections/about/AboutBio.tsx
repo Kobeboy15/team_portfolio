@@ -112,13 +112,13 @@ export function AboutBio() {
                 min-[5060px]:h-[2530px]
             `}
       >
-        <ScrollReveal>
+        <ScrollReveal startupReadyKey="about-heading">
           <Heading size="display-96" as="h2" className="text-display-48! md:text-display-96! lg:text-display-48! xl:text-display-128! text-bio-text! pt-18">
             About Me
           </Heading>
         </ScrollReveal>
         <hr className="border-none h-1 md:h-2 w-40 md:w-80 bg-accent" aria-hidden="true" />
-        <ScrollReveal delay={0.1}>
+        <ScrollReveal delay={0.1} startupReadyKey="about-bio">
           <p className="mt-12 lg:mt-4 xl:mt-12 max-w-[1000px] font-sora 2xl:text-sora-18">{aboutData.bio}</p>
         </ScrollReveal>
       </div>
