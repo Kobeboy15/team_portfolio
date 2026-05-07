@@ -3,6 +3,7 @@
 import { useTheme } from "next-themes";
 
 import { useClientMounted } from "@/src/hooks/useClientMounted";
+import { HoverRoll } from "./HoverRoll";
 
 function MoonIcon() {
   return (
@@ -55,9 +56,20 @@ export function ThemeToggle() {
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label="Toggle theme"
       aria-pressed={isDark}
-      className="rounded-full p-2 transition-colors cursor-pointer"
+      className="hoverRoll-group rounded-full p-2 transition-colors cursor-pointer"
     >
-      {isDark ? <MoonIcon /> : <SunIcon />}
+      <HoverRoll
+        className="align-middle leading-none [--hover-roll-size:1.25rem] [--hover-roll-translate-y:1.2rem]"
+        wrapperClassName="block"
+        rowClassName="justify-center"
+      >
+        <span
+          className="inline-flex shrink-0 items-center justify-center leading-none"
+          style={{ width: "var(--hover-roll-size)", height: "var(--hover-roll-size)" }}
+        >
+          {isDark ? <MoonIcon /> : <SunIcon />}
+        </span>
+      </HoverRoll>
     </button>
   );
 }

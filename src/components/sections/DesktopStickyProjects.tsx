@@ -1,17 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { useReducedMotion, useScroll } from "framer-motion";
 
 import type { Project } from "../../types/projects";
+import { useSmoothScroll } from "../ui/SmoothScrollProvider";
 
 import { ProjectCardDesktop } from "./ProjectCardDesktop";
-import { projectCardDesktopTransition } from "./projectCardDesktopMotion";
+import {
+  PROJECT_CARD_DESKTOP_TRANSITION_SETTLE_MS,
+  projectCardDesktopTransition,
+} from "./projectCardDesktopMotion";
 
 const NAV_OFFSET_PX = 72;
 const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
 const WHEEL_DELTA_THRESHOLD = 18;
-const SNAP_LOCK_MS = Math.round(projectCardDesktopTransition.duration * 1000) + 120;
+const SNAP_LOCK_FALLBACK_MS = Math.round(projectCardDesktopTransition.duration * 1000) + 500;
 
 export type DesktopStickyProjectsProps = {
   projects: Project[];
@@ -22,6 +26,17 @@ type SectionMetrics = {
   stickyEnd: number;
   viewportHeight: number;
 };
+
+type RenderState = {
+  renderedIndex: number;
+  renderCycle: number;
+  isCardTransitioning: boolean;
+};
+
+type RenderAction =
+  | { type: "syncImmediate"; nextIndex: number }
+  | { type: "beginTransition"; nextIndex: number }
+  | { type: "finishTransition" };
 
 function clampIndex(index: number, count: number) {
   return Math.min(count - 1, Math.max(0, index));
@@ -52,16 +67,122 @@ function getNearestProjectIndex(scrollY: number, metrics: SectionMetrics, count:
   return clampIndex(rawIndex, count);
 }
 
+function renderStateReducer(state: RenderState, action: RenderAction): RenderState {
+  switch (action.type) {
+    case "syncImmediate":
+      if (
+        state.renderedIndex === action.nextIndex &&
+        state.isCardTransitioning === false
+      ) {
+        return state;
+      }
+
+      return {
+        renderedIndex: action.nextIndex,
+        renderCycle: state.renderCycle,
+        isCardTransitioning: false,
+      };
+    case "beginTransition":
+      if (state.renderedIndex === action.nextIndex && state.isCardTransitioning) {
+        return state;
+      }
+
+      return {
+        renderedIndex: action.nextIndex,
+        renderCycle: state.renderCycle + 1,
+        isCardTransitioning: true,
+      };
+    case "finishTransition":
+      if (!state.isCardTransitioning) {
+        return state;
+      }
+
+      return {
+        ...state,
+        isCardTransitioning: false,
+      };
+    default:
+      return state;
+  }
+}
+
+function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
+  const cx = 3 * x1;
+  const bx = 3 * (x2 - x1) - cx;
+  const ax = 1 - cx - bx;
+  const cy = 3 * y1;
+  const by = 3 * (y2 - y1) - cy;
+  const ay = 1 - cy - by;
+
+  const sampleCurveX = (t: number) => ((ax * t + bx) * t + cx) * t;
+  const sampleCurveY = (t: number) => ((ay * t + by) * t + cy) * t;
+  const sampleCurveDerivativeX = (t: number) => (3 * ax * t + 2 * bx) * t + cx;
+
+  return (x: number) => {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+
+    let t = x;
+    for (let i = 0; i < 8; i += 1) {
+      const currentX = sampleCurveX(t) - x;
+      if (Math.abs(currentX) < 1e-6) {
+        return sampleCurveY(t);
+      }
+
+      const derivative = sampleCurveDerivativeX(t);
+      if (Math.abs(derivative) < 1e-6) {
+        break;
+      }
+
+      t -= currentX / derivative;
+    }
+
+    let lower = 0;
+    let upper = 1;
+    t = x;
+
+    while (lower < upper) {
+      const currentX = sampleCurveX(t);
+      if (Math.abs(currentX - x) < 1e-6) {
+        return sampleCurveY(t);
+      }
+
+      if (x > currentX) {
+        lower = t;
+      } else {
+        upper = t;
+      }
+
+      t = (upper - lower) * 0.5 + lower;
+      if (Math.abs(upper - lower) < 1e-6) {
+        break;
+      }
+    }
+
+    return sampleCurveY(t);
+  };
+}
+
+const projectSnapEasing = cubicBezier(...projectCardDesktopTransition.ease);
+
 export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [targetIndex, setTargetIndex] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [renderState, dispatchRenderState] = useReducer(renderStateReducer, {
+    renderedIndex: 0,
+    renderCycle: 0,
+    isCardTransitioning: false,
+  });
   const snapLockTimeoutRef = useRef<number | null>(null);
+  const cardTransitionTimeoutRef = useRef<number | null>(null);
   const snapLockedRef = useRef(false);
   const snapTargetIndexRef = useRef<number | null>(null);
   const n = projects.length;
   const reduceMotion = useReducedMotion();
+  const { scrollToY } = useSmoothScroll();
   const snapEnabled = isDesktop && !reduceMotion;
+  const { renderedIndex, renderCycle, isCardTransitioning } = renderState;
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -93,12 +214,50 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
     };
   }, []);
 
+  const syncActiveIndexFromViewport = useCallback(() => {
+    const container = containerRef.current;
+    if (!container || n <= 0) return;
+
+    if (!snapEnabled) {
+      setTargetIndex(getProgressIndex(scrollYProgress.get(), n));
+      return;
+    }
+
+    const metrics = getSectionMetrics(container, n);
+    setTargetIndex(getNearestProjectIndex(window.scrollY, metrics, n));
+  }, [n, scrollYProgress, snapEnabled]);
+
+  const clearSnapState = useCallback(
+    (options?: { syncIndex?: boolean }) => {
+      if (snapLockTimeoutRef.current !== null) {
+        window.clearTimeout(snapLockTimeoutRef.current);
+        snapLockTimeoutRef.current = null;
+      }
+
+      snapLockedRef.current = false;
+      snapTargetIndexRef.current = null;
+
+      if (options?.syncIndex) {
+        syncActiveIndexFromViewport();
+      }
+    },
+    [syncActiveIndexFromViewport],
+  );
+
+  const syncRenderedIndexImmediately = useCallback((nextIndex: number) => {
+    dispatchRenderState({ type: "syncImmediate", nextIndex });
+  }, []);
+
+  const beginCardTransition = useCallback((nextIndex: number) => {
+    dispatchRenderState({ type: "beginTransition", nextIndex });
+  }, []);
+
   useEffect(() => {
     if (snapEnabled) return;
     if (n <= 0) return;
 
     const sync = () => {
-      setActiveIndex(getProgressIndex(scrollYProgress.get(), n));
+      setTargetIndex(getProgressIndex(scrollYProgress.get(), n));
     };
 
     sync();
@@ -118,24 +277,67 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
   }, [snapEnabled]);
 
   useEffect(() => {
+    if (!snapEnabled) {
+      if (cardTransitionTimeoutRef.current !== null) {
+        window.clearTimeout(cardTransitionTimeoutRef.current);
+        cardTransitionTimeoutRef.current = null;
+      }
+
+      const rafId = window.requestAnimationFrame(() => {
+        syncRenderedIndexImmediately(targetIndex);
+      });
+
+      return () => {
+        window.cancelAnimationFrame(rafId);
+      };
+    }
+
+    if (isCardTransitioning || renderedIndex === targetIndex) {
+      return;
+    }
+
+    beginCardTransition(targetIndex);
+  }, [
+    beginCardTransition,
+    isCardTransitioning,
+    renderedIndex,
+    snapEnabled,
+    syncRenderedIndexImmediately,
+    targetIndex,
+  ]);
+
+  useEffect(() => {
+    if (!snapEnabled || !isCardTransitioning) {
+      if (cardTransitionTimeoutRef.current !== null) {
+        window.clearTimeout(cardTransitionTimeoutRef.current);
+        cardTransitionTimeoutRef.current = null;
+      }
+
+      return;
+    }
+
+    cardTransitionTimeoutRef.current = window.setTimeout(() => {
+      dispatchRenderState({ type: "finishTransition" });
+    }, PROJECT_CARD_DESKTOP_TRANSITION_SETTLE_MS);
+
+    return () => {
+      if (cardTransitionTimeoutRef.current !== null) {
+        window.clearTimeout(cardTransitionTimeoutRef.current);
+        cardTransitionTimeoutRef.current = null;
+      }
+    };
+  }, [isCardTransitioning, snapEnabled]);
+
+  useEffect(() => {
     if (n <= 0) return;
 
     const syncFromViewport = () => {
-      const container = containerRef.current;
-      if (!container) return;
-
       if (snapTargetIndexRef.current !== null) {
-        setActiveIndex(snapTargetIndexRef.current);
+        setTargetIndex(snapTargetIndexRef.current);
         return;
       }
 
-      if (!snapEnabled) {
-        setActiveIndex(getProgressIndex(scrollYProgress.get(), n));
-        return;
-      }
-
-      const metrics = getSectionMetrics(container, n);
-      setActiveIndex(getNearestProjectIndex(window.scrollY, metrics, n));
+      syncActiveIndexFromViewport();
     };
 
     syncFromViewport();
@@ -152,7 +354,7 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
         window.removeEventListener("scroll", syncFromViewport);
       }
     };
-  }, [scrollYProgress, snapEnabled, n]);
+  }, [n, snapEnabled, syncActiveIndexFromViewport]);
 
   useEffect(() => {
     if (!snapEnabled || n <= 1) return;
@@ -186,7 +388,7 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
       const isLeavingDownFromLast = direction > 0 && currentIndex === n - 1;
 
       if (isLeavingUpFromFirst || isLeavingDownFromLast) {
-        snapTargetIndexRef.current = null;
+        clearSnapState({ syncIndex: true });
         return;
       }
 
@@ -203,24 +405,20 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
 
       snapLockedRef.current = true;
       snapTargetIndexRef.current = nextIndex;
-      setActiveIndex(nextIndex);
+      setTargetIndex(nextIndex);
 
-      window.scrollTo({
-        top: getTargetScrollY(metrics, nextIndex),
-        behavior: "smooth",
+      scrollToY(getTargetScrollY(metrics, nextIndex), {
+        duration: projectCardDesktopTransition.duration,
+        easing: projectSnapEasing,
+        lock: true,
+        onComplete: () => {
+          clearSnapState({ syncIndex: true });
+        },
       });
 
       snapLockTimeoutRef.current = window.setTimeout(() => {
-        snapLockedRef.current = false;
-        snapTargetIndexRef.current = null;
-        snapLockTimeoutRef.current = null;
-
-        const nextContainer = containerRef.current;
-        if (!nextContainer) return;
-
-        const nextMetrics = getSectionMetrics(nextContainer, n);
-        setActiveIndex(getNearestProjectIndex(window.scrollY, nextMetrics, n));
-      }, SNAP_LOCK_MS);
+        clearSnapState({ syncIndex: true });
+      }, SNAP_LOCK_FALLBACK_MS);
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
@@ -236,13 +434,14 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
       snapLockedRef.current = false;
       snapTargetIndexRef.current = null;
     };
-  }, [snapEnabled, n]);
+  }, [clearSnapState, n, scrollToY, snapEnabled]);
 
   if (n === 0) {
     return null;
   }
 
-  const activeProject = projects[activeIndex] ?? projects[0];
+  const renderedProject = projects[renderedIndex] ?? projects[0];
+  const cardTransitionKey = `${renderCycle}-${renderedProject.id}`;
 
   return (
     <div
@@ -257,7 +456,13 @@ export function DesktopStickyProjects({ projects }: DesktopStickyProjectsProps) 
           height: `calc(100dvh - ${NAV_OFFSET_PX}px)`,
         }}
       >
-        <ProjectCardDesktop project={activeProject} className="w-full" />
+        <ProjectCardDesktop
+          project={renderedProject}
+          activeIndex={renderedIndex}
+          projectCount={n}
+          transitionKey={cardTransitionKey}
+          className="w-full"
+        />
       </div>
     </div>
   );

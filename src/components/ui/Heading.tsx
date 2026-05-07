@@ -1,3 +1,5 @@
+import type { HTMLAttributes, ReactNode } from "react";
+
 export type HeadingSize =
   | "hero-1" // 134px, tracking +2%
   | "hero-2" // 172px, tracking +2%
@@ -32,8 +34,8 @@ export type HeadingProps = {
   as?: HeadingAs;
 
   className?: string;
-  children: React.ReactNode;
-};
+  children: ReactNode;
+} & Omit<HTMLAttributes<HTMLElement>, "className" | "children">;
 
 function cx(...parts: Array<string | undefined | false>) {
   return parts.filter(Boolean).join(" ");
@@ -64,9 +66,11 @@ export function Heading({
   as: Component = "h2",
   className,
   children,
+  ...rest
 }: HeadingProps) {
   return (
     <Component
+      {...rest}
       className={cx(
         "font-bebas uppercase",
         sizeClassName[size],
